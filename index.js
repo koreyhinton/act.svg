@@ -41,7 +41,7 @@ var svgTrail = `
 </svg>
 `; // cy=40 -> cy=39 fix: // TDDTEST0 FIX
 
-function notifyMsg(htmlMsg, styleBG) {
+window.notifyMsg = function(htmlMsg, styleBG) {
     var notifyMd = document.createElement("div");
     notifyMd.style.backgroundColor=(styleBG==null)?"rgba(0,255,0,0.6)":styleBG;
     notifyMd.style.color="white";
@@ -55,7 +55,7 @@ function notifyMsg(htmlMsg, styleBG) {
     return notifyMsg;
 }
 
-function setNumMode(num, test) {
+window.setNumMode = function(num, test) {
     numMode = num;
     var active = document.getElementsByClassName("active");
     while (active.length > 0) {
@@ -68,7 +68,7 @@ function setNumMode(num, test) {
 }
 
 // ATTRIBUTE ACCESS FUNCTIONS
-function setcolor(nd, color) {
+window.setcolor = function(nd, color) {
     // console.warn(nd);
     for (var i=0; i<nd.attrs.length; i++) {
         var attr = nd.attrs[i];
@@ -83,7 +83,7 @@ function setcolor(nd, color) {
         }
     }
 }
-function getcolor(nd) {
+window.getcolor = function(nd) {
     for (var i=0; i<nd.attrs.length; i++) {
         var attr = nd.attrs[i];
         var textFill = (
@@ -97,7 +97,7 @@ function getcolor(nd) {
     return "#FF0000";
 }
 
-function getscal(attrs, name) {
+window.getscal = function(attrs, name) {
     // returns scalar value for attribute name
     for (var i=0; i<attrs.length; i++) {
         if (attrs[i].name == name) {
@@ -107,7 +107,7 @@ function getscal(attrs, name) {
     return -999;
 }
 
-function addscal(nd, name, scalar) {
+window.addscal = function(nd, name, scalar) {
     for (var i=0; i<nd.attrs.length; i++) {
         if (nd.attrs[i].name == name) {
             nd.attrs[i].value = (parseFloat(nd.attrs[i].value)+scalar)+"";
@@ -116,7 +116,7 @@ function addscal(nd, name, scalar) {
     }
 }
 
-function getscalarr(attrs, name, query) {
+window.getscalarr = function(attrs, name, query) {
     // returns array of scalar value
     for (var i=0; i<attrs.length; i++) {
         if (attrs[i].name == name) {
@@ -134,7 +134,7 @@ function getscalarr(attrs, name, query) {
     return [];
 }
 
-function addscalarr(nd, name, query, scalar) {
+window.addscalarr = function(nd, name, query, scalar) {
     for (var i=0; i<nd.attrs.length; i++) {
         if (nd.attrs[i].name == name) {
             var strsRd = nd.attrs[i].value.split(/[ ,]+/);
@@ -152,7 +152,7 @@ function addscalarr(nd, name, query, scalar) {
 }
 
 // SET CLICK RECTANGLE FUNCTION
-function setMouseRects(nd) {
+window.setMouseRects = function(nd) {
 
     // reset vals: // TDDTEST17 FIX
         nd.xmin = null;  // TDDTEST17 FIX
@@ -223,7 +223,7 @@ function setMouseRects(nd) {
 // Text nodes MUST be first in the array in order to
 // ensure text in a box gets prioritized on the click
 // over the surrounding rectangle
-function sortSvgNodes() {
+window.sortSvgNodes = function() {
     function swimLane(nd) { // TDDTEST5 FTR
         return (
             nd.tagName.toLowerCase() == "rect" &&
@@ -254,7 +254,7 @@ function sortSvgNodes() {
 // CONVERSIONS
 
 // https://stackoverflow.com/a/17411276
-function rotate(cx, cy, x, y, angle) { // TDDTEST7
+window.rotate = function(cx, cy, x, y, angle) { // TDDTEST7
     var rad = (Math.PI / 180) * angle;
     var cos = Math.cos(rad);
     var sin = Math.sin(rad);
@@ -264,7 +264,7 @@ function rotate(cx, cy, x, y, angle) { // TDDTEST7
     return pt;
 }
 
-function arrowPoint(pt1, pt2, deg, len, sign) {  // TDDTEST7
+window.arrowPoint = function(pt1, pt2, deg, len, sign) {  // TDDTEST7
     var m = /*rise/run*/ (pt2.y-pt1.y)/(pt2.x-pt1.x);
     var b = pt2.y - m*pt2.x;
     var dir = 1;
@@ -288,7 +288,7 @@ function arrowPoint(pt1, pt2, deg, len, sign) {  // TDDTEST7
     return rotate(pt2.x,pt2.y, pt1.x, pt1.y, sign*deg);
 }
 
-function nds2xml(nds) {
+window.nds2xml = function(nds) {
     var xml = nd2xml(svgBaseNode);
     xml = xml.substring(0, xml.length -2);
     xml += ">"+`
@@ -301,7 +301,7 @@ function nds2xml(nds) {
     return xml;
 }
 
-function nd2xml(nd, colorOverride) {
+window.nd2xml = function(nd, colorOverride) {
     var xml = "<" + nd.tagName;
     for (var i=0; i<nd.attrs.length; i++) {
         var attr = nd.attrs[i];
@@ -335,7 +335,7 @@ function nd2xml(nd, colorOverride) {
     return xml;
 }
 
-function xy2nd(x, y) {
+window.xy2nd = function(x, y) {
     var nd = null;
     for (var i=0; i<svgNodes.length; i++) {
         var svgNd = svgNodes[i];
@@ -351,7 +351,7 @@ function xy2nd(x, y) {
     return nd;
 }
 
-function xdom2nd(xdomNd, nd) {
+window.xdom2nd = function(xdomNd, nd) {
     var push = false;
     if (nd.attrs == null) { console.log("push"); nd.attrs = []; push = true;} // var nd = {attrs:[]}
     for (var i=0; i<xdomNd.attributes.length; i++) {
@@ -383,7 +383,7 @@ function xdom2nd(xdomNd, nd) {
 // This function requires an updateFrames call in order to
 // get this new node to show up in the left code pane and
 // the right display frame.
-function xml2nd(xml, tagName) {  // TDDTEST2 FTR
+window.xml2nd = function(xml, tagName) {  // TDDTEST2 FTR
     console.log(xml);
     var nd = {attrs:[]};
     svgNodes.push(nd);
@@ -395,11 +395,11 @@ function xml2nd(xml, tagName) {  // TDDTEST2 FTR
 }
 
 // DIFFERENCES
-function diffscal(ndV1, ndV2, name) {
+window.diffscal = function(ndV1, ndV2, name) {
     return getscal(ndV2.attrs, name) - getscal(ndV1.attrs, name);
 }
 
-function diffscalarr(ndV1, ndV2, name, query) {
+window.diffscalarr = function(ndV1, ndV2, name, query) {
 
     var i1=0;
     var i2=0;
@@ -436,7 +436,8 @@ function diffscalarr(ndV1, ndV2, name, query) {
 }
 
 // MAPPINGS
-function forceMap(src, dest) {
+// [mappings.js]
+window.forceMap = function(src, dest) {
     dest.tagName = src.tagName;
     if (src.tagName == "text") {
         dest.text = src.text;
@@ -449,7 +450,7 @@ function forceMap(src, dest) {
     }
 }
 
-function smartMap(src, dest) {
+window.smartMap = function(src, dest) {
     var mapDescriptor = src.tagName.toLowerCase() +
         " -> " +
         dest.tagName.toLowerCase();
@@ -646,7 +647,7 @@ function smartMap(src, dest) {
 
 // updateFrames MUST be called after issueClick since updateFrames
 // depends on curId that gets modified by track/untrack functions
-function updateFrames(selNd) {
+window.updateFrames = function(selNd) {
     for (var i=0; i<svgNodes.length; i++) { setMouseRects(svgNodes[i]); }
 
     document
@@ -684,7 +685,7 @@ function updateFrames(selNd) {
 
 const trackNd = (x, y) => curIds.push({x: x, y: y});
 
-function untrackNd(nd) {
+window.untrackNd = function(nd) {
     var j=-1;
     for (var i=0; i<curIds.length; i++) {
         var testNd = xy2nd(curIds[i].x, curIds[i].y);
@@ -700,7 +701,7 @@ function untrackNd(nd) {
 
 // EVENTS - PROGRAMMATIC - ISSUE SELECTION
 //for (var i=0; i<svgNodes.length; i++) { var nd=svgNodes[i]; console.log(nd.tagName, nd.xmin,nd.ymin, nd.xmax, nd.ymax); }
-function issueSelection(nd) {
+window.issueSelection = function(nd) {
     var selType = "select";
     var color = getcolor(nd);
     if (color.toUpperCase() == selColor || color.toUpperCase() == editColor
@@ -746,14 +747,14 @@ function issueSelection(nd) {
 
 // EVENTS - PROGRAMMATIC - ISSUE DRAW
 
-function issueDraw(xml, tagName) {
+window.issueDraw = function(xml, tagName) {
     xml2nd(xml, tagName);
     updateFrames();
 }
 
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
-function issueClick(x, y) {
+window.issueClick = function(x, y) {
     if (numMode == 1) {  // TDDTEST2 FTR
         if (clickCnt == 1) {
             issueDraw(`<line x1="`
@@ -946,13 +947,13 @@ function issueClick(x, y) {
 }
 // EVENTS - PROGRAMMATIC - ISSUE KEY NUM
 
-function issueKeyNum(num, test) {
+window.issueKeyNum = function(num, test) {
     setNumMode(num, test);
 }
 
 // EVENTS - PROGRAMMATIC - ISSUE KEY NAME
 
-function issueKeyName(name) { // TDDTEST18 FTR
+window.issueKeyName = function(name) { // TDDTEST18 FTR
     var moveMark = document.getElementById("moveMarker");
     moveMark.style.visibility = "visible";
 
@@ -1001,7 +1002,7 @@ function issueKeyName(name) { // TDDTEST18 FTR
 
 // EVENTS - UI
 
-function keydown(e) {
+window.keydown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
     if ("1234567890".indexOf(e.key) > -1) {
@@ -1017,7 +1018,7 @@ function keydown(e) {
     }
 }
 
-function mousedown(e) {
+window.mousedown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
     var x = e.clientX - 750;
@@ -1030,14 +1031,14 @@ function mousedown(e) {
     updateFrames( /*selNd=*/ issueClick(x, y) );
 }
 
-addEventListener('DOMContentLoaded', (e) => {
+window.addEventListener('DOMContentLoaded', (e) => {
     document.getElementById("svgFullTextarea").value =
         svgHead
         + svgEx
         + svgTrail;
 });
 
-function onDone() {
+window.onDone = function() {
     var i=0;
     var j=curIds.length;
     var limit =10000; var x=-1; var y=-1;
@@ -1069,7 +1070,7 @@ function onDone() {
 /////         }    /*curIds = [];*/    updateFrames();
 }
 
-function onStart(test) {
+window.onStart = function(test) {
     var svg = document.createElement("div");
     svg.id = "svgId";
     svg.innerHTML = (svgHead + svgEx + svgTrail);
@@ -1121,12 +1122,12 @@ function onStart(test) {
     updateFrames();
 }
 
-function onNum(obj) {
+window.onNum = function(obj) {
     var num = parseInt(obj.innerHTML[obj.innerHTML.length-1]);
     issueKeyNum(num);
 }
 
-function onApplyEdits() {
+window.onApplyEdits = function() {
     var text = document
         .getElementById("svgPartTextarea")
         .value;
