@@ -98,6 +98,7 @@ function run3(imports, cb) {
                     //isEvt ||= /key/.test(key.toLowerCase());
                     isEvt ||= /num/.test(key.toLowerCase());
                     isEvt ||= /update[A-Z]+/.test(key);
+                    isEvt ||= /^mousedown$/.test(key);
                     var isConv = /^xdom/.test(key);
                     isConv ||= /scal/.test(key);
                     isConv ||= /map/.test(key.toLowerCase());
