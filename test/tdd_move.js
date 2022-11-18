@@ -1,4 +1,4 @@
-class MoveTester {
+window.MoveTester = class MoveTester {
     constructor({mover,movee}) {
         this.moved = false;
         this.mover = mover;
