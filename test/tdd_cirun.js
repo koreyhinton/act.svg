@@ -124,7 +124,9 @@ function run2(imports,cb) {
     var imports = [...imports,'../index.js', './tdd_move.js', './tdd.js'];
     fs.readdir('./test', (err, files) => {
         files.forEach(file => {
-            if (file.endsWith('_tdd.js') /*|| file.endsWith('_move.js')*/) {
+            var isEditorFile = file.indexOf('#')>-1;
+            isEditorFile ||= file.indexOf('~')>-1;
+            if (file.endsWith('_tdd.js') && !isEditorFile) {
                 imports.push('./'+file);
             }
         });
