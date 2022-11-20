@@ -901,7 +901,10 @@ window.issueClick = function(x, y) {
     }
     clickCnt = 0; drawClick = {x:-1,y:-1};
     var clickedNd = xy2nd(x, y);
-    if (clickedNd == null) { return; }
+    if (clickedNd == null) {
+        setTimeout(()=>issueRectSelectClick(x, y), 100); // TDDTEST21 FTR
+        return;
+    }
     setMouseRects(clickedNd);
     var selType = issueSelection(clickedNd);
 // for (var i=0; i<curIds.length; i++) { setMouseRects(xy2nd(curIds[i].x, curIds[i].y)); }
@@ -1031,6 +1034,14 @@ window.mousedown = function(e) {
     updateFrames( /*selNd=*/ issueClick(x, y) );
 }
 
+window.mousemove = function(e) {
+    e = e || window.event;
+    if (window.gRectSelectState.numClicks == 1) { // TDDTEST23 FTR
+        window.updateVisibleRectSelection(e.clientX, e.clientY);
+        return;
+    }
+}
+
 window.addEventListener('DOMContentLoaded', (e) => {
     document.getElementById("svgFullTextarea").value =
         svgHead
@@ -1083,7 +1094,7 @@ window.onStart = function(test) {
     document.getElementById("svgFullTextarea").disabled="disabled";
 
     document.onkeydown = keydown;
-    setTimeout(function(){document.onclick = mousedown;}, 800);// skip first click
+    setTimeout(function(){document.onclick = mousedown; document.onmousemove = mousemove;}, 800);// skip first click
 
     var parser = new DOMParser();
     var xmlDocument = parser.parseFromString(document.getElementById("svgFullTextarea").value, "text/xml");
