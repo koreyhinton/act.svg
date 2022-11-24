@@ -13,7 +13,7 @@ window.issueDownload = function() { // TDDTEST19 FTR
     };
 }
 
-// EVENTS - PROGRAMMATIC - ISSUE DOWNLOAD
+// EVENTS - PROGRAMMATIC - ISSUE COPY
 
 window.issueCopy = function() { // TDDTEST20 FTR
     var ta = document.getElementById("svgFullTextarea");
@@ -24,4 +24,25 @@ window.issueCopy = function() { // TDDTEST20 FTR
     ta.disabled = true;
     console.log('copy');
     return copied;
+}
+
+// EVENTS - PROGRAMMATIC - ISSUE UPLOAD
+
+window.issueUploadText = function(text, test) {
+    var ta = document.getElementById("svgFullTextarea");
+    ta.value = text;
+    svgNodes = [];
+    window.onStart(test);
+    if (test==null){setTimeout(function(){window.updateFrames();},100);} else {updateFrames();}
+    return ta.value;
+}
+
+window.issueUpload = async function() { // TDDTEST? FTR
+    var fileEl = document.getElementById('upload');
+    fileEl.onchange = async function() {
+        const file = event.target.files.item(0);
+        const text = await file.text();
+        window.issueUploadText(text);
+    };
+    fileEl.click();
 }
