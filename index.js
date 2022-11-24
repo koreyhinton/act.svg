@@ -67,6 +67,11 @@ window.setNumMode = function(num, test) {
     }
 }
 
+window.gDispatch = function(call, delay) {
+    if (window.gTest) { call(); }
+    else { setTimeout(call, delay); }
+}
+
 // ATTRIBUTE ACCESS FUNCTIONS
 window.setcolor = function(nd, color) {
     // console.warn(nd);
@@ -901,10 +906,10 @@ window.issueClick = function(x, y) {
     }
     clickCnt = 0; drawClick = {x:-1,y:-1};
     var clickedNd = xy2nd(x, y);
-    if (clickedNd == null) {
-        setTimeout(()=>issueRectSelectClick(x, y), 100); // TDDTEST21 FTR
+    if (clickedNd == null && x>=0 && x<=750 && y>=0 && y<=750) {
+        /*setTimeout(()=>*/issueRectSelectClick(x, y)/*, 100)*/; // TDDTEST21 FTR
         return;
-    }
+    } else if (clickedNd == null) { return; }
     setMouseRects(clickedNd);
     var selType = issueSelection(clickedNd);
 // for (var i=0; i<curIds.length; i++) { setMouseRects(xy2nd(curIds[i].x, curIds[i].y)); }
@@ -1026,6 +1031,12 @@ window.mousedown = function(e) {
     e = e || window.event;
     var x = e.clientX - 750;
     var y = e.clientY - 88;
+
+    if (x<0) { return; }
+    if (numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None) {  // TDDTEST25 FIX
+        window.issueRectSelectClick(x, y);
+        return;
+    }
     console.log(x,y);
     if (isNaN(x) || isNaN(y)) { return; }
     // curIds.push({x: x, y: y});
@@ -1034,10 +1045,36 @@ window.mousedown = function(e) {
     updateFrames( /*selNd=*/ issueClick(x, y) );
 }
 
+window.mouseup = function(e) {
+    e = e || window.event;
+    if (window.gRectSelectState.state == window.gRectSelectStates.Drag) {
+        /*setTimeout(()=>{*/issueRectSelectClick(e.clientX-750, e.clientY-88); updateFrames();/*}, 100);*/
+    }
+    var x = e.clientX - 750;
+    var y = e.clientY - 88;
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down &&
+        xy2nd(x, y) != null) { // TDDTEST26 FIX
+        updateFrames( issueClick(x, y) );
+        window.gRectSelectState.state = window.gRectSelectStates.None;
+        window.gRectSelectState.firstX=null;
+        window.gRectSelectState.firstY=null;
+        window.closeVisibleRectSelection();
+        return;
+    }
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down) { // TDDTEST24 FIX
+        window.onDone();
+        window.gRectSelectState.state = window.gRectSelectStates.None;
+        window.gRectSelectState.firstX=null;
+        window.gRectSelectState.firstY=null;
+        window.closeVisibleRectSelection();
+    }
+}
+
 window.mousemove = function(e) {
     e = e || window.event;
-    if (window.gRectSelectState.numClicks == 1) { // TDDTEST23 FTR
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down || window.gRectSelectState.state == window.gRectSelectStates.Drag) { // TDDTEST23 FTR
         window.updateVisibleRectSelection(e.clientX, e.clientY);
+        e.view.event.preventDefault(); // prevents builtin browser svg image drag
         return;
     }
 }
@@ -1053,7 +1090,7 @@ window.onDone = function() {
     var i=0;
     var j=curIds.length;
     var limit =10000; var x=-1; var y=-1;
-    while (j > -1) {
+    while (j > 0/*-1*/) {
         //setcolor(xy2nd(curIds[0].x, curIds[0].y), selColor); // This is a temp.
             // workaround because somewhere else the color is resetting to cache
             // value and shouldn't be
@@ -1094,7 +1131,7 @@ window.onStart = function(test) {
     document.getElementById("svgFullTextarea").disabled="disabled";
 
     document.onkeydown = keydown;
-    setTimeout(function(){document.onclick = mousedown; document.onmousemove = mousemove;}, 800);// skip first click
+    window.gDispatch(function(){document.onmousedown = mousedown; document.onmousemove = mousemove; document.onmouseup = mouseup; }, 800);// skip first click
 
     var parser = new DOMParser();
     var xmlDocument = parser.parseFromString(document.getElementById("svgFullTextarea").value, "text/xml");

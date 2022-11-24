@@ -99,6 +99,8 @@ function run3(imports, cb) {
                     isEvt ||= /num/.test(key.toLowerCase());
                     isEvt ||= /update[A-Z]+/.test(key);
                     isEvt ||= /^mousedown$/.test(key);
+                    isEvt ||= /^mousemove$/.test(key);
+                    isEvt ||= /^mouseup$/.test(key);
                     var isConv = /^xdom/.test(key);
                     isConv ||= /scal/.test(key);
                     isConv ||= /map/.test(key.toLowerCase());
@@ -163,6 +165,7 @@ run(() => {
     }
     // Run the tests
     for (var i=0; i<tests.length; i++) {
+        window.gTest = true;
         var res = window.tddTests.filter((fn)=>fn.name==(tests[i]))[0]();
         console.warn(/*"test"+i*/ window.tddTests[i].name + ' - '+ (res?'pass':'fail'));
         if (!res) {throw `test${i} failed`;process.exit(1);}
@@ -182,5 +185,6 @@ run(() => {
         numMode = 0;
         clickCnt = 0;
         drawClick = { x:-1, y: -1 };
+        window.gRectSelectState.state = window.gRectSelectStates.None;
     }
 });

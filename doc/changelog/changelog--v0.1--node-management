@@ -1,3 +1,6 @@
-CHANGELOG 2022-11-20 -- V0.1 -- NODE MANAGEMENT
+CHANGELOG 2022-11-24 -- V0.1 -- NODE MANAGEMENT
 
-git-10 :: rectangular selection
+gh-10 :: rectangular selection
+gh-16 :: click-drag rectangular selection
+gh-15 :: won't implement dropdown (with 16,10 you can select anything)
+gh-3 :: won't implement click to place selection(conflicts w/ click to deselect)

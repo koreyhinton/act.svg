@@ -1,8 +1,11 @@
+window.gRectSelectStates = { None: 0/* / Up */, Down: 1, Drag: 2 };
 window.gRectSelectState = {
-    numClicks: 0,
+    /*numClicks*/state: window.gRectSelectStates.None,
     firstX: null,
     firstY: null
 };
+
+window.gTest = false;
 
 // EVENTS - PROGRAMMATIC - VISIBLE RECT SELECTION - ISSUE
 
@@ -18,6 +21,7 @@ window.issueVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
 // EVENTS - PROGRAMMATIC - VISIBLE RECT SELECTION - UPDATE
 
 window.updateVisibleRectSelection = function(x, y) { // TDDTEST23 FTR
+    window.gRectSelectState.state = window.gRectSelectStates.Drag;
     var marker = document.getElementById("selMarker");
     var w = Math.abs((window.gRectSelectState.firstX+750) - (x));
     var h = Math.abs((window.gRectSelectState.firstY+88) - (y));
@@ -32,10 +36,15 @@ window.closeVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
 } /* end closeVisibleRectSelection fn*/
 
 
+// EVENTS - PROGRAMMATIC - ISSUE CANCEL RECT SELECT CLICK
+window.cancelRectSelectClick = function() {
+    window.onDone();
+}
+
+
 // EVENTS - PROGRAMMATIC - ISSUE RECT SELECT CLICK
 
 window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
-
     var firstX = window.gRectSelectState.firstX;
     var firstY = window.gRectSelectState.firstY;
 
@@ -54,7 +63,7 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
     for (var i=0; i<l; i++) {
         var nd = svgNodes[i];
         setMouseRects(nd);
-        var isLastNd = false;
+        var isLastNd = false;//console.log(nd.xmin>x1,nd.xmax <x2,nd.ymin>y1,nd.ymax <y2,nd);
         var inBounds = nd.xmin>x1 && nd.xmax <x2 && nd.ymin>y1 && nd.ymax <y2;
         if (
             inBounds && 
@@ -79,26 +88,38 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
         console.log(lastNd);
     }
 
+    window.gRectSelectState.state = window.gRectSelectStates.None;
+    window.gRectSelectState.firstX = null;
+    window.gRectSelectState.firstY = null;
+
     for (var i=0; i<selLst.length; i++) {
-        window.issueClick(selLst[i].xmin, selLst[i].ymin);
+        /*setTimeout(function(){*/window.issueClick(selLst[i].xmin, selLst[i].ymin);/*},10);*/
+        //console.log('click',selLst[i]);
         window.updateFrames();
     } /*end selLst loop*/
 
-    window.gRectSelectState.numClicks = 0;
-    window.gRectSelectState.firstX = null;
-    window.gRectSelectState.firstY = null;
+    if (selLst.length == 0) { // TDDTEST24 FIX
+        //selected nothing
+        //console.warn('selected nothing');
+        //setTimeout(function(){window.onDone()},100);window.onDone();
+        window.gDispatch(window.onDone, 100);
+    }
 
     window.closeVisibleRectSelection(x,y);
 
 } /*end window.issueRectSelectClick2 fn*/
 
 window.issueRectSelectClick = function(x,y) { // TDDTEST21 FTR
-    if (window.gRectSelectState.numClicks == 1) {
-        window.issueRectSelectClick2(x, y);
+    if (window.gRectSelectState.state == window.gRectSelectStates.Drag) {
+        // setTimeout fixes a display issue where last selected node
+        // wouldn't be showing as selected. for testing just call
+        // issueRectSelectClick2 directly
+        //setTimeout(function(){window.issueRectSelectClick2(x, y)},100);
+        window.gDispatch(function(){window.issueRectSelectClick2(x, y);}, 100);
         return;
     }
-    window.issueVisibleRectSelection(x, y); // TDD TEST 22 FTR
-    window.gRectSelectState.numClicks = 1;
+    window.issueVisibleRectSelection(x, y); // TDDTEST22 FTR
+    window.gRectSelectState.state = window.gRectSelectStates.Down;
     window.gRectSelectState.firstX = x;
     window.gRectSelectState.firstY = y;
 } /*end window.issueRectSelectClick fn*/
