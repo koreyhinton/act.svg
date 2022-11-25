@@ -62,7 +62,7 @@ window.tddTests = [
         window.mousedown({clientX:x1, clientY:y1});
         window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
         window.mouseup({clientX:x2, clientY:y2}); // selects action node
-        return curIds[0].x>10;//ensures bounding rect isn't selected
+        return window.id2nd(curIds[0].id).xmin>10;//ensures bounding rect isn't selected
 
         // maybe say any rect that has a dimension >=greater a quadrant
         // 1/4 of 750px is a swimlane
@@ -85,6 +85,62 @@ window.tddTests = [
 
         window.mousedown({clientX:750+1, clientY:88+1});
         window.mouseup({clientX:750+1, clientY:88+1}); // selects bounding rect
-        return curIds.length==1 && curIds[0].x<10;//ensures bounding rect is selected
+        return curIds.length==1 && window.id2nd(curIds[0].id).xmin<10;//ensures bounding rect is selected
+    },
+    // TDD TEST 28 - MOVES NODE THAT OVERLAPS OTHER NODES
+    function test28() {
+        onStart({});
+
+        // there are 3 nodes.
+        // * 1 - the default rect node that is already there
+        // * 2 - another node that gets placed on top of #1, and will move to #3
+        // * 3 - another node that gets placed at 0,0
+
+        issueKeyNum(4, {}); // rect mode
+
+        var dfltNd = svgNodes.filter(n => n.tagName =='rect')[0];
+        //console.warn(dfltNd.attrs);
+        var dX = parseInt(
+            dfltNd.attrs.filter(a=>a.name=='x')[0].value
+        ); // default X
+        var dY = parseInt(
+            dfltNd.attrs.filter(a=>a.name=='y')[0].value
+        ); // default Y
+        var dW = parseInt(dfltNd.attrs.filter(a=>a.name=='width')[0].value);
+        var dH = parseInt(dfltNd.attrs.filter(a=>a.name=='height')[0].value);
+        var dX2 = dX + dW;
+        var dY2 = dY + dH;
+        issueClick(dX,dY);    updateFrames();
+        issueClick(dX2,dY2);    updateFrames(); // draws overlapping node
+
+        issueClick(0,0);    updateFrames();
+        issueClick(dW,dH);    updateFrames();
+
+        issueKeyNum(0, {}); // select mode
+
+        // first select circle movee
+        var circle = document.getElementsByTagName('circle')[0];
+        issueClick(/*750+*/circle.attributes['cx'].value, /*88+*/circle.attributes['cy'].value);    updateFrames();
+        // next select the overlapped rect being tested
+        issueClick(dX, dY);    updateFrames();
+
+        //document.getElementById(curIds[0].id)
+        //    .attributes['x'].value;
+
+        //console.warn(curIds[0]);
+        /*console.warn(document.getElementById("svgFullTextarea").value
+                        .split(`
+`).filter(ln=>ln.indexOf('rect1')>-1)[0]);
+*/
+
+        var mt = new MoveTester({
+            mover: document.getElementById(curIds[1].id),
+            movee: circle
+        });
+
+        mt.moveBy(-dX,-dY);//go to 0,0
+
+        return mt.test();
+        //return document.getElementById("svgFullTextarea").value.split('x="0"').length ==2 && document.getElementById("svgFullTextarea").value.indexOf(`x=${dX}`)>-1;
     }
 ];

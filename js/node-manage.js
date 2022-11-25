@@ -7,6 +7,36 @@ window.gRectSelectState = {
 
 window.gTest = false;
 
+window.getMaxNodeId = function(type) {
+    var maxId = 0;
+    for (var i=0; i<svgNodes.length; i++) {
+        var node = svgNodes[i];
+        if (node.tagName == type) {
+            var idlist = node.attrs.filter(a => a.name == 'id');
+            if (idlist.length > 0) {
+                maxId = Math.max(
+                    parseInt(idlist[0].value.replace(type,'')),
+                    maxId
+                );
+            }
+        }
+    }
+    return maxId;
+}
+
+window.id2nd = function(id) { // TDDTEST28 FIX
+    //var type = id.replace(/[0-9]+/g, '');
+    //id = parseInt(id.replace(/[a-z]+/g, ''));
+    var nd = null;
+    for (var i=0; i<svgNodes.length; i++) {
+        var svgNd = svgNodes[i];
+        if (svgNd.attrs.filter(a => a.name == 'id' && a.value == id).length>0) {
+            return svgNd;
+        }
+    }
+    return nd;
+}
+
 // EVENTS - PROGRAMMATIC - VISIBLE RECT SELECTION - ISSUE
 
 window.issueVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR

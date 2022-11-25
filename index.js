@@ -1,7 +1,7 @@
 // ACTIVITY SVG
 svgBaseNode = {attrs:[]};
 svgNodes = [];
-curIds = []; // { x:-1, y:-1 };
+curIds = []; // { id: 'rect1' };
 curMvX = null;
 curMvY = null;
 cacheNd = {attrs:[]};
@@ -679,7 +679,7 @@ window.updateFrames = function(selNd) {
     document.getElementById("pageDisplayFrame").appendChild(svg);
 
     if (curIds.length == 0) return;
-    var editNd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+    var editNd = id2nd(curIds[curIds.length-1].id);/*TODO: this should not be null!!*/console.log(curIds, id2nd(curIds[curIds.length-1].id));
 
     document
         .getElementById("svgPartTextarea")
@@ -688,13 +688,20 @@ window.updateFrames = function(selNd) {
     forceMap(editNd, cacheNd);
 }
 
-const trackNd = (x, y) => curIds.push({x: x, y: y});
+window.trackNd = function(nd) {
+    var id = nd.attrs.filter(a => a.name == 'id')?.[0]?.value;
+    if (id == null) {
+        id = nd.tagName + (window.getMaxNodeId(nd.tagName)+1);
+        nd.attrs.push({name: 'id', value: id});
+    }
+    curIds.push({id: id});
+}
 
 window.untrackNd = function(nd) {
     var j=-1;
     for (var i=0; i<curIds.length; i++) {
-        var testNd = xy2nd(curIds[i].x, curIds[i].y);
-        if (testNd === nd) { j=i; break; }
+        var testId = curIds[i].id;
+        if (testId === nd.attrs.filter(a=>a.name=='id')[0].value) { j=i; break; }
     }
     if (curIds.length == 1) {
         curIds.shift();
@@ -717,7 +724,7 @@ window.issueSelection = function(nd) {
         untrackNd(nd);
     }
     else {
-        trackNd(nd.xmin,nd.ymin);
+        trackNd(nd);
         nd.cacheColor = color; 
         // setcolor(nd, selColor);
     }
@@ -728,7 +735,7 @@ window.issueSelection = function(nd) {
             /*color=*/ editColor
         );
         var prevLastNd = (curIds.length>1) ?
-            xy2nd(curIds[curIds.length-2].x,curIds[curIds.length-2].y) : null;
+            id2nd(curIds[curIds.length-2].id) : null;
         if (prevLastNd != null) {
             setcolor(
                 /*nd=*/ prevLastNd,
@@ -974,7 +981,7 @@ window.issueKeyName = function(name) { // TDDTEST18 FTR
     }
 
     if (curMvX == null) {
-        var nd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+        var nd = id2nd(curIds[curIds.length-1].id);
         curMvX = getscal(nd.attrs, "x");
         curMvY = getscal(nd.attrs, "y");
     }
@@ -1089,14 +1096,14 @@ window.addEventListener('DOMContentLoaded', (e) => {
 window.onDone = function() {
     var i=0;
     var j=curIds.length;
-    var limit =10000; var x=-1; var y=-1;
+    var limit =10000; var id ='null-1';
     while (j > 0/*-1*/) {
         //setcolor(xy2nd(curIds[0].x, curIds[0].y), selColor); // This is a temp.
             // workaround because somewhere else the color is resetting to cache
             // value and shouldn't be
-        if (x == curIds[0].x && y==curIds[0].y) throw new Error("foreverloop"+x+","+y);
-        x=curIds[0].x; y=curIds[0].y;
-        issueClick(curIds[0].x, curIds[0].y);
+        if (id == curIds[0].id) throw new Error("foreverloop"+id);
+        id=curIds[0].id;
+        var clickedNd=id2nd(curIds[0].id);setMouseRects(clickedNd);issueSelection(clickedNd);
         i += 1;
         if (i > limit) {console.warn("max num iterations"); break;}
         j = curIds.length;
@@ -1189,7 +1196,7 @@ window.onApplyEdits = function() {
     if (failed) { return; }
 
     var xdomNd = elements[0];
-    var nd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+    var nd = id2nd(curIds[curIds.length-1].id);
     cacheNd = {attrs:[]}  // TDDTEST17 FIX
     forceMap(nd,cacheNd);  // TDDTEST17 FIX
 
@@ -1199,18 +1206,24 @@ window.onApplyEdits = function() {
         //forceMap(xdom2nd(xdomNd, nd), nd);
         xdom2nd(xdomNd, nd);
         setMouseRects(nd);
+        /* there should no longer be a need to update x,y to a new position
+           because we now track nodes on an id (e.g, id='rect1').
         curIds[curIds.length-1].x = nd.xmin;
         curIds[curIds.length-1].y = nd.ymin; 
+        */
     // }
     var i=curIds.length-2;
     while (i > -1) {
-        var passiveSelNd = xy2nd(curIds[i].x, curIds[i].y);
+        var passiveSelNd = id2nd(curIds[i].id);
         // {
             // must happen all together
             smartMap(nd, passiveSelNd);
             setMouseRects(passiveSelNd);
+            /* there should no longer be a need to update x,y to a new position
+               because we now track nodes on an id (e.g, id='rect1').
             curIds[i].x = passiveSelNd.xmin;
             curIds[i].y = passiveSelNd.ymin;
+            */
         // }
         i-=1;
     }
