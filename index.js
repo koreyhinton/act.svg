@@ -1030,6 +1030,9 @@ window.keydown = function(e) {
         var key = (e.key.substring(0,5) == "Arrow") ? e.key.substring(5).toLowerCase() : e.key.toLowerCase();
         issueKeyName(key);
         e.view.event.preventDefault();
+    } else {
+        window.manageKeyDownEvent(e);
+        //e.view.event.preventDefault();
     }
 }
 
@@ -1084,6 +1087,11 @@ window.mousemove = function(e) {
         e.view.event.preventDefault(); // prevents builtin browser svg image drag
         return;
     }
+    var x = e.clientX - 750;
+    var y = e.clientY - 88;
+    if (x>0 && x<700 && y>0 && y<700) {
+        window.mouse.x = x; window.mouse.y = y;
+    }
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
@@ -1125,23 +1133,9 @@ window.onDone = function() {
 /////         }    /*curIds = [];*/    updateFrames();
 }
 
-window.onStart = function(test) {
-    var svg = document.createElement("div");
-    svg.id = "svgId";
-    svg.innerHTML = (svgHead + svgEx + svgTrail);
-    document.getElementById("pageDisplayFrame").appendChild(svg);
-
-    document.getElementById("tools1").style.visibility = "hidden";
-    document.getElementById("tools2").style.visibility = "visible";
-
-    document.getElementById("pageCodeFrame").classList.add("disabled");
-    document.getElementById("svgFullTextarea").disabled="disabled";
-
-    document.onkeydown = keydown;
-    window.gDispatch(function(){document.onmousedown = mousedown; document.onmousemove = mousemove; document.onmouseup = mouseup; }, 800);// skip first click
-
+window.loadSvg = function(xml, test) {
     var parser = new DOMParser();
-    var xmlDocument = parser.parseFromString(document.getElementById("svgFullTextarea").value, "text/xml");
+    var xmlDocument = parser.parseFromString(xml, "text/xml");
     var elements = xmlDocument.getElementsByTagName('*');
     var sni = -1; //svg nodes index
     for (var i=0; i<elements.length; i++) {
@@ -1175,6 +1169,24 @@ window.onStart = function(test) {
     sortSvgNodes();
     issueKeyNum(0, test);
     updateFrames();
+}
+
+window.onStart = function(test) {
+    var svg = document.createElement("div");
+    svg.id = "svgId";
+    svg.innerHTML = (svgHead + svgEx + svgTrail);
+    document.getElementById("pageDisplayFrame").appendChild(svg);
+
+    document.getElementById("tools1").style.visibility = "hidden";
+    document.getElementById("tools2").style.visibility = "visible";
+
+    document.getElementById("pageCodeFrame").classList.add("disabled");
+    document.getElementById("svgFullTextarea").disabled="disabled";
+
+    document.onkeydown = keydown;
+    window.gDispatch(function(){document.onmousedown = mousedown; document.onmousemove = mousemove; document.onmouseup = mouseup; }, 800);// skip first click
+
+    window.loadSvg(document.getElementById("svgFullTextarea").value, test);
 }
 
 window.onNum = function(obj) {

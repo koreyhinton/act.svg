@@ -142,5 +142,37 @@ window.tddTests = [
 
         return mt.test();
         //return document.getElementById("svgFullTextarea").value.split('x="0"').length ==2 && document.getElementById("svgFullTextarea").value.indexOf(`x=${dX}`)>-1;
+    },
+    // TDD TEST 29 - COPY PASTE MULTIPLE NODES
+    function test29() {global.NamedNodeMap=window.NamedNodeMap;
+        onStart({});
+
+        window.mousedown({clientX:750+1, clientY:88+1});
+        window.mouseup({clientX:750+700, clientY:88+700}); // selects everything
+
+        window.mouse.x = 600;
+        window.mouse.y = 600; // will paste into quadrant 4
+
+        window.manageKeyDownEvent({key:'c',ctrlKey:true});
+        window.issuePaste(()=>{
+            var ta=document.getElementById('svgFullTextarea');
+            ta.value = ta.value.replace('</svg>', `
+    <circle cx="375" cy="39" r="10" fill="black" stroke="black" stroke-width="1"  class='unresolvedmover'/>
+    <polyline points="375 52 375 108 365 98 375 108 385 98" stroke="black" fill="transparent" stroke-width="1"  class='unresolvedmovee'/>
+    <rect rx="10" ry="10" x="325" y="112" width="100" height="50" stroke="black" fill="transparent" stroke-width="1"  class='unresolvedmovee'/>
+    <text x="333" y="134" fill="black" class='unresolvedmovee'>Receive</text>
+    <text x="333" y="154" fill="black"  class='unresolvedmovee'>Request</text>
+</svg>
+`);
+        });
+
+        var countQ4 = 0;
+        for (var i=0; i<svgNodes.length; i++) {
+            if (window.getX1(svgNodes[i])>(750/2) &&
+                window.getY1(svgNodes[i])>(750/2)) {
+                countQ4 += 1;
+            }
+        }
+        return countQ4 == 5; // copied all 5 default nodes into quadrant 4
     }
 ];

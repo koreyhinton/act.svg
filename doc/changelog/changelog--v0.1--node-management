@@ -8,3 +8,9 @@ gh-3 :: won't implement click to place selection(conflicts w/ click to deselect)
 CHANGELOG 2022-11-25 -- V0.1 -- NODE MANAGEMENT
 
 gh-2 :: allow nodes to overlap
+
+CHANGELOG 2022-11-26 -- V0.1 -- NODE MANAGEMENT
+
+gh-6 :: copy between app instances
+gh-7 :: copy paste selection
+
