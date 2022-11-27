@@ -228,7 +228,7 @@ window.managePaste = /*async*/ function() {
 }
 
 window.manageKeyDownEvent = function(e) {
-    if (e.key == 'c' && e.ctrlKey && curIds.length > 0) {
+    if ((e.key == 'c' || e.key == 'x') && e.ctrlKey && curIds.length > 0) {
         var xml = '';
         for (var i=0; i<curIds.length; i++) {
             var nd = {};
@@ -242,7 +242,21 @@ window.manageKeyDownEvent = function(e) {
             xml += '    '+window.nd2xml(nd, nd.cacheColor) +`
 `;
         }
+
         navigator.clipboard.writeText(xml);
+
+        if (e.key == 'x') { // TDDTEST30 FTR
+            var curIdsCopy = [];
+            for (var i=0; i<curIds.length; i++) {
+                curIdsCopy.push({id: curIds[i].id});
+            }
+            window.onDone(); // stop selection
+            svgNodes = svgNodes.filter(nd =>
+                curIdsCopy.filter(c =>
+                    c.id==nd.attrs.filter(a=>
+                        a.name=='id')?.[0]?.value).length==0);
+            window.updateFrames();
+        }
     } else if (e.key == 'v' && e.ctrlKey) {
         window.onDone();
         window.managePaste();

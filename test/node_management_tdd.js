@@ -174,5 +174,19 @@ window.tddTests = [
             }
         }
         return countQ4 == 5; // copied all 5 default nodes into quadrant 4
+    },
+    // TDD TEST 30 - DELETE NODE(S) VIA CUT
+    function test30() {
+        onStart({});
+
+        global.navigator = {clipboard:{writeText: function(t){return '';}}};
+
+        window.mousedown({clientX:750+1, clientY:88+1});
+        window.mousemove({view:{event:{preventDefault:()=>{}}},clientX:750+700, clientY:88+700});
+        window.mouseup({clientX:750+700, clientY:88+700}); // selects everything
+        // console.warn(curIds.length);
+        window.manageKeyDownEvent({key:'x',ctrlKey:true});
+
+        return svgNodes.length == 0;
     }
 ];

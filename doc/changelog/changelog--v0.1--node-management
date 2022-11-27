@@ -14,3 +14,6 @@ CHANGELOG 2022-11-26 -- V0.1 -- NODE MANAGEMENT
 gh-6 :: copy between app instances
 gh-7 :: copy paste selection
 
+CHANGELOG 2022-11-27 -- V0.1 -- NODE MANAGEMENT
+
+gh-8 :: delete a node feature via Cut (Ctrl-x)
