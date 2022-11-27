@@ -903,11 +903,14 @@ window.issueClick = function(x, y) {
         issueDraw(elStr, 'text');
         issueKeyNum(0, {});
         issueClick(adjX, adjY);    updateFrames();
-        document.getElementById("svgPartTextarea").focus();
-        document.getElementById("svgPartTextarea").setSelectionRange(
-            elStr.indexOf("?"),
-            elStr.indexOf("?")+1
-        );
+
+        window.gDispatch(()=>{ // TDDTEST31 FIX
+            document.getElementById("svgPartTextarea").focus();
+            document.getElementById("svgPartTextarea").setSelectionRange(
+                document.getElementById("svgPartTextarea").value.indexOf("?"),
+                document.getElementById("svgPartTextarea").value.indexOf("?")+1
+            );
+        },100);
         drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }

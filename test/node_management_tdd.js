@@ -188,5 +188,26 @@ window.tddTests = [
         window.manageKeyDownEvent({key:'x',ctrlKey:true});
 
         return svgNodes.length == 0;
+    },
+    // TDD TEST 31 - MODE 9 CLICK SHOULD HIGHLIGHT QUESTION MARK
+    function test31() {
+        onStart({});
+
+        // This bug happened after the change that gives selected nodes
+        // id numbers (<.. id="rect1"/>). To fix it 2 things must happen,
+        // 1) the selection range needs to apply after a short setTimeout
+        //    (this part could not be tested) and
+        // 2) the focus and the selection range calculation needs to 
+        //     happen after the id="rect1" is applied,
+        //     which is what is coded below, and is accomplished by calling the
+        //     inner-level functions directly in the same order as happens
+        //     when using the real dom's outer functions (mousedown/up).
+        window.issueDraw(`<text x="0" y="0" fill="black">?</text>`, 'text');
+        issueKeyNum(9, {});
+        window.issueClick(0,0);
+        svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'x' && a.value =='0').length > 0)[0].attrs.push({name:'id',value:'text10'});    updateFrames();
+
+        var ta = document.getElementById("svgPartTextarea");
+        return ta.selectionStart > `<text x="-7" y="3" fill="black" id="text1"`.length && ta.selectionEnd - ta.selectionStart == 1;
     }
 ];
