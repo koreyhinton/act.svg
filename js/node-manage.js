@@ -9,6 +9,8 @@ window.gTest = false;
 
 window.mouse = {x:-1,y:-1};
 
+window.drawing = { id: 'null0', type: 'null', cacheX:-1, cacheY:-1 };
+
 window.getMaxNodeId = function(type) {
     var maxId = 0;
     for (var i=0; i<svgNodes.length; i++) {
@@ -135,6 +137,118 @@ window.matchNode = function(domElement) {
         }
     }
     return null;
+}
+
+// NODE MANAGE - DRAW
+
+window.manageDraw = function(type) {
+    window.drawing.id = type+(window.getMaxNodeId(type)+1);console.warn(window.drawing.id);
+    window.drawing.type = type;console.warn('type',type);
+    window.drawing.cacheX = -1;
+    window.drawing.cacheY = -1;
+    return window.drawing.id;
+}
+
+// NODE MANAGE - DRAW - EVENT - UPDATE
+
+window.manageDrawUpdate = function(x, y) {
+   var nd = svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'id' && a.value == window.drawing.id).length > 0)[0];
+    if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/return;}
+        nd.attrs.filter(a=>a.name=='x2')[0].value = x;
+        nd.attrs.filter(a=>a.name=='y2')[0].value = y;
+    } else if (window.drawing.type == 'polyline') {
+
+        if (window.drawing.cacheX == -1) {
+            window.drawing.cacheX = x;
+            window.drawing.cacheY = y;
+        }
+
+        var pt1 = {};
+        var pt2 = {};
+
+        if (Math.abs(x - window.drawing.cacheX) < 11) { x = window.drawing.cacheX; }
+        if (Math.abs(window.drawing.cacheY - y) < 11) { y = window.drawing.cacheY; }
+        if (window.drawing.cacheX == x) {
+            pt1.x = x-10;
+            pt2.x = x+10;
+            pt1.y = y + (y>window.drawing.cacheY?-1:1)*10;
+            pt2.y = y + (y>window.drawing.cacheY?-1:1)*10;
+        } else if (window.drawing.cacheY == y) {
+            pt1.y = y - 10;
+            pt2.y = y + 10;
+            pt1.x = x + (x>window.drawing.cacheX?-1:1)*10;
+            pt2.x = x + (x>window.drawing.cacheX?-1:1)*10;
+        } else {
+            var pt1in = {x: window.drawing.cacheX, y: window.drawing.cacheY};
+            var pt2in = {x: x, y: y};
+            pt1 = window.arrowPoint(pt1in, pt2in, 45, 10, -1);
+            pt2 = window.arrowPoint(pt1in, pt2in, 45, 10, 1);
+        }
+
+        
+        /*var vals = nd.attrs.filter(a => a.name == 'points')[0].value.split(' ');
+        var str = '';
+        str += (window.drawing.cacheX+' ');
+        str += (window.drawing.cacheY+' ');
+        for (var i=2; i<vals.length; i++) {
+            if (i == vals.length-1) {
+                str += (vals[i]+'');
+            } else {
+                str += (vals[i]+' ');
+            }
+        }*/
+        nd.attrs.filter(a => a.name == 'points')[0].value = `${window.drawing.cacheX} ${window.drawing.cacheY} ${x} ${y} ${pt1.x} ${pt1.y} ${x} ${y} ${pt2.x} ${pt2.y}`;
+        
+    } else if (window.drawing.type == 'rect') {
+        //console.log(x,nd.attrs.filter(a=>a.name=='x')[0].value,nd.attrs);
+
+        if (window.drawing.cacheX == -1) {
+            window.drawing.cacheX = x;
+            window.drawing.cacheY = y;
+        }
+
+        var backwardsX = false;
+        var backwardsY = false;
+        if (x < window.drawing.cacheX) {
+            nd.attrs.filter(a=>a.name=='width')[0].value = window.drawing.cacheX - x; // (nd.attrs.filter(a=>a.name=='x')[0].value - x) + nd.attrs.filter(a=>a.name=='width')[0].value;
+//Math.abs(x - (nd.attrs.filter(a=>a.name=='x')[0].value+nd.attrs.filter(a=>a.name=='width')[0].value));
+            nd.attrs.filter(a=>a.name=='x')[0].value = x;
+            backwardsX = true;
+        }
+        if (y < window.drawing.cacheY) {
+            nd.attrs.filter(a=>a.name=='height')[0].value = window.drawing.cacheY - y;//Math.abs(y - (nd.attrs.filter(a=>a.name=='y')[0].value+nd.attrs.filter(a=>a.name=='height')[0].value));
+            nd.attrs.filter(a=>a.name=='y')[0].value = y;
+            backwardsY = true;
+        }
+        var newX = nd.attrs.filter(a=>a.name=='x')[0].value;//Math.min(x, nd.attrs.filter(a=>a.name=='x')[0].value);
+        var newW = //Math.abs(
+            x - nd.attrs.filter(a=>a.name=='x')[0].value;
+        //);
+        var newY = nd.attrs.filter(a=>a.name=='y')[0].value;//Math.min(y, nd.attrs.filter(a=>a.name=='y')[0].value);
+        var newH = //Math.abs(
+            y - nd.attrs.filter(a=>a.name=='y')[0].value
+        //);
+        if (!backwardsX) {nd.attrs.filter(a=>a.name=='x')[0].value = newX;
+            nd.attrs.filter(a=>a.name=='width')[0].value = newW;}
+        if (!backwardsY) {
+            nd.attrs.filter(a=>a.name=='y')[0].value = newY;
+            nd.attrs.filter(a=>a.name=='height')[0].value = newH;
+        }
+
+/*        var w = x - nd.attrs.filter(a=>a.name=='x')[0].value;
+        var h = y - nd.attrs.filter(a=>a.name=='y')[0].value;
+        if (w < 0) {
+            nd.attrs.filter(a=>a.name=='width')[0].value = nd.attrs.filter(a=>a.name=='x')[0].value - x;
+            nd.attrs.filter(a=>a.name=='x')[0].value = x;
+            
+        } else { nd.attrs.filter(a=>a.name=='width')[0].value = w; }
+        if (h < 0) {
+            nd.attrs.filter(a=>a.name=='height')[0].value = nd.attrs.filter(a=>a.name=='y')[0].value - y;
+            nd.attrs.filter(a=>a.name=='y')[0].value = y;
+        } else { nd.attrs.filter(a=>a.name=='height')[0].value = h; }
+*/
+    }
+    window.updateFrames();
 }
 
 // EVENTS - PROGRAMMATIC - KEYPRESS

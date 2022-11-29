@@ -767,98 +767,105 @@ window.issueDraw = function(xml, tagName) {
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
 window.issueClick = function(x, y) {
+    var id = null;
+    if ([1,2,3,4,8].indexOf(numMode)>-1) {
+        var types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
+        id = window.manageDraw(types[numMode]);
+        console.warn(types[numMode]);
+    }
     if (numMode == 1) {  // TDDTEST2 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
+            //var id = window.manageDraw();
             issueDraw(`<line x1="`
-                +drawClick.x+`" y1="`
-                +drawClick.y+`" x2="`
+                +/*drawClick.x*/(x+5)+`" y1="`
+                +/*drawClick.y*/(y+5)+`" x2="`
                 +x+`" y2="`
-                +y+`" stroke="black" stroke-width="1"/>`, 'line');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +y+`" stroke="black" stroke-width="1" id="${id}"/>`, 'line');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        /*else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        }*/
         return;
     }
     if (numMode == 2) { // TDDTEST7 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             var iter = 0;
-            var x1 = drawClick.x;
-            var x2 = x;
+            var x1 = x; //drawClick.x;
+            var x2 = x+10;
             var s = (x2>x1) ? -1 : 1;
 
             var pt1={};
             var pt2={};
 
-            if (Math.abs(drawClick.x - x) < 11) { x = drawClick.x; }
-            if (Math.abs(drawClick.y - y) < 11) { y = drawClick.y; }
-            if (drawClick.x == x) {
-                pt1.x = x-10;
-                pt2.x = x+10;
-                pt1.y = y + (y>drawClick.y?-1:1)*10;
-                pt2.y = y + (y>drawClick.y?-1:1)*10;
-            } else if (drawClick.y == y) {
+            //if (Math.abs(drawClick.x - x) < 11) { x = drawClick.x; }
+            //if (Math.abs(drawClick.y - y) < 11) { y = drawClick.y; }
+            //if (drawClick.x == x) {
+                pt1.x = x;//-10;
+                pt2.x = x;//+10;
+                pt1.y = y + (/*y>drawClick.y?-1:*/1)*10;
+                pt2.y = y + (/*y>drawClick.y?-1:*/1)*10;
+            //} else if (drawClick.y == y) {
                 pt1.y = y - 10;
                 pt2.y = y + 10;
-                pt1.x = x + (x>drawClick.x?-1:1)*10;
-                pt2.x = x + (x>drawClick.x?-1:1)*10;
-            } else {
-                var pt1in = {x: drawClick.x, y: drawClick.y};
-                var pt2in = {x: x, y: y};
-                pt1 = arrowPoint(pt1in, pt2in, 45, 10, -1);
-                pt2 = arrowPoint(pt1in, pt2in, 45, 10, 1);
-            }
+                pt1.x = x + (/*x>drawClick.x?-1:*/1)*10;
+                pt2.x = x + (/*x>drawClick.x?-1:*/1)*10;
+            //} else {
+            //    var pt1in = {x: /*drawClick.*/x, y: /*drawClick.*/y};
+            //    var pt2in = {x: x+10, y: y+10};
+            //    pt1 = arrowPoint(pt1in, pt2in, 45, 10, -1);
+            //    pt2 = arrowPoint(pt1in, pt2in, 45, 10, 1);
+            //}
 
             issueDraw(`<polyline points="`
-                +drawClick.x+` `
-                +drawClick.y+` `
-                +x+` `
-                +y+` `
-                +pt1.x+` `
-                +pt1.y+` `
-                +x+` `
-                +y+` `
-                +pt2.x+` `
-                +pt2.y+`" `
-                +` stroke="black" fill="transparent" stroke-width="1"/>`, 'polyline');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +/*drawClick.*/x+` `
+                +/*drawClick.y*/y+` `
+                +(x)+` `
+                +(y+10)+` `
+                +/*pt1.x*/(x-10)+` `
+                +/*pt1.y*/y+` `
+                +(x)+` `
+                +(y+10)+` `
+                +/*pt2.x*/(x+10)+` `
+                +/*pt2.y*/(y)+`" `
+                +` stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'polyline');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 3) { // TDDTEST5 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             issueDraw(`<rect rx="0" ry="0" x="`
-                +drawClick.x+`" y="`
-                +drawClick.y+`" width="`
-                +(x-drawClick.x)+`" height="`
-                +(y-drawClick.y)+`" stroke="black" fill="transparent" stroke-width="1"/>`, 'rect');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +x+`" y="`
+                +y+`" width="`
+                +(x+10)+`" height="`
+                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 4) { // TDDTEST8 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             issueDraw(`<rect rx="10" ry="10" x="`
-                +drawClick.x+`" y="`
-                +drawClick.y+`" width="`
-                +(x-drawClick.x)+`" height="`
-                +(y-drawClick.y)+`" stroke="black" fill="transparent" stroke-width="1"/>`, 'rect');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +x+`" y="`
+                +y+`" width="`
+                +(x+10)+`" height="`
+                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 5) { // TDDTEST10 FTR
@@ -886,14 +893,14 @@ window.issueClick = function(x, y) {
         return;
     }
     if (numMode == 8) { // TDDTEST13 FTR
-        if (clickCnt == 1) {
-            issueDraw(`<line x1="${drawClick.x}" y1="${drawClick.y}" x2="${x}" y2="${y}" stroke="black" stroke-width="3"/>`, 'line');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+        //if (clickCnt == 1) {
+            issueDraw(`<line x1="${x}" y1="${y}" x2="${(x+10)}" y2="${y}" stroke="black" stroke-width="3" id="${id}"/>`, 'line');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 9) { // TDDTEST14 FTR
@@ -1081,6 +1088,14 @@ window.mouseup = function(e) {
         window.gRectSelectState.firstY=null;
         window.closeVisibleRectSelection();
     }
+    if (window.drawing.type != 'null') {
+        window.drawing.type = 'null';
+        window.drawing.cacheX = -1;
+        window.drawing.cacheY = -1;
+        window.drawing.id = 'null0';
+        console.warn('done draw');
+        window.updateFrames();
+    }
 }
 
 window.mousemove = function(e) {
@@ -1094,6 +1109,10 @@ window.mousemove = function(e) {
     var y = e.clientY - 88;
     if (x>0 && x<700 && y>0 && y<700) {
         window.mouse.x = x; window.mouse.y = y;
+
+        if (window.drawing.type != 'null') {
+            window.manageDrawUpdate(x, y);
+        }
     }
 }
 
