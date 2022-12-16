@@ -43,25 +43,27 @@ var svgTrail = `
 
 window.notifyMsg = function(htmlMsg, styleBG) {
     var notifyMd = document.createElement("div");
-    notifyMd.style.backgroundColor=(styleBG==null)?"rgba(0,255,0,0.6)":styleBG;
-    notifyMd.style.color="white";
-    notifyMd.style.position="fixed";
-    notifyMd.style.right="0";
-    notifyMd.style.top="0";
-    notifyMd.style.fontSize="78px";
+    notifyMd.style.backgroundColor=(styleBG==null)?"rgba(238, 255, 238, 1)":styleBG;
+    notifyMd.style.color="black";
+    notifyMd.style.position="absolute";
+    notifyMd.style.left="752px";
+    notifyMd.style.top=(750+88-16-12)+"px";
+    notifyMd.style.fontSize="16px";
+    notifyMd.style.padding="6px";
+    notifyMd.style.width="736px";
     notifyMd.innerHTML = htmlMsg;
     document.body.appendChild(notifyMd);
-    setTimeout(function(){notifyMd.remove();}, 3000);
+    setTimeout(function(){notifyMd.remove();}, 1400);
     return notifyMsg;
 }
 
 window.setNumMode = function(num, test) {
     numMode = num;
-    var active = document.getElementsByClassName("active");
+    /*var active = document.getElementsByClassName("active");
     while (active.length > 0) {
         active[0].classList.remove("active");
     }
-    document.getElementById("btn"+num).classList.add("active");
+    document.getElementById("btn"+num).classList.add("active");*/
     if (test == null) {
         notifyMsg(notifyTextArr[num]);
     }
@@ -949,6 +951,7 @@ window.issueClick = function(x, y) {
 
 window.issueKeyNum = function(num, test) {
     setNumMode(num, test);
+    document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
 }
 
 // EVENTS - PROGRAMMATIC - ISSUE KEY NAME
@@ -1125,6 +1128,21 @@ window.onStart = function(test) {
 window.onNum = function(obj) {
     var num = parseInt(obj.innerHTML[obj.innerHTML.length-1]);
     issueKeyNum(num);
+}
+
+window.onmessage = function(e) {
+    var msgComponents = e.data.split(':');
+    if (msgComponents.length > 0 && msgComponents[0] == 'num') {
+        window.onNum({innerHTML: msgComponents[1]});
+    }
+    //if (msgComponents.length > 0 && msgComponents[0] == 'key') {
+    //    window.issueKeyNum(parseInt(msgComponents[1]));
+    //}
+    //window.gDispatch(function() {
+    //document.getElementById('svgFullTextarea').setSelectionRange(1,2);
+    //}, 100);
+    //document.body.click();
+    //document.body.focus();
 }
 
 window.onApplyEdits = function() {
