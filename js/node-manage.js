@@ -392,8 +392,8 @@ window.issueVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
 window.updateVisibleRectSelection = function(x, y) { // TDDTEST23 FTR
     window.gRectSelectState.state = window.gRectSelectStates.Drag;
     var marker = document.getElementById("selMarker");
-    var w = Math.abs((window.gRectSelectState.firstX+750) - (x));
-    var h = Math.abs((window.gRectSelectState.firstY+88) - (y));
+    var w = Math.abs((window.gRectSelectState.firstX/*+750*/) - (x));
+    var h = Math.abs((window.gRectSelectState.firstY/*+88*/) - (y));
     marker.style.width = (w)+'px';
     marker.style.height = (h)+'px';
 } /* end updateVisibleRectSelection fn */

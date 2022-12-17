@@ -4,11 +4,13 @@
     <title>Activity Svg</title>
     <script src="js/node-manage.js"></script>
     <script src="js/xml-buttons.js"></script>
+    <script src="js/svg-mouse.js"></script>
     <script src="index.js"></script>
     <script src="test/tdd_move.js"></script>
     <script src="test/tdd.js"></script>
     <script src="test/tdd_webrun.js"></script>
-    <script src="js/templates/swim3.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/addon-palettes.js"></script>
 <!-- PAGE STYLE -->
     <link rel="stylesheet" href="css/node-manage.css">
     <link rel="stylesheet" href="css/index.css">
@@ -45,11 +47,17 @@
         </div>
 <!-- PAGE CONTENT - FOOTER -->
         <div id="footer">
-            <a href="?page=home">ActSvg</a>
-            <a href="?tdd=0">Run tdd tests</a>
-            <a href="?template=swim3">3-Swim template</a>
-            <a href="?template=pins">Pins template</a>
-            <a href="?template=connectors">Connectors template</a>
+            <p><a style="background-color:black;color:rgb(255,255,240);padding:2px;" href="?page=home">Act.svg</a>
+            <!--<a href="?tdd=0">Run tdd tests</a>--></p>
+            <p>
+            <a style="color:rgb(150,100,100)">Ext-activity Palettes { </a>
+            <a style="cursor:pointer;" onclick="pal('swim3')">3-Swim,</a>
+            <a style="cursor:pointer;" onclick="pal('pins')">Pins,</a>
+            <a style="cursor:pointer;" onclick="pal('connectors')">Connectors</a>
+            <a style="color:rgb(150,100,100)"> } </a></p>
+            <p><a style="color:rgb(100,150,100)">Add-on UML Palettes { </a>
+            <a style="cursor:pointer;" onclick="pal('collab')">Collab</a>
+            <a style="color:rgb(100,150,100)"> } </a></p>
         </div>
 <!-- PAGE CONTENT - MARKERS --><div id="selMarker"></div>
         <div id="moveMarker"><pre>+</pre></div>

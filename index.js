@@ -28,6 +28,8 @@ notifyTextArr = [
     "9 =&gt; Text Mode"
 ];
 
+// ACTIVITY SVG - GLOBALS
+window.gSvgMouse = new SvgMouse(750, 88);
 
 var svgHead=`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750" height="750" viewBox="0,0,750,750">`;
 var svgEx = `
@@ -1052,8 +1054,8 @@ window.keydown = function(e) {
 window.mousedown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
-    var x = e.clientX - 750;
-    var y = e.clientY - 88;
+    var x = window.gSvgMouse.getX(e.clientX);
+    var y = window.gSvgMouse.getY(e.clientY);
 
     if (x<0) { return; }
     if (numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None) {  // TDDTEST25 FIX
@@ -1070,11 +1072,11 @@ window.mousedown = function(e) {
 
 window.mouseup = function(e) {
     e = e || window.event;
+    var x = window.gSvgMouse.getX(e.clientX);
+    var y = window.gSvgMouse.getY(e.clientY);
     if (window.gRectSelectState.state == window.gRectSelectStates.Drag) {
-        /*setTimeout(()=>{*/issueRectSelectClick(e.clientX-750, e.clientY-88); updateFrames();/*}, 100);*/
+        /*setTimeout(()=>{*/issueRectSelectClick(x, y); updateFrames();/*}, 100);*/
     }
-    var x = e.clientX - 750;
-    var y = e.clientY - 88;
     if (window.gRectSelectState.state == window.gRectSelectStates.Down &&
         xy2nd(x, y) != null) { // TDDTEST26 FIX
         updateFrames( issueClick(x, y) );
@@ -1104,12 +1106,14 @@ window.mouseup = function(e) {
 window.mousemove = function(e) {
     e = e || window.event;
     if (window.gRectSelectState.state == window.gRectSelectStates.Down || window.gRectSelectState.state == window.gRectSelectStates.Drag) { // TDDTEST23 FTR
-        window.updateVisibleRectSelection(e.clientX, e.clientY);
+        window.updateVisibleRectSelection(
+            window.gSvgMouse.getX(e.clientX),
+            window.gSvgMouse.getY(e.clientY));
         e.view.event.preventDefault(); // prevents builtin browser svg image drag
         return;
     }
-    var x = e.clientX - 750;
-    var y = e.clientY - 88;
+    var x = window.gSvgMouse.getX(e.clientX);
+    var y = window.gSvgMouse.getY(e.clientY);
     if (x>0 && x<700 && y>0 && y<700) {
         window.mouse.x = x; window.mouse.y = y;
 
