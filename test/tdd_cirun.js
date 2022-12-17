@@ -45,7 +45,7 @@ var html = `
             <a href="?template=pins">Pins template</a>
             <a href="?template=connectors">Connectors template</a>
         </div>
-<!-- PAGE CONTENT - MOVE MARKER -->
+<!-- PAGE CONTENT - MARKERS --><div id="selMarker"></div>
         <div id="moveMarker"><pre>+</pre></div>
 `;
 page.innerHTML = html;
@@ -99,6 +99,8 @@ function run3(imports, cb) {
                     isEvt ||= /num/.test(key.toLowerCase());
                     isEvt ||= /update[A-Z]+/.test(key);
                     isEvt ||= /^mousedown$/.test(key);
+                    isEvt ||= /^mousemove$/.test(key);
+                    isEvt ||= /^mouseup$/.test(key);
                     var isConv = /^xdom/.test(key);
                     isConv ||= /scal/.test(key);
                     isConv ||= /map/.test(key.toLowerCase());
@@ -148,9 +150,23 @@ function run(cb) {
 
 run(() => {
     global.MoveTester = window.MoveTester;
-    // console.warn(window.tddTests);
+    // Build the tests array
+    //     Stores the test names that we do have,
+    //     can't rely on test0 through tests{length-1} because
+    //     there might be numbers missing for tests being developed in other
+    //     git branches.
+    var tests = [];
     for (var i=0; i<window.tddTests.length; i++) {
-        var res = window.tddTests.filter((fn)=>fn.name==('test'+i))[0]();
+        if (tests.indexOf(window.tddTests[i].name) > -1) {
+            throw `fail, multiple tests named ${window.tddTests[i].name}`;
+            process.exit(1);
+        }
+        tests.push(window.tddTests[i].name);
+    }
+    // Run the tests
+    for (var i=0; i<tests.length; i++) {
+        window.gTest = true;
+        var res = window.tddTests.filter((fn)=>fn.name==(tests[i]))[0]();
         console.warn(/*"test"+i*/ window.tddTests[i].name + ' - '+ (res?'pass':'fail'));
         if (!res) {throw `test${i} failed`;process.exit(1);}
         document.body.innerHTML = '';
@@ -169,5 +185,6 @@ run(() => {
         numMode = 0;
         clickCnt = 0;
         drawClick = { x:-1, y: -1 };
+        window.gRectSelectState.state = window.gRectSelectStates.None;
     }
 });

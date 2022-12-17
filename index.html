@@ -2,13 +2,17 @@
 <html>
 <head>
     <title>Activity Svg</title>
+    <script src="js/node-manage.js"></script>
+    <script src="js/xml-buttons.js"></script>
     <script src="index.js"></script>
     <script src="test/tdd_move.js"></script>
     <script src="test/tdd.js"></script>
     <script src="test/tdd_webrun.js"></script>
     <script src="js/templates/swim3.js"></script>
 <!-- PAGE STYLE -->
+    <link rel="stylesheet" href="css/node-manage.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/xml-buttons.css">
 </head>
 <body>
 <!-- PAGE CONTENT -->
@@ -29,6 +33,12 @@
                     <button id="btnModal" onclick="onDone()">Done</button>
                 </div>
             </div>
+<!-- PAGE CONTENT - CODE FRAME - XML BUTTON FRAME -->
+            <div id="xmlButtonFrame">
+                <button onclick="issueUpload()">Upload act.svg</button>
+                <button onclick="issueCopy()">Copy act.svg</button>
+                <button onclick="issueDownload()" value="Download act.svg">Download act.svg</button><input type="file" id="upload" style="visibility: hidden;"/>
+            </div>
         </div>
 <!-- PAGE CONTENT - DISPLAY FRAME -->
         <div id="pageDisplayFrame">
@@ -41,7 +51,7 @@
             <a href="?template=pins">Pins template</a>
             <a href="?template=connectors">Connectors template</a>
         </div>
-<!-- PAGE CONTENT - MOVE MARKER -->
+<!-- PAGE CONTENT - MARKERS --><div id="selMarker"></div>
         <div id="moveMarker"><pre>+</pre></div>
     </div>
 </body>

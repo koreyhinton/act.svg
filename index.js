@@ -1,7 +1,7 @@
 // ACTIVITY SVG
 svgBaseNode = {attrs:[]};
 svgNodes = [];
-curIds = []; // { x:-1, y:-1 };
+curIds = []; // { id: 'rect1' };
 curMvX = null;
 curMvY = null;
 cacheNd = {attrs:[]};
@@ -67,6 +67,11 @@ window.setNumMode = function(num, test) {
     if (test == null) {
         notifyMsg(notifyTextArr[num]);
     }
+}
+
+window.gDispatch = function(call, delay) {
+    if (window.gTest) { call(); }
+    else { setTimeout(call, delay); }
 }
 
 // ATTRIBUTE ACCESS FUNCTIONS
@@ -676,7 +681,7 @@ window.updateFrames = function(selNd) {
     document.getElementById("pageDisplayFrame").appendChild(svg);
 
     if (curIds.length == 0) return;
-    var editNd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+    var editNd = id2nd(curIds[curIds.length-1].id);/*TODO: this should not be null!!*/console.log(curIds, id2nd(curIds[curIds.length-1].id));
 
     document
         .getElementById("svgPartTextarea")
@@ -685,13 +690,20 @@ window.updateFrames = function(selNd) {
     forceMap(editNd, cacheNd);
 }
 
-const trackNd = (x, y) => curIds.push({x: x, y: y});
+window.trackNd = function(nd) {
+    var id = nd.attrs.filter(a => a.name == 'id')?.[0]?.value;
+    if (id == null) {
+        id = nd.tagName + (window.getMaxNodeId(nd.tagName)+1);
+        nd.attrs.push({name: 'id', value: id});
+    }
+    curIds.push({id: id});
+}
 
 window.untrackNd = function(nd) {
     var j=-1;
     for (var i=0; i<curIds.length; i++) {
-        var testNd = xy2nd(curIds[i].x, curIds[i].y);
-        if (testNd === nd) { j=i; break; }
+        var testId = curIds[i].id;
+        if (testId === nd.attrs.filter(a=>a.name=='id')[0].value) { j=i; break; }
     }
     if (curIds.length == 1) {
         curIds.shift();
@@ -714,7 +726,7 @@ window.issueSelection = function(nd) {
         untrackNd(nd);
     }
     else {
-        trackNd(nd.xmin,nd.ymin);
+        trackNd(nd);
         nd.cacheColor = color; 
         // setcolor(nd, selColor);
     }
@@ -725,7 +737,7 @@ window.issueSelection = function(nd) {
             /*color=*/ editColor
         );
         var prevLastNd = (curIds.length>1) ?
-            xy2nd(curIds[curIds.length-2].x,curIds[curIds.length-2].y) : null;
+            id2nd(curIds[curIds.length-2].id) : null;
         if (prevLastNd != null) {
             setcolor(
                 /*nd=*/ prevLastNd,
@@ -757,98 +769,105 @@ window.issueDraw = function(xml, tagName) {
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
 window.issueClick = function(x, y) {
+    var id = null;
+    if ([1,2,3,4,8].indexOf(numMode)>-1) {
+        var types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
+        id = window.manageDraw(types[numMode]);
+        console.warn(types[numMode]);
+    }
     if (numMode == 1) {  // TDDTEST2 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
+            //var id = window.manageDraw();
             issueDraw(`<line x1="`
-                +drawClick.x+`" y1="`
-                +drawClick.y+`" x2="`
+                +/*drawClick.x*/(x+5)+`" y1="`
+                +/*drawClick.y*/(y+5)+`" x2="`
                 +x+`" y2="`
-                +y+`" stroke="black" stroke-width="1"/>`, 'line');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +y+`" stroke="black" stroke-width="1" id="${id}"/>`, 'line');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        /*else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        }*/
         return;
     }
     if (numMode == 2) { // TDDTEST7 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             var iter = 0;
-            var x1 = drawClick.x;
-            var x2 = x;
+            var x1 = x; //drawClick.x;
+            var x2 = x+10;
             var s = (x2>x1) ? -1 : 1;
 
             var pt1={};
             var pt2={};
 
-            if (Math.abs(drawClick.x - x) < 11) { x = drawClick.x; }
-            if (Math.abs(drawClick.y - y) < 11) { y = drawClick.y; }
-            if (drawClick.x == x) {
-                pt1.x = x-10;
-                pt2.x = x+10;
-                pt1.y = y + (y>drawClick.y?-1:1)*10;
-                pt2.y = y + (y>drawClick.y?-1:1)*10;
-            } else if (drawClick.y == y) {
+            //if (Math.abs(drawClick.x - x) < 11) { x = drawClick.x; }
+            //if (Math.abs(drawClick.y - y) < 11) { y = drawClick.y; }
+            //if (drawClick.x == x) {
+                pt1.x = x;//-10;
+                pt2.x = x;//+10;
+                pt1.y = y + (/*y>drawClick.y?-1:*/1)*10;
+                pt2.y = y + (/*y>drawClick.y?-1:*/1)*10;
+            //} else if (drawClick.y == y) {
                 pt1.y = y - 10;
                 pt2.y = y + 10;
-                pt1.x = x + (x>drawClick.x?-1:1)*10;
-                pt2.x = x + (x>drawClick.x?-1:1)*10;
-            } else {
-                var pt1in = {x: drawClick.x, y: drawClick.y};
-                var pt2in = {x: x, y: y};
-                pt1 = arrowPoint(pt1in, pt2in, 45, 10, -1);
-                pt2 = arrowPoint(pt1in, pt2in, 45, 10, 1);
-            }
+                pt1.x = x + (/*x>drawClick.x?-1:*/1)*10;
+                pt2.x = x + (/*x>drawClick.x?-1:*/1)*10;
+            //} else {
+            //    var pt1in = {x: /*drawClick.*/x, y: /*drawClick.*/y};
+            //    var pt2in = {x: x+10, y: y+10};
+            //    pt1 = arrowPoint(pt1in, pt2in, 45, 10, -1);
+            //    pt2 = arrowPoint(pt1in, pt2in, 45, 10, 1);
+            //}
 
             issueDraw(`<polyline points="`
-                +drawClick.x+` `
-                +drawClick.y+` `
-                +x+` `
-                +y+` `
-                +pt1.x+` `
-                +pt1.y+` `
-                +x+` `
-                +y+` `
-                +pt2.x+` `
-                +pt2.y+`" `
-                +` stroke="black" fill="transparent" stroke-width="1"/>`, 'polyline');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +/*drawClick.*/x+` `
+                +/*drawClick.y*/y+` `
+                +(x)+` `
+                +(y+10)+` `
+                +/*pt1.x*/(x-10)+` `
+                +/*pt1.y*/y+` `
+                +(x)+` `
+                +(y+10)+` `
+                +/*pt2.x*/(x+10)+` `
+                +/*pt2.y*/(y)+`" `
+                +` stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'polyline');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 3) { // TDDTEST5 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             issueDraw(`<rect rx="0" ry="0" x="`
-                +drawClick.x+`" y="`
-                +drawClick.y+`" width="`
-                +(x-drawClick.x)+`" height="`
-                +(y-drawClick.y)+`" stroke="black" fill="transparent" stroke-width="1"/>`, 'rect');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +x+`" y="`
+                +y+`" width="`
+                +(x+10)+`" height="`
+                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 4) { // TDDTEST8 FTR
-        if (clickCnt == 1) {
+        //if (clickCnt == 1) {
             issueDraw(`<rect rx="10" ry="10" x="`
-                +drawClick.x+`" y="`
-                +drawClick.y+`" width="`
-                +(x-drawClick.x)+`" height="`
-                +(y-drawClick.y)+`" stroke="black" fill="transparent" stroke-width="1"/>`, 'rect');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+                +x+`" y="`
+                +y+`" width="`
+                +(x+10)+`" height="`
+                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 5) { // TDDTEST10 FTR
@@ -876,14 +895,14 @@ window.issueClick = function(x, y) {
         return;
     }
     if (numMode == 8) { // TDDTEST13 FTR
-        if (clickCnt == 1) {
-            issueDraw(`<line x1="${drawClick.x}" y1="${drawClick.y}" x2="${x}" y2="${y}" stroke="black" stroke-width="3"/>`, 'line');
-            clickCnt = 0;  drawClick = {x:-1,y:-1};
-        }
-        else {
-            clickCnt += 1;
-            drawClick.x = x; drawClick.y = y;
-        }
+        //if (clickCnt == 1) {
+            issueDraw(`<line x1="${x}" y1="${y}" x2="${(x+10)}" y2="${y}" stroke="black" stroke-width="3" id="${id}"/>`, 'line');
+            //clickCnt = 0;  drawClick = {x:-1,y:-1};
+        //}
+        //else {
+            //clickCnt += 1;
+            //drawClick.x = x; drawClick.y = y;
+        //}
         return;
     }
     if (numMode == 9) { // TDDTEST14 FTR
@@ -893,17 +912,23 @@ window.issueClick = function(x, y) {
         issueDraw(elStr, 'text');
         issueKeyNum(0, {});
         issueClick(adjX, adjY);    updateFrames();
-        document.getElementById("svgPartTextarea").focus();
-        document.getElementById("svgPartTextarea").setSelectionRange(
-            elStr.indexOf("?"),
-            elStr.indexOf("?")+1
-        );
+
+        window.gDispatch(()=>{ // TDDTEST31 FIX
+            document.getElementById("svgPartTextarea").focus();
+            document.getElementById("svgPartTextarea").setSelectionRange(
+                document.getElementById("svgPartTextarea").value.indexOf("?"),
+                document.getElementById("svgPartTextarea").value.indexOf("?")+1
+            );
+        },100);
         drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     clickCnt = 0; drawClick = {x:-1,y:-1};
     var clickedNd = xy2nd(x, y);
-    if (clickedNd == null) { return; }
+    if (clickedNd == null && x>=0 && x<=750 && y>=0 && y<=750) {
+        /*setTimeout(()=>*/issueRectSelectClick(x, y)/*, 100)*/; // TDDTEST21 FTR
+        return;
+    } else if (clickedNd == null) { return; }
     setMouseRects(clickedNd);
     var selType = issueSelection(clickedNd);
 // for (var i=0; i<curIds.length; i++) { setMouseRects(xy2nd(curIds[i].x, curIds[i].y)); }
@@ -969,7 +994,7 @@ window.issueKeyName = function(name) { // TDDTEST18 FTR
     }
 
     if (curMvX == null) {
-        var nd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+        var nd = id2nd(curIds[curIds.length-1].id);
         curMvX = getscal(nd.attrs, "x");
         curMvY = getscal(nd.attrs, "y");
     }
@@ -1018,6 +1043,9 @@ window.keydown = function(e) {
         var key = (e.key.substring(0,5) == "Arrow") ? e.key.substring(5).toLowerCase() : e.key.toLowerCase();
         issueKeyName(key);
         e.view.event.preventDefault();
+    } else {
+        window.manageKeyDownEvent(e);
+        //e.view.event.preventDefault();
     }
 }
 
@@ -1026,12 +1054,69 @@ window.mousedown = function(e) {
     e = e || window.event;
     var x = e.clientX - 750;
     var y = e.clientY - 88;
+
+    if (x<0) { return; }
+    if (numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None) {  // TDDTEST25 FIX
+        window.issueRectSelectClick(x, y);
+        return;
+    }
     console.log(x,y);
     if (isNaN(x) || isNaN(y)) { return; }
     // curIds.push({x: x, y: y});
     // curId.x = x;
     // curId.y = y;
     updateFrames( /*selNd=*/ issueClick(x, y) );
+}
+
+window.mouseup = function(e) {
+    e = e || window.event;
+    if (window.gRectSelectState.state == window.gRectSelectStates.Drag) {
+        /*setTimeout(()=>{*/issueRectSelectClick(e.clientX-750, e.clientY-88); updateFrames();/*}, 100);*/
+    }
+    var x = e.clientX - 750;
+    var y = e.clientY - 88;
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down &&
+        xy2nd(x, y) != null) { // TDDTEST26 FIX
+        updateFrames( issueClick(x, y) );
+        window.gRectSelectState.state = window.gRectSelectStates.None;
+        window.gRectSelectState.firstX=null;
+        window.gRectSelectState.firstY=null;
+        window.closeVisibleRectSelection();
+        return;
+    }
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down) { // TDDTEST24 FIX
+        window.onDone();
+        window.gRectSelectState.state = window.gRectSelectStates.None;
+        window.gRectSelectState.firstX=null;
+        window.gRectSelectState.firstY=null;
+        window.closeVisibleRectSelection();
+    }
+    if (window.drawing.type != 'null') {
+        window.drawing.type = 'null';
+        window.drawing.cacheX = -1;
+        window.drawing.cacheY = -1;
+        window.drawing.id = 'null0';
+        console.warn('done draw');
+        window.updateFrames();
+    }
+}
+
+window.mousemove = function(e) {
+    e = e || window.event;
+    if (window.gRectSelectState.state == window.gRectSelectStates.Down || window.gRectSelectState.state == window.gRectSelectStates.Drag) { // TDDTEST23 FTR
+        window.updateVisibleRectSelection(e.clientX, e.clientY);
+        e.view.event.preventDefault(); // prevents builtin browser svg image drag
+        return;
+    }
+    var x = e.clientX - 750;
+    var y = e.clientY - 88;
+    if (x>0 && x<700 && y>0 && y<700) {
+        window.mouse.x = x; window.mouse.y = y;
+
+        if (window.drawing.type != 'null') {
+            window.manageDrawUpdate(x, y);
+        }
+    }
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
@@ -1044,14 +1129,14 @@ window.addEventListener('DOMContentLoaded', (e) => {
 window.onDone = function() {
     var i=0;
     var j=curIds.length;
-    var limit =10000; var x=-1; var y=-1;
-    while (j > -1) {
+    var limit =10000; var id ='null-1';
+    while (j > 0/*-1*/) {
         //setcolor(xy2nd(curIds[0].x, curIds[0].y), selColor); // This is a temp.
             // workaround because somewhere else the color is resetting to cache
             // value and shouldn't be
-        if (x == curIds[0].x && y==curIds[0].y) throw new Error("foreverloop"+x+","+y);
-        x=curIds[0].x; y=curIds[0].y;
-        issueClick(curIds[0].x, curIds[0].y);
+        if (id == curIds[0].id) throw new Error("foreverloop"+id);
+        id=curIds[0].id;
+        var clickedNd=id2nd(curIds[0].id);setMouseRects(clickedNd);issueSelection(clickedNd);
         i += 1;
         if (i > limit) {console.warn("max num iterations"); break;}
         j = curIds.length;
@@ -1073,23 +1158,9 @@ window.onDone = function() {
 /////         }    /*curIds = [];*/    updateFrames();
 }
 
-window.onStart = function(test) {
-    var svg = document.createElement("div");
-    svg.id = "svgId";
-    svg.innerHTML = (svgHead + svgEx + svgTrail);
-    document.getElementById("pageDisplayFrame").appendChild(svg);
-
-    document.getElementById("tools1").style.visibility = "hidden";
-    document.getElementById("tools2").style.visibility = "visible";
-
-    document.getElementById("pageCodeFrame").classList.add("disabled");
-    document.getElementById("svgFullTextarea").disabled="disabled";
-
-    document.onkeydown = keydown;
-    setTimeout(function(){document.onclick = mousedown;}, 800);// skip first click
-
+window.loadSvg = function(xml, test) {
     var parser = new DOMParser();
-    var xmlDocument = parser.parseFromString(document.getElementById("svgFullTextarea").value, "text/xml");
+    var xmlDocument = parser.parseFromString(xml, "text/xml");
     var elements = xmlDocument.getElementsByTagName('*');
     var sni = -1; //svg nodes index
     for (var i=0; i<elements.length; i++) {
@@ -1123,6 +1194,24 @@ window.onStart = function(test) {
     sortSvgNodes();
     issueKeyNum(0, test);
     updateFrames();
+}
+
+window.onStart = function(test) {
+    var svg = document.createElement("div");
+    svg.id = "svgId";
+    svg.innerHTML = (svgHead + svgEx + svgTrail);
+    document.getElementById("pageDisplayFrame").appendChild(svg);
+
+    document.getElementById("tools1").style.visibility = "hidden";
+    document.getElementById("tools2").style.visibility = "visible";
+
+    document.getElementById("pageCodeFrame").classList.add("disabled");
+    document.getElementById("svgFullTextarea").disabled="disabled";
+
+    document.onkeydown = keydown;
+    window.gDispatch(function(){document.onmousedown = mousedown; document.onmousemove = mousemove; document.onmouseup = mouseup; }, 800);// skip first click
+
+    window.loadSvg(document.getElementById("svgFullTextarea").value, test);
 }
 
 window.onNum = function(obj) {
@@ -1159,7 +1248,7 @@ window.onApplyEdits = function() {
     if (failed) { return; }
 
     var xdomNd = elements[0];
-    var nd = xy2nd(curIds[curIds.length-1].x, curIds[curIds.length-1].y);
+    var nd = id2nd(curIds[curIds.length-1].id);
     cacheNd = {attrs:[]}  // TDDTEST17 FIX
     forceMap(nd,cacheNd);  // TDDTEST17 FIX
 
@@ -1169,18 +1258,24 @@ window.onApplyEdits = function() {
         //forceMap(xdom2nd(xdomNd, nd), nd);
         xdom2nd(xdomNd, nd);
         setMouseRects(nd);
+        /* there should no longer be a need to update x,y to a new position
+           because we now track nodes on an id (e.g, id='rect1').
         curIds[curIds.length-1].x = nd.xmin;
         curIds[curIds.length-1].y = nd.ymin; 
+        */
     // }
     var i=curIds.length-2;
     while (i > -1) {
-        var passiveSelNd = xy2nd(curIds[i].x, curIds[i].y);
+        var passiveSelNd = id2nd(curIds[i].id);
         // {
             // must happen all together
             smartMap(nd, passiveSelNd);
             setMouseRects(passiveSelNd);
+            /* there should no longer be a need to update x,y to a new position
+               because we now track nodes on an id (e.g, id='rect1').
             curIds[i].x = passiveSelNd.xmin;
             curIds[i].y = passiveSelNd.ymin;
+            */
         // }
         i-=1;
     }
