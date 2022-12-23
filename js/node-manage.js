@@ -383,8 +383,8 @@ window.issueVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
     marker.style.visibility = 'visible';
     marker.style.width = '16px';
     marker.style.height = '16px';
-    marker.style.left = (750+x)+'px';
-    marker.style.top = (88+y)+'px';
+    marker.style.left = (/*750*/window.gSvgFrame.getStart().x+x)+'px';
+    marker.style.top = (/*88*/window.gSvgFrame.getStart().y+y)+'px';
 } /* end issueVisibleRectSelection fn */
 
 // EVENTS - PROGRAMMATIC - VISIBLE RECT SELECTION - UPDATE

@@ -29,7 +29,29 @@ notifyTextArr = [
 ];
 
 // ACTIVITY SVG - GLOBALS
-window.gSvgMouse = new SvgMouse(750, 88);
+
+window.gToolbarFrame = new StartEndFrame(0,0,1500,88);
+let topFrameNode = new AggregateNode({
+    frame: window.gToolbarFrame,
+    id: 'pageToolbar',
+    top: null,
+    left: null
+});
+window.gCodeFrame = new StartEndFrame(0,88,750,88+750);
+let leftFrameNode = new AggregateNode({
+    frame: window.gCodeFrame,
+    id: 'pageCodeFrame',
+    top: topFrameNode,
+    left: null
+});
+window.gSvgFrame = new StartEndFrame(750, 88, 750+748, 88+750);
+window.gSvgFrameNode = new AggregateNode({
+    frame: window.gSvgFrame,
+    id: 'pageDisplayFrame',
+    top: topFrameNode,
+    left: leftFrameNode
+});
+window.gSvgMouse = new SvgMouse(window.gSvgFrame.getStart());
 
 var svgHead=`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750" height="750" viewBox="0,0,750,750">`;
 var svgEx = `
@@ -48,8 +70,8 @@ window.notifyMsg = function(htmlMsg, styleBG) {
     notifyMd.style.backgroundColor=(styleBG==null)?"rgba(238, 255, 238, 1)":styleBG;
     notifyMd.style.color="black";
     notifyMd.style.position="absolute";
-    notifyMd.style.left="752px";
-    notifyMd.style.top=(750+88-16-12)+"px";
+    notifyMd.style.left=(window.gSvgFrame.getStart().x+2)+'px';//"752px";
+    notifyMd.style.top=(/*750+88*/window.gSvgFrame.getStart().y+window.gSvgFrame.getEnd().y-16-12)+"px";
     notifyMd.style.fontSize="16px";
     notifyMd.style.padding="6px";
     notifyMd.style.width="736px";
@@ -1026,8 +1048,8 @@ window.issueKeyName = function(name) { // TDDTEST18 FTR
     }
     curMvX = x;
     curMvY = y;
-    moveMark.style.left=(740+x)+"px";//why not 750??
-    moveMark.style.top=(37+y)+"px";
+    moveMark.style.left=(window.gSvgFrame.getStart().x-10/*740*/+x)+"px";//why not 750??
+    moveMark.style.top=(window.gSvgFrame.getStart().y-88+37+y)+"px";
 }
 
 // EVENTS - UI

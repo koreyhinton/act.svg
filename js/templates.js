@@ -101,12 +101,18 @@ addEventListener('DOMContentLoaded', (e) => {
             document.getElementById('svgFullTextarea').style.width='0px';
             */
             document.getElementById('footer').style.height='0px';
-            let bottomPadDiv = document.createElement('div');
+
+            window.gToolbarFrame.setFrame(0,0,0,0);
+            window.gCodeFrame.setFrame(0,0,0,0);
+            window.gSvgFrameNode.applyFrames();
+
+            /*let bottomPadDiv = document.createElement('div');
             bottomPadDiv.style.position = 'absolute';
             bottomPadDiv.style.top = '800px';
             bottomPadDiv.style.height = '100px';
             bottomPadDiv.innerHTML = '<br/><br/><br/><a style="color:white">.</a>';
             document.body.appendChild(bottomPadDiv); //to make sure you can scroll
+            */
             let winTitleH = 2;//just a guess of the height, also change in addon-palettes.js
             window.scrollBy(750,88+winTitleH);
         }, 400);

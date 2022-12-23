@@ -2,3 +2,7 @@ CHANGELOG 2022-12-17 -- V0.1 -- ADDON PALETTES
 
 gh-21 :: fix drawing and selection rectangle position when scrolled
 gh-24 :: addon-palettes
+
+CHANGELOG 2022-12-23 -- V0.1 -- ADDON PALETTES
+
+gh-24 :: addon-palettes - collapse other frams rather than scrolling
