@@ -30,28 +30,28 @@ notifyTextArr = [
 
 // ACTIVITY SVG - GLOBALS
 
-window.gToolbarFrame = new StartEndFrame(0,0,1500,88);
-let topFrameNode = new AggregateNode({
+window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88);
+let topFrameNode = new window.AggregateNode({
     frame: window.gToolbarFrame,
     id: 'pageToolbar',
     top: null,
     left: null
 });
-window.gCodeFrame = new StartEndFrame(0,88,750,88+750);
-let leftFrameNode = new AggregateNode({
+window.gCodeFrame = new window.StartEndFrame(0,88,750,88+750);
+let leftFrameNode = new window.AggregateNode({
     frame: window.gCodeFrame,
     id: 'pageCodeFrame',
     top: topFrameNode,
     left: null
 });
-window.gSvgFrame = new StartEndFrame(750, 88, 750+748, 88+750);
-window.gSvgFrameNode = new AggregateNode({
+window.gSvgFrame = new window.StartEndFrame(750, 88, 750+748, 88+750);
+window.gSvgFrameNode = new window.AggregateNode({
     frame: window.gSvgFrame,
     id: 'pageDisplayFrame',
     top: topFrameNode,
     left: leftFrameNode
 });
-window.gSvgMouse = new SvgMouse(window.gSvgFrame.getStart());
+window.gSvgMouse = new window.SvgMouse(window.gSvgFrame.getStart());
 
 var svgHead=`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750" height="750" viewBox="0,0,750,750">`;
 var svgEx = `
@@ -797,16 +797,16 @@ window.issueClick = function(x, y) {
     if ([1,2,3,4,8].indexOf(numMode)>-1) {
         var types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
         id = window.manageDraw(types[numMode]);
-        console.warn(types[numMode]);
+        //console.warn(types[numMode]);
     }
     if (numMode == 1) {  // TDDTEST2 FTR
         //if (clickCnt == 1) {
             //var id = window.manageDraw();
             issueDraw(`<line x1="`
-                +/*drawClick.x*/(x+5)+`" y1="`
-                +/*drawClick.y*/(y+5)+`" x2="`
-                +x+`" y2="`
-                +y+`" stroke="black" stroke-width="1" id="${id}"/>`, 'line');
+                +/*drawClick.x*/(x)+`" y1="`
+                +/*drawClick.y*/(y)+`" x2="`
+                +(x+5)+`" y2="`// TDDTEST3 FIX (x1,y1 should be exactly x,y)
+                +(y+5)+`" stroke="black" stroke-width="1" id="${id}"/>`, 'line');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         /*else {
@@ -1000,7 +1000,7 @@ window.issueClick = function(x, y) {
 
 window.issueKeyNum = function(num, test) {
     setNumMode(num, test);
-    document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
+    if (!test)document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
 }
 
 // EVENTS - PROGRAMMATIC - ISSUE KEY NAME
@@ -1120,7 +1120,7 @@ window.mouseup = function(e) {
         window.drawing.cacheX = -1;
         window.drawing.cacheY = -1;
         window.drawing.id = 'null0';
-        console.warn('done draw');
+        //console.warn('done draw');
         window.updateFrames();
     }
 }
@@ -1136,7 +1136,8 @@ window.mousemove = function(e) {
     }
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
-    if (x>0 && x<700 && y>0 && y<700) {
+    if (x>0 && x<750
+        && y>0 && y<750) { // TDDTEST25 FIX -should reach bot-right
         window.mouse.x = x; window.mouse.y = y;
 
         if (window.drawing.type != 'null') {

@@ -53,7 +53,6 @@ window.AggregateNode = class {
         this.frame.setFrame(calcX, calcY, calcX+w, calcY+h);
     }
     applyFrame() {
-        console.warn('applyFrame',this.id);
         var el = document.getElementById(this.id);
         var start = this.getFrame().getStart();
         var end = this.getFrame().getEnd();

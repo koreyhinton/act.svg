@@ -111,7 +111,6 @@ window.setPos = function(nd, x, y) {
         addscal(nd, "cx", diffscal(dummySrcNd,dummyTargetNd,"x"));
         addscal(nd, "cy", diffscal(dummySrcNd,dummyTargetNd,"y"));
     } else if (attrs.filter(a=>a.name == 'x1').length > 0) {
-console.warn(dummySrcNd,dummyTargetNd,window.getX1(nd),window.getY1(nd));
         addscal(nd, "x1", diffscal(dummySrcNd,dummyTargetNd,"x"));
         addscal(nd, "x2", diffscal(dummySrcNd,dummyTargetNd,"x"));
         addscal(nd, "y1", diffscal(dummySrcNd,dummyTargetNd,"y"));
@@ -142,8 +141,8 @@ window.matchNode = function(domElement) {
 // NODE MANAGE - DRAW
 
 window.manageDraw = function(type) {
-    window.drawing.id = type+(window.getMaxNodeId(type)+1);console.warn(window.drawing.id);
-    window.drawing.type = type;console.warn('type',type);
+    window.drawing.id = type+(window.getMaxNodeId(type)+1);
+    window.drawing.type = type;
     window.drawing.cacheX = -1;
     window.drawing.cacheY = -1;
     return window.drawing.id;

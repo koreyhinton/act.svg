@@ -8,6 +8,18 @@
 //     at setcolor
 //     at onDone
 //     at onApplyEdits
+window.issueDrag = function(x1,y1,x2,y2){
+    x1 += window.gSvgFrame.getStart().x;
+    x2 += window.gSvgFrame.getStart().x;
+    y1 += window.gSvgFrame.getStart().y;
+    y2 += window.gSvgFrame.getStart().y;
+    window.mousedown({clientX:x1, clientY:y1});
+    window.mousemove({clientX:x1, clientY:y1,view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2,view:{event:{preventDefault:function(){}}}});
+    window.mouseup({clientX:x2, clientY:y2});
+    window.updateFrames();
+}
 window.tddTests = [
     ...(window.tddTests||[]),
     // TDD TEST 0 - RECT MOVE X,Y SHOULD MOVE SUBSELECTED TEXT
@@ -39,14 +51,15 @@ window.tddTests = [
         // rect should be highlighted not the text
         return rectStrokeColor.toUpperCase() == editColor;
     },
-    // TDD TEST 2 - MODE TWO CLICK TWICE CREATES LINE
+    // TDD TEST 2 - MODE TWO MOUSEUP CREATES LINE
     function test2() {
         onStart({});
         var yExpect = 519;
         var x = parseInt(document.getElementsByTagName("text")[0].getAttribute("x"));
         issueKeyNum(1, {});
-        issueClick(25, 25);    updateFrames();
-        issueClick(25, yExpect);    updateFrames();
+        issueDrag(25,25,    25,yExpect);
+        //issueClick(25, 25);    updateFrames();
+        //issueClick(25, yExpect);    updateFrames();
         var y2 = parseFloat(document.getElementsByTagName("line")[0].getAttribute("y2"));
         var xml = document.getElementById("svgFullTextarea").value;
         return y2==yExpect && (xml.indexOf(`y2="${yExpect}"`) >-1);
@@ -55,8 +68,9 @@ window.tddTests = [
     function test3() {
         onStart({});
         issueKeyNum(1, {});
-        issueClick(25, 25);    updateFrames();
-        issueClick(250, 25);    updateFrames();
+        issueDrag(25,25,    250,25); // draw to-be-selected line
+        //issueClick(25, 25);    updateFrames();
+        //issueClick(250, 25);    updateFrames();
         issueKeyNum(0, {});
         issueClick(50, 25);    updateFrames();
         var lineStrokeColor = document
@@ -70,8 +84,9 @@ window.tddTests = [
         var yMove = -33;
         onStart({});
         issueKeyNum(1, {});
-        issueClick(250, yStart);    updateFrames();
-        issueClick(500, yStart);    updateFrames();
+        issueDrag(250,yStart,    500,yStart); // draw line
+        //issueClick(250, yStart);    updateFrames();
+        //issueClick(500, yStart);    updateFrames();
         issueKeyNum(0, {});
         issueClick(270, yStart);    updateFrames();  // propagatee
 
@@ -90,11 +105,13 @@ window.tddTests = [
     function test5() {
         onStart({});
         issueKeyNum(3, {}); // Rect Mode
-        issueClick(10,10);    updateFrames();
-        issueClick(300,500);    updateFrames();
+        issueDrag(10,10,    300,500);
+        //issueClick(10,10);    updateFrames();
+        //issueClick(300,500);    updateFrames();
         issueKeyNum(1, {}); // Line Mode
-        issueClick(15,15);    updateFrames();
-        issueClick(295,15);    updateFrames();
+        issueDrag(15,15,    295,15);
+        //issueClick(15,15);    updateFrames();
+        //issueClick(295,15);    updateFrames();
         issueKeyNum(0, {}); // Select Mode
         issueClick(20,15);     updateFrames(); // click on line
         var lineStrokeColor = document.getElementsByTagName("line")[0].getAttribute("stroke");
@@ -113,7 +130,7 @@ window.tddTests = [
             document.getElementById("svgPartTextarea")
         ).visibility == "hidden";
     },
-    // TDD TEST 7 - MODE TWO CLICK TWICE CREATES ARROW
+    // TDD TEST 7 - MODE TWO MOUSEUP CREATES ARROW
     function test7() {
         var expectedP1 = {x:15, y:15};
         var inputP2 = {x:18, y:100}; // slight offset gets corrected 18->15
@@ -124,8 +141,9 @@ window.tddTests = [
         var expectedPoints = `${expectedP1.x} ${expectedP1.y} ${expectedP2.x} ${expectedP2.y} ${expectedP3.x} ${expectedP3.y} ${expectedP4.x} ${expectedP4.y} ${expectedP5.x} ${expectedP5.y}`;
         onStart({});
         issueKeyNum(2, {}); // Arrow Mode
-        issueClick(expectedP1.x, expectedP1.y);    updateFrames();
-        issueClick(inputP2.x, inputP2.y);    updateFrames();
+        issueDrag(expectedP1.x,expectedP1.y,    inputP2.x,inputP2.y);
+        //issueClick(expectedP1.x, expectedP1.y);    updateFrames();
+        //issueClick(inputP2.x, inputP2.y);    updateFrames();
         
         var found = false;
         var pls = document.getElementsByTagName("polyline");
@@ -148,8 +166,9 @@ window.tddTests = [
         var y1 = 30;
         onStart({});
         issueKeyNum(4, {}); // Rounded Rect Mode
-        issueClick(30, y1);    updateFrames();
-        issueClick(90, hExpect + y1);    updateFrames();
+        issueDrag(30,y1,    90,hExpect + y1);
+        //issueClick(30, y1);    updateFrames();
+        //issueClick(90, hExpect + y1);    updateFrames();
 
         var rects = document.getElementsByTagName("rect");
         var rect = null;
@@ -302,8 +321,9 @@ window.tddTests = [
         var expectX = lineX + mvX;
         onStart({});
         issueKeyNum(1, {}); // Line Mode
-        issueClick(lineX, 30);    updateFrames();
-        issueClick(lineX, 90);    updateFrames();
+        issueDrag(lineX,30,    lineX,90);
+        //issueClick(lineX, 30);    updateFrames();
+        //issueClick(lineX, 90);    updateFrames();
 
         issueKeyNum(0, {}); // Select Mode
         issueClick(lineX, 45);    updateFrames();
@@ -328,8 +348,9 @@ window.tddTests = [
         var expectX = cX + mvX;
         onStart({});
         issueKeyNum(1, {}); // Line Mode
-        issueClick(lineX, 30);    updateFrames();
-        issueClick(lineX, 90);    updateFrames();
+        issueDrag(lineX,30,    lineX,90);
+        //issueClick(lineX, 30);    updateFrames();
+        //issueClick(lineX, 90);    updateFrames();
 
         issueKeyNum(0, {}); // Select Mode
         issueClick(cX, 40);    updateFrames();//select line

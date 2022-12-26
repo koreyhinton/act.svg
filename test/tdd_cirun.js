@@ -6,6 +6,12 @@ global.window = dom.window;
 window.tddTests = [...(window.tddTests||[])];
 global.document = window.document;
 global.DOMParser = window.DOMParser;
+global.templateXml = null;
+global.addEventListener = window.addEventListener;
+global.NamedNodeMap = window.NamedNodeMap;
+//global.StartEndFrame = class{};
+//global.AggregateNode = class{};
+//global.SvgMouse = class{};
 var page = document.createElement("div");
 var html = `
 <!-- PAGE CONTENT - TOOLBAR -->
@@ -116,6 +122,7 @@ function run3(imports, cb) {
                     }
                 });
             }
+global.issueDrag = window.issueDrag;
             return import(imp);
         });
     }
@@ -123,7 +130,7 @@ function run3(imports, cb) {
 }
 
 function run2(imports,cb) {
-    var imports = [...imports,'../index.js', './tdd_move.js', './tdd.js'];
+    var imports = [...imports,'../index.js', './tdd_move.js', './tdd.js', '../js/svg-mouse.js'];
     fs.readdir('./test', (err, files) => {
         files.forEach(file => {
             var isEditorFile = file.indexOf('#')>-1;
@@ -166,6 +173,7 @@ run(() => {
     // Run the tests
     for (var i=0; i<tests.length; i++) {
         window.gTest = true;
+        global.navigator = {clipboard:{writeText: function(t){return '';}}};
         var res = window.tddTests.filter((fn)=>fn.name==(tests[i]))[0]();
         console.warn(/*"test"+i*/ window.tddTests[i].name + ' - '+ (res?'pass':'fail'));
         if (!res) {throw `test${i} failed`;process.exit(1);}

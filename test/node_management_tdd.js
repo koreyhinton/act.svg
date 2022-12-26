@@ -48,20 +48,22 @@ window.tddTests = [
     function test25() {
         onStart({});
         issueKeyNum(4, {}); // rect mode
-        issueClick(1, 1);    updateFrames();
-        issueClick(749, 749);    updateFrames();  // create bounding rect
+        issueDrag(1,1,    749,749);  // create bounding rect
+        //issueClick(1, 1);    updateFrames();
+        //issueClick(749, 749);    updateFrames();  // create bounding rect
 
         var actionNd = svgNodes.filter(n => n.tagName =='rect')[0];
-        var x1 = 750 + actionNd.xmin-1;
-        var y1 = 88 + actionNd.ymin-1;
-        var x2 = 750 + actionNd.xmax+1;
-        var y2 = 88 + actionNd.ymax+1; // surrounding rect
+        var x1 = /*750 + */actionNd.xmin-1;
+        var y1 = /*88 + */actionNd.ymin-1;
+        var x2 = /*750 + */actionNd.xmax+1;
+        var y2 = /*88 + */actionNd.ymax+1; // surrounding rect
 
         issueKeyNum(0, {}); // select mode
 
-        window.mousedown({clientX:x1, clientY:y1});
-        window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
-        window.mouseup({clientX:x2, clientY:y2}); // selects action node
+        issueDrag(x1,y1,    x2,y2);
+        //window.mousedown({clientX:x1, clientY:y1});
+        //window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
+        //window.mouseup({clientX:x2, clientY:y2}); // selects action node
         return window.id2nd(curIds[0].id).xmin>10;//ensures bounding rect isn't selected
 
         // maybe say any rect that has a dimension >=greater a quadrant
@@ -144,7 +146,7 @@ window.tddTests = [
         //return document.getElementById("svgFullTextarea").value.split('x="0"').length ==2 && document.getElementById("svgFullTextarea").value.indexOf(`x=${dX}`)>-1;
     },
     // TDD TEST 29 - COPY PASTE MULTIPLE NODES
-    function test29() {global.NamedNodeMap=window.NamedNodeMap;
+    function test29() {/*global=window;*/ //if (window.gTest)global.NamedNodeMap=window.NamedNodeMap;
         onStart({});
 
         window.mousedown({clientX:750+1, clientY:88+1});
@@ -178,8 +180,6 @@ window.tddTests = [
     // TDD TEST 30 - DELETE NODE(S) VIA CUT
     function test30() {
         onStart({});
-
-        global.navigator = {clipboard:{writeText: function(t){return '';}}};
 
         window.mousedown({clientX:750+1, clientY:88+1});
         window.mousemove({view:{event:{preventDefault:()=>{}}},clientX:750+700, clientY:88+700});

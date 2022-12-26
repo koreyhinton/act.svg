@@ -16,6 +16,7 @@ addEventListener('DOMContentLoaded', (e) => {
         if (testNo == null) return;
         freeze = true;
     }
+    window.gTest=true;  // only set if early return didn't happen
     testNo = parseInt(testNo);
     if (testNo >= tddTests.length) { return; }
     setTimeout(function() {
