@@ -405,9 +405,9 @@ window.tddTests = [
         issueClick(412, 113);    updateFrames();  // rect selected last
 
         mt.expectBy(-1, -1);
-        issueKeyName("left");
-        issueKeyName("up");
-        issueKeyName("enter");
+        window.mvIssueMoveKey("left");
+        window.mvIssueMoveKey("up");
+        window.mvIssueMoveKey("enter");
         mt.moved = true;
 
         return mt.test();

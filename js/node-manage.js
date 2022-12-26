@@ -11,6 +11,49 @@ window.mouse = {x:-1,y:-1};
 
 window.drawing = { id: 'null0', type: 'null', cacheX:-1, cacheY:-1 };
 
+window.mgCanSelect = function(numMode) {
+    return numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None;
+}
+
+window.mgCanDrag = function() {
+    return window.gRectSelectState.state == window.gRectSelectStates.Down || window.gRectSelectState.state == window.gRectSelectStates.Drag;
+}
+
+window.mgIsDragging = function() {
+    return window.gRectSelectState.state == window.gRectSelectStates.Drag;
+}
+
+window.mgIsOneClickSelect = function(x, y) {
+    return window.gRectSelectState.state == window.gRectSelectStates.Down &&
+        xy2nd(x, y) != null;
+}
+
+window.mgIsNoSelectClick = function(x, y) {
+    return !window.mgIsOneClickSelect() && window.gRectSelectState.state == window.gRectSelectStates.Down;
+}
+
+window.mgCloseSelection = function() {
+    window.gRectSelectState.state = window.gRectSelectStates.None;
+    window.gRectSelectState.firstX=null;
+    window.gRectSelectState.firstY=null;
+    window.closeVisibleRectSelection();
+}
+
+window.mgIsDrawingClosed = function() {
+    return window.drawing.type == 'null';
+}
+
+window.mgCloseDrawing = function() {
+    window.drawing.type = 'null';
+    window.drawing.cacheX = -1;
+    window.drawing.cacheY = -1;
+    window.drawing.id = 'null0';
+}
+
+window.mgSetMouse = function(x, y) {
+    window.mouse.x = x; window.mouse.y = y;
+}
+
 window.getMaxNodeId = function(type) {
     var maxId = 0;
     for (var i=0; i<svgNodes.length; i++) {

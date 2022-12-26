@@ -1003,55 +1003,6 @@ window.issueKeyNum = function(num, test) {
     if (!test)document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
 }
 
-// EVENTS - PROGRAMMATIC - ISSUE KEY NAME
-
-window.issueKeyName = function(name) { // TDDTEST18 FTR
-    var moveMark = document.getElementById("moveMarker");
-    moveMark.style.visibility = "visible";
-
-    if (name == "enter") {
-        curMvX = null;
-        curMvY = null;
-        moveMark.style.visibility = "hidden";
-        onApplyEdits();
-        return;
-    }
-
-    if (curMvX == null) {
-        var nd = id2nd(curIds[curIds.length-1].id);
-        curMvX = getscal(nd.attrs, "x");
-        curMvY = getscal(nd.attrs, "y");
-    }
-
-    var ta = document.getElementById("svgPartTextarea");
-    var x = curMvX;
-    var y = curMvY;
-    if (ta.value.indexOf(` x="`) > -1) {
-        if (name == "left" || name == "right") {
-            var delta = 1;
-            if (name == "left") {
-                delta = -1;
-            }
-            x += delta;
-            ta.value = ta.value.replace(/ x="[0-9]+"/g, ` x="${x}"`);
-            //addscal(nd, "x", delta);
-        }
-        if (name == "up" || name == "down") {
-            var delta = 1;
-            if (name == "up") {
-                delta = -1;
-            }
-            y += delta;
-            ta.value = ta.value.replace(/ y="[0-9]+"/g, ` y="${y}"`);
-            //addscal(nd, "y", delta);
-        }
-    }
-    curMvX = x;
-    curMvY = y;
-    moveMark.style.left=(window.gSvgFrame.getStart().x-10/*740*/+x)+"px";//why not 750??
-    moveMark.style.top=(window.gSvgFrame.getStart().y-88+37+y)+"px";
-}
-
 // EVENTS - UI
 
 window.keydown = function(e) {
@@ -1060,12 +1011,8 @@ window.keydown = function(e) {
     if ("1234567890".indexOf(e.key) > -1) {
         issueKeyNum(parseInt(e.key));
         e.view.event.preventDefault();
-    } else if (
-        (e.key == "Enter" || e.key.substring(0,5) == "Arrow") &&
-        window.getComputedStyle(document.getElementById("svgPartTextarea")).visibility == 'visible'
-    ) { // TDDTEST18 FTR
-        var key = (e.key.substring(0,5) == "Arrow") ? e.key.substring(5).toLowerCase() : e.key.toLowerCase();
-        issueKeyName(key);
+    } else if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
+        window.mvIssueMoveKey(e.key);
         e.view.event.preventDefault();
     } else {
         window.manageKeyDownEvent(e);
@@ -1080,7 +1027,7 @@ window.mousedown = function(e) {
     var y = window.gSvgMouse.getY(e.clientY);
 
     if (x<0) { return; }
-    if (numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None) {  // TDDTEST25 FIX
+    if (window.mgCanSelect(numMode)) {  // TDDTEST25 FIX
         window.issueRectSelectClick(x, y);
         return;
     }
@@ -1096,30 +1043,21 @@ window.mouseup = function(e) {
     e = e || window.event;
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
-    if (window.gRectSelectState.state == window.gRectSelectStates.Drag) {
+    window.mvClose();
+    if (window.mgIsDragging()) {
         /*setTimeout(()=>{*/issueRectSelectClick(x, y); updateFrames();/*}, 100);*/
     }
-    if (window.gRectSelectState.state == window.gRectSelectStates.Down &&
-        xy2nd(x, y) != null) { // TDDTEST26 FIX
+    if (window.mgIsOneClickSelect(x,y)) { // TDDTEST26 FIX
         updateFrames( issueClick(x, y) );
-        window.gRectSelectState.state = window.gRectSelectStates.None;
-        window.gRectSelectState.firstX=null;
-        window.gRectSelectState.firstY=null;
-        window.closeVisibleRectSelection();
+        window.mgCloseSelection();
         return;
     }
-    if (window.gRectSelectState.state == window.gRectSelectStates.Down) { // TDDTEST24 FIX
+    if (window.mgIsNoSelectClick(x,y)) { // TDDTEST24 FIX
         window.onDone();
-        window.gRectSelectState.state = window.gRectSelectStates.None;
-        window.gRectSelectState.firstX=null;
-        window.gRectSelectState.firstY=null;
-        window.closeVisibleRectSelection();
+        window.mgCloseSelection();
     }
-    if (window.drawing.type != 'null') {
-        window.drawing.type = 'null';
-        window.drawing.cacheX = -1;
-        window.drawing.cacheY = -1;
-        window.drawing.id = 'null0';
+    if (!window.mgIsDrawingClosed()) {
+        window.mgCloseDrawing();
         //console.warn('done draw');
         window.updateFrames();
     }
@@ -1127,20 +1065,22 @@ window.mouseup = function(e) {
 
 window.mousemove = function(e) {
     e = e || window.event;
-    if (window.gRectSelectState.state == window.gRectSelectStates.Down || window.gRectSelectState.state == window.gRectSelectStates.Drag) { // TDDTEST23 FTR
-        window.updateVisibleRectSelection(
-            window.gSvgMouse.getX(e.clientX),
-            window.gSvgMouse.getY(e.clientY));
+    let x = window.gSvgMouse.getX(e.clientX);
+    let y = window.gSvgMouse.getY(e.clientY);
+    if (window.mgCanDrag()) { // TDDTEST23 FTR
+        if (window.mvIsMove(x,y)) {
+            window.mvMove(x,y);
+        } else {
+            window.updateVisibleRectSelection(x,y);
+        }
         e.view.event.preventDefault(); // prevents builtin browser svg image drag
         return;
     }
-    var x = window.gSvgMouse.getX(e.clientX);
-    var y = window.gSvgMouse.getY(e.clientY);
     if (x>0 && x<750
         && y>0 && y<750) { // TDDTEST25 FIX -should reach bot-right
-        window.mouse.x = x; window.mouse.y = y;
+        window.mgSetMouse(x, y);
 
-        if (window.drawing.type != 'null') {
+        if (!window.mgIsDrawingClosed()) {
             window.manageDrawUpdate(x, y);
         }
     }
