@@ -1,0 +1,4 @@
+window.tddTests = [
+    ...(window.tddTests||[]),
+
+];
