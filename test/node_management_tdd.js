@@ -209,5 +209,54 @@ window.tddTests = [
 
         var ta = document.getElementById("svgPartTextarea");
         return ta.selectionStart > `<text x="-7" y="3" fill="black" id="text1"`.length && ta.selectionEnd - ta.selectionStart == 1;
+    },
+    // TDD TEST 33 - CLICK-SELECT THEN CLICK DESELECTS
+    function test33() {
+        onStart({});
+        var left = window.gSvgFrame.getStart().x;
+        var top = window.gSvgFrame.getStart().y;
+        var e = {clientX: left+375, clientY: top+79};
+        window.mousedown(e); window.mouseup(e);window.updateFrames();
+        window.mousedown(e); window.mouseup(e);window.updateFrames();
+        return curIds.length == 0;
+    },
+    // TDD TEST 34 - CLICK-SELECT, CLICK-DESELECT, THEN CLICK AGAIN SELECTS
+    function test34() {
+        onStart({});
+        var left = window.gSvgFrame.getStart().x;
+        var top = window.gSvgFrame.getStart().y;
+        var e = {clientX: left+375, clientY: top+79};
+        window.mousedown(e); window.mouseup(e);
+        window.mousedown(e); window.mouseup(e);
+        window.mousedown(e); window.mouseup(e);
+        return curIds.length > 0;
+    },
+    // TDD TEST 35 - NODE X,Y ATTRIBUTE SHOULD BE A STRING TYPE
+    // bug fix unit test, was seeing nonquoted int numbers
+    function test35() {
+        onStart({});
+        issueKeyNum(1, {}); // line mode
+        issueDrag(10,10,    40,10);
+        issueKeyNum(0, {});
+        issueClick(10,10);
+        let attrs = id2nd(curIds[0].id).attrs;
+        let x2 = attrs.filter(a => a.name == 'x2')[0].value;
+        let y2 = attrs.filter(a => a.name == 'y2')[0].value;
+        //console.warn(attrs); // shows nonquoted only for x2,y2
+        return  x2 === '40' && y2 === '10';
+    },
+    // TDD TEST 36 - NODE WIDTH,HEIGHT ATTRIBUTE SHOULD BE A STRING TYPE
+    // bug fix unit test, was seeing nonquoted int numbers
+    function test36() {
+        onStart({});
+        issueKeyNum(3, {}); // line mode
+        issueDrag(10,10,    40,20);
+        issueKeyNum(0, {});
+        issueClick(10,10);
+        let attrs = id2nd(curIds[0].id).attrs;
+        let width = attrs.filter(a => a.name == 'width')[0].value;
+        let height = attrs.filter(a => a.name == 'height')[0].value;
+        // console.warn(attrs); // shows nonquoted only for width,height
+        return  width === '30' && height === '10';
     }
 ];

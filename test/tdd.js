@@ -13,6 +13,8 @@ window.issueDrag = function(x1,y1,x2,y2){
     x2 += window.gSvgFrame.getStart().x;
     y1 += window.gSvgFrame.getStart().y;
     y2 += window.gSvgFrame.getStart().y;
+    document.activeElement?.blur();  // mousedown to start drag won't work
+                                     // if an element (besides body) is focused.
     window.mousedown({clientX:x1, clientY:y1});
     window.mousemove({clientX:x1, clientY:y1,view:{event:{preventDefault:function(){}}}});
     window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});

@@ -24,8 +24,15 @@ window.mgIsDragging = function() {
 }
 
 window.mgIsOneClickSelect = function(x, y) {
+    var nd = xy2nd(x, y);
+    var ndId = nd?.attrs.filter(a => a.name == 'id')[0]?.value;
+    if (ndId != null) {
+        if (curIds.filter(o => o.id == ndId).length>0) {
+            return false; // TDDTEST33 FIX
+        }
+    }
     return window.gRectSelectState.state == window.gRectSelectStates.Down &&
-        xy2nd(x, y) != null;
+        nd != null;
 }
 
 window.mgIsNoSelectClick = function(x, y) {
@@ -188,16 +195,16 @@ window.manageDraw = function(type) {
     window.drawing.type = type;
     window.drawing.cacheX = -1;
     window.drawing.cacheY = -1;
-    return window.drawing.id;
+    return window.drawing.id;window.lgLogNode('actsvg - will draw '+type);
 }
 
 // NODE MANAGE - DRAW - EVENT - UPDATE
 
 window.manageDrawUpdate = function(x, y) {
    var nd = svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'id' && a.value == window.drawing.id).length > 0)[0];
-    if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/return;}
-        nd.attrs.filter(a=>a.name=='x2')[0].value = x;
-        nd.attrs.filter(a=>a.name=='y2')[0].value = y;
+    if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/window.lgLogNode('actsvg - draw upd early return',nd);return;}
+        nd.attrs.filter(a=>a.name=='x2')[0].value = x+''; // TDDTEST35 FIX
+        nd.attrs.filter(a=>a.name=='y2')[0].value = y+''; // should be string
     } else if (window.drawing.type == 'polyline') {
 
         if (window.drawing.cacheX == -1) {
@@ -252,23 +259,26 @@ window.manageDrawUpdate = function(x, y) {
         var backwardsX = false;
         var backwardsY = false;
         if (x < window.drawing.cacheX) {
-            nd.attrs.filter(a=>a.name=='width')[0].value = window.drawing.cacheX - x; // (nd.attrs.filter(a=>a.name=='x')[0].value - x) + nd.attrs.filter(a=>a.name=='width')[0].value;
+            nd.attrs.filter(a=>a.name=='width')[0].value = (window.drawing.cacheX - x)+''; // TDDTEST36 FIX (should be string)
 //Math.abs(x - (nd.attrs.filter(a=>a.name=='x')[0].value+nd.attrs.filter(a=>a.name=='width')[0].value));
-            nd.attrs.filter(a=>a.name=='x')[0].value = x;
+            nd.attrs.filter(a=>a.name=='x')[0].value = x+'';// TDDTEST35 FIX
+                                                           // (should be string)
             backwardsX = true;
         }
         if (y < window.drawing.cacheY) {
-            nd.attrs.filter(a=>a.name=='height')[0].value = window.drawing.cacheY - y;//Math.abs(y - (nd.attrs.filter(a=>a.name=='y')[0].value+nd.attrs.filter(a=>a.name=='height')[0].value));
-            nd.attrs.filter(a=>a.name=='y')[0].value = y;
+            nd.attrs.filter(a=>a.name=='height')[0].value = (window.drawing.cacheY - y)+''; // TDDTEST36 FIX (should be string)
+            nd.attrs.filter(a=>a.name=='y')[0].value = y+'';// TDDTEST35 FIX
+                                                         // (should be string)
             backwardsY = true;
         }
         var newX = nd.attrs.filter(a=>a.name=='x')[0].value;//Math.min(x, nd.attrs.filter(a=>a.name=='x')[0].value);
         var newW = //Math.abs(
-            x - nd.attrs.filter(a=>a.name=='x')[0].value;
+            (x - nd.attrs.filter(a=>a.name=='x')[0].value)+'';// TDDTEST35 FIX
+                                                           // (should be string)
         //);
         var newY = nd.attrs.filter(a=>a.name=='y')[0].value;//Math.min(y, nd.attrs.filter(a=>a.name=='y')[0].value);
         var newH = //Math.abs(
-            y - nd.attrs.filter(a=>a.name=='y')[0].value
+            (y - parseInt(nd.attrs.filter(a=>a.name=='y')[0].value))+''// TDDTEST36 FIX (should be string)
         //);
         if (!backwardsX) {nd.attrs.filter(a=>a.name=='x')[0].value = newX;
             nd.attrs.filter(a=>a.name=='width')[0].value = newW;}
@@ -277,19 +287,28 @@ window.manageDrawUpdate = function(x, y) {
             nd.attrs.filter(a=>a.name=='height')[0].value = newH;
         }
 
-/*        var w = x - nd.attrs.filter(a=>a.name=='x')[0].value;
-        var h = y - nd.attrs.filter(a=>a.name=='y')[0].value;
+/*        var w = x - parseInt(nd.attrs.filter(a=>a.name=='x')[0].value);
+        var h = y - parseInt(nd.attrs.filter(a=>a.name=='y')[0].value);
         if (w < 0) {
-            nd.attrs.filter(a=>a.name=='width')[0].value = nd.attrs.filter(a=>a.name=='x')[0].value - x;
-            nd.attrs.filter(a=>a.name=='x')[0].value = x;
+            nd.attrs.filter(a=>a.name=='width')[0].value = (parseInt(nd.attrs.filter(a=>a.name=='x')[0].value) - x)+'';// TDDTEST36 FIX (should be string)
+            nd.attrs.filter(a=>a.name=='x')[0].value = x+'';// TDDTEST35 FIX
+                                                           // (should be string)
             
-        } else { nd.attrs.filter(a=>a.name=='width')[0].value = w; }
+        } else {
+            nd.attrs.filter(a=>a.name=='width')[0].value = w+'';// TDDTEST36 FIX
+                                                           // (should be string)
+        }
         if (h < 0) {
-            nd.attrs.filter(a=>a.name=='height')[0].value = nd.attrs.filter(a=>a.name=='y')[0].value - y;
-            nd.attrs.filter(a=>a.name=='y')[0].value = y;
-        } else { nd.attrs.filter(a=>a.name=='height')[0].value = h; }
+            nd.attrs.filter(a=>a.name=='height')[0].value = (parseInt(nd.attrs.filter(a=>a.name=='y')[0].value) - y);// TDDTEST36 FIX (should be string)
+            nd.attrs.filter(a=>a.name=='y')[0].value = y+'';// TDDTEST35 FIX
+                                                           // (should be string)
+        } else {
+            nd.attrs.filter(a=>a.name=='height')[0].value =h+'';// TDDTEST36 FIX
+                                                           // (should be string)
+        }
 */
     }
+    window.lgLogNodeCache('drawupd', 'actsvg - draw upd', nd);
     window.updateFrames();
 }
 

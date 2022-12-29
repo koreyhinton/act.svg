@@ -243,10 +243,10 @@ window.setMouseRects = function(nd) {
         var y1 = getscal(nd.attrs, "y1");
         var x2 = getscal(nd.attrs, "x2");
         var y2 = getscal(nd.attrs, "y2");
-        nd.xmin = x1 - 1;
-        nd.xmax = x2 + 1;
-        nd.ymin = y1 - 1;
-        nd.ymax = y2 + 1;
+        nd.xmin = Math.min(x1, x2) - 1; // TDDTEST32 FIX (add Math.max/min now
+        nd.xmax = Math.max(x1, x2) + 1; // that drawing backwards is supported)
+        nd.ymin = Math.min(y1, y2) - 1;
+        nd.ymax = Math.max(y1, y2) + 1;
     }
 }
 
@@ -421,7 +421,8 @@ window.xml2nd = function(xml, tagName) {  // TDDTEST2 FTR
     var dp = new DOMParser();
     var xmlDocument = dp.parseFromString(xml, 'text/xml');
     var xdomNd = xmlDocument.getElementsByTagName(tagName)[0];
-    var nd = xdom2nd(xdomNd, nd);
+    /*var nd = */xdom2nd(xdomNd, nd);
+    window.lgLogNode('actsvg - xml converted to nd', nd);
     sortSvgNodes();
 }
 
@@ -819,6 +820,7 @@ window.mousedown = function(e) {
     var y = window.gSvgMouse.getY(e.clientY);
 
     if (x<0) { return; }
+    window.lgLogNode('actsvg - mousedown');
     if (window.mgCanSelect(numMode)) {  // TDDTEST25 FIX
         window.issueRectSelectClick(x, y);
         return;
@@ -833,6 +835,9 @@ window.mousedown = function(e) {
 
 window.mouseup = function(e) {
     e = e || window.event;
+    window.lgLogNodeCacheFlush('mousemove');
+    window.lgLogNodeCacheFlush('drawupd');
+    window.lgLogNode('actsvg - mouseup');
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
     window.mvClose();
@@ -840,15 +845,18 @@ window.mouseup = function(e) {
         /*setTimeout(()=>{*/issueRectSelectClick(x, y); updateFrames();/*}, 100);*/
     }
     if (window.mgIsOneClickSelect(x,y)) { // TDDTEST26 FIX
+        window.lgLogNode('actsvg - select');
         updateFrames( issueClick(x, y) );
         window.mgCloseSelection();
         return;
     }
     if (window.mgIsNoSelectClick(x,y)) { // TDDTEST24 FIX
+        window.lgLogNode('actsvg - missclick');
         window.onDone();
         window.mgCloseSelection();
     }
     if (!window.mgIsDrawingClosed()) {
+        window.lgLogNode('actsvg - closing drawing');
         window.mgCloseDrawing();
         //console.warn('done draw');
         window.updateFrames();
@@ -859,6 +867,7 @@ window.mousemove = function(e) {
     e = e || window.event;
     let x = window.gSvgMouse.getX(e.clientX);
     let y = window.gSvgMouse.getY(e.clientY);
+    window.lgLogNodeCache('mousemove', 'actsvg - mousemove');
     if (window.mgCanDrag()) { // TDDTEST23 FTR
         if (window.mvIsMove(x,y)) {
             window.mvMove(x,y);
@@ -871,7 +880,7 @@ window.mousemove = function(e) {
     if (x>0 && x<750
         && y>0 && y<750) { // TDDTEST25 FIX -should reach bot-right
         window.mgSetMouse(x, y);
-
+        //window.lgLogNodeCache('mousemove', 'actsvg - mousemove - isClosed = '+window.mgIsDrawingClosed());
         if (!window.mgIsDrawingClosed()) {
             window.manageDrawUpdate(x, y);
         }

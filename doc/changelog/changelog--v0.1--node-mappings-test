@@ -1,0 +1,4 @@
+CHANGELOG 2022-12-29 -- V0.1 -- NODE MAPPINGS TEST
+
+gh-22 :: drawing order permutations test
+gh-21 :: fix drawing and selection rectangle position when scrolled

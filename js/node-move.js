@@ -24,8 +24,9 @@ window.mvIsMove = function(x,y) {
 }
 // MV - CLOSE MOVE
 window.mvClose = function() {
+    let wasMoving = window.gMvState.moving;
     window.gMvState.moving = false;
-    window.mvIssueMoveKey('Enter');
+    if (wasMoving) { window.mvIssueMoveKey('Enter'); }// TDDTEST33 FIX
 }
 // MV - MOVE
 window.mvMove = function(x,y) {

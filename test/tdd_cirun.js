@@ -83,6 +83,7 @@ global.numMode = 0;
 global.clickCnt = 0;
 global.drawClick = null;
 global.notifyTextArr = null;
+global.ndV1Strs = null;
 
 var imports = [];
 
@@ -123,6 +124,7 @@ function run3(imports, cb) {
                 });
             }
 global.issueDrag = window.issueDrag;
+global.rotate = window.rotate;
             return import(imp);
         });
     }
@@ -156,6 +158,7 @@ function run(cb) {
 }
 
 run(() => {
+    window.gLgWarn = false;
     global.MoveTester = window.MoveTester;
     // Build the tests array
     //     Stores the test names that we do have,
