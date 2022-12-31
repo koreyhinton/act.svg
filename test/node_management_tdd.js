@@ -258,5 +258,16 @@ window.tddTests = [
         let height = attrs.filter(a => a.name == 'height')[0].value;
         // console.warn(attrs); // shows nonquoted only for width,height
         return  width === '30' && height === '10';
+    },
+    // TDD TEST 37 - RECTANGULAR SELECTION OF DIAGONAL LINE
+    function test37() {
+        onStart({});
+        issueKeyNum(1, {});
+        issueDrag(20,200,    80,260);
+        issueKeyNum(0, {});
+        issueDrag(10,190,    90,270);
+        // needs to be tracked as a selected curId,
+        // and be changed to a color indicating that it is selected
+        return curIds.length > 0 && document.getElementsByTagName('line')[0].getAttribute('stroke')!='black';
     }
 ];

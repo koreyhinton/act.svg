@@ -363,6 +363,7 @@ window.nd2xml = function(nd, colorOverride) {
     } else {
         xml += "/>";
     }
+    // window.lgLogNode('actsvg - nd2xml - colorOverride='+(colorOverride), nd);
     return xml;
 }
 
@@ -471,7 +472,7 @@ window.diffscalarr = function(ndV1, ndV2, name, query) {
 
 // updateFrames MUST be called after issueClick since updateFrames
 // depends on curId that gets modified by track/untrack functions
-window.updateFrames = function(selNd) {
+window.updateFrames = function(selNd, ctx) {
     for (var i=0; i<svgNodes.length; i++) { setMouseRects(svgNodes[i]); }
 
     document
@@ -496,15 +497,19 @@ window.updateFrames = function(selNd) {
     svg.innerHTML = xml;
     document.getElementById("svgFullTextarea").value = xml;
     document.getElementById("pageDisplayFrame").appendChild(svg);
-
+    window.lgLogNode('actsvg - updateFrames - curIds.length='+(curIds.length),selNd);
     if (curIds.length == 0) return;
-    var editNd = id2nd(curIds[curIds.length-1].id);/*TODO: this should not be null!!*/console.log(curIds, id2nd(curIds[curIds.length-1].id));
-
+    var editNd = id2nd(curIds[curIds.length-1].id);
+    // window.lgLogNode('actsvg - updateFrames - editNd, editNd.cacheColor='+(editNd?.cacheColor),editNd);
+    // window.lgLogNode('actsvg - updateFrames - pre-xml selNd', selNd);
     document
         .getElementById("svgPartTextarea")
-        .value = nd2xml(editNd, editNd.cacheColor); console.log("tag", editNd.tagName);
+        .value = nd2xml(editNd,
+            ctx!=null&&ctx.isSel?null:editNd.cacheColor); // TDDTEST37 FIX (ctx)
+    // window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
     cacheNd = {attrs:[]};
     forceMap(editNd, cacheNd);
+    window.lgLogNode('actsvg - updateFrames - mapped', selNd);
 }
 
 window.trackNd = function(nd) {
@@ -573,6 +578,10 @@ window.issueSelection = function(nd) {
         );
         nd.cacheColor=null; // TDDTEST6 FTR
     }
+    let logColor = window.getcolor(nd);
+    let logColorTxt = logColor;
+    if (logColor == editColor) {logColorTxt = 'edit color';} else if (logColor == selColor) { logColorTxt = 'sel color'; }
+    window.lgLogNode('actsvg - issue selection - '+selType+',color='+logColorTxt, nd);
     return selType;
 }
 
@@ -842,7 +851,10 @@ window.mouseup = function(e) {
     var y = window.gSvgMouse.getY(e.clientY);
     window.mvClose();
     if (window.mgIsDragging()) {
-        /*setTimeout(()=>{*/issueRectSelectClick(x, y); updateFrames();/*}, 100);*/
+        issueRectSelectClick(x, y);
+        /*updateFrames();*/ // TDDTEST37 FIX (removed updateFrames, an extra
+                            // update beyond rect select updateFrames call
+                            // was reverting the edit node color)
     }
     if (window.mgIsOneClickSelect(x,y)) { // TDDTEST26 FIX
         window.lgLogNode('actsvg - select');

@@ -525,7 +525,8 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
     for (var i=0; i<selLst.length; i++) {
         /*setTimeout(function(){*/window.issueClick(selLst[i].xmin, selLst[i].ymin);/*},10);*/
         //console.log('click',selLst[i]);
-        window.updateFrames();
+        window.updateFrames(selLst[i], {isSel:true}); // TDDTEST37 FIX
+        window.lgLogNode('actsvg - issued rect click', selLst[i]);
     } /*end selLst loop*/
 
     if (selLst.length == 0) { // TDDTEST24 FIX

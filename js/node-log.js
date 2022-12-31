@@ -21,7 +21,7 @@ window.lgLogNode = function(msg, nd) {
     let attrStr = '';nd?.attrs?.forEach(a => attrStr+=(a.name+':'+a.value+' '));
     let consoleMsg = '--- '+msg+'\n'+
         'TRACE    '+Error().stack.replace(/^Error\n    /,'')+'\n'+
-        `NODE    tag=${nd?.tagName},pos=(${nd==null||nd.attrs==null?'null':window.getPosId(nd?.attrs)}),id=${id},curIdx=${curIds.findIndex(c=>c.id==id)},svgNodesIdx=${svgNodes.findIndex(n=>n==nd)}`+'\n'+
+        `NODE    tag=${nd?.tagName},pos=(${nd==null||nd.attrs==null||(nd.tagName.toLowerCase()=='svg')?'null':window.getPosId(nd?.attrs)}),id=${id},curIdx=${curIds.findIndex(c=>c.id==id)},svgNodesIdx=${svgNodes.findIndex(n=>n==nd)}`+'\n'+
         `ATTRS    ${attrStr}`+'\n'+
         '-- end '+msg;
     if (window.gLgWarn) {
