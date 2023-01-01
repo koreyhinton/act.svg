@@ -671,8 +671,8 @@ window.issueClick = function(x, y) {
             issueDraw(`<rect rx="0" ry="0" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(x+10)+`" height="`
-                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(10)+`" height="`
+                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
@@ -686,8 +686,8 @@ window.issueClick = function(x, y) {
             issueDraw(`<rect rx="10" ry="10" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(x+10)+`" height="`
-                +(y+10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(10)+`" height="`
+                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
