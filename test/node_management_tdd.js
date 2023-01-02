@@ -269,5 +269,28 @@ window.tddTests = [
         // needs to be tracked as a selected curId,
         // and be changed to a color indicating that it is selected
         return curIds.length > 0 && document.getElementsByTagName('line')[0].getAttribute('stroke')!='black';
+    },
+    // TDD TEST 38 - BACKWARDS RECTANGULAR SELECTION
+    function test38() {
+        onStart({});
+        issueKeyNum(0, {});
+        issueDrag(750,750,    0,0);
+        return curIds.length > 0;
+    },
+    // TDD TEST 39 - BACKWARDS RECTANGULAR SELECTION DISPLAYS CORRECTLY
+    function test39() {
+        onStart({});
+        issueKeyNum(0, {});
+        var svgPt = window.gSvgFrame.getStart();
+        var x = svgPt.x + 750;
+        var y = svgPt.y + 750;
+        window.mousedown({clientX: x, clientY: y});
+        window.mousemove({clientX: svgPt.x, clientY: svgPt.y,
+            view:{event:{preventDefault:function(){}}}});
+        var marker = document.getElementById("selMarker");
+        var markerStyle = window.getComputedStyle(marker);
+        var left = parseInt(markerStyle.left.replace("px,",""));
+        var top = parseInt(markerStyle.top.replace("px",""));
+        return left <= svgPt.x && top <= svgPt.y;
     }
 ];

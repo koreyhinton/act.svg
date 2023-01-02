@@ -453,8 +453,18 @@ window.issueVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
 window.updateVisibleRectSelection = function(x, y) { // TDDTEST23 FTR
     window.gRectSelectState.state = window.gRectSelectStates.Drag;
     var marker = document.getElementById("selMarker");
+    var left = Math.min(
+                window.gSvgFrame.getStart().x + window.gRectSelectState.firstX,
+                window.gSvgFrame.getStart().x + x
+               ) + 'px'; // TDDTEST39 FIX
+    var top = Math.min(
+                window.gSvgFrame.getStart().y + window.gRectSelectState.firstY,
+                window.gSvgFrame.getStart().y + y
+              ) + 'px'; // TDDTEST39 FIX
     var w = Math.abs((window.gRectSelectState.firstX/*+750*/) - (x));
     var h = Math.abs((window.gRectSelectState.firstY/*+88*/) - (y));
+    marker.style.top = top; // TDDTEST39 FIX
+    marker.style.left = left; // TDDTEST39 FIX
     marker.style.width = (w)+'px';
     marker.style.height = (h)+'px';
 } /* end updateVisibleRectSelection fn */
