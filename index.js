@@ -352,7 +352,7 @@ window.nd2xml = function(nd, colorOverride) {
             //for (var j=0; j<nd.attrs.length; j++) {
                 //if (nd.attrs[j].name == "stroke") {
                     nd.attrs[i].value = colorOverride;
-                    console.log("OVERRIDE", colorOverride);
+                    // console.log("OVERRIDE", colorOverride);
                 //}
             //}
         }
@@ -385,7 +385,7 @@ window.xy2nd = function(x, y) {
 
 window.xdom2nd = function(xdomNd, nd) {
     var push = false;
-    if (nd.attrs == null) { console.log("push"); nd.attrs = []; push = true;} // var nd = {attrs:[]}
+    if (nd.attrs == null) { nd.attrs = []; push = true;} // var nd = {attrs:[]}
     for (var i=0; i<xdomNd.attributes.length; i++) {
         if (!push) {
             push = true;
@@ -416,7 +416,7 @@ window.xdom2nd = function(xdomNd, nd) {
 // get this new node to show up in the left code pane and
 // the right display frame.
 window.xml2nd = function(xml, tagName) {  // TDDTEST2 FTR
-    console.log(xml);
+    // console.log(xml);
     var nd = {attrs:[]};
     svgNodes.push(nd);
     var dp = new DOMParser();
@@ -834,7 +834,7 @@ window.mousedown = function(e) {
         window.issueRectSelectClick(x, y);
         return;
     }
-    console.log(x,y);
+    // console.log(x,y);
     if (isNaN(x) || isNaN(y)) { return; }
     // curIds.push({x: x, y: y});
     // curId.x = x;
@@ -1059,8 +1059,8 @@ window.onApplyEdits = function() {
         // }
         i-=1;
     }
-    console.log("IMPORTANT", curIds.length);
+    // console.log("IMPORTANT", curIds.length);
     onDone();
-    console.log("IMPORTANT", curIds.length);
+    // console.log("IMPORTANT", curIds.length);
     // updateFrames();
 }

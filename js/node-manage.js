@@ -525,7 +525,7 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
 
     if (lastNd != null) {
         selLst.push(lastNd);
-        console.log(lastNd);
+        // console.log(lastNd);
     }
 
     window.gRectSelectState.state = window.gRectSelectStates.None;
