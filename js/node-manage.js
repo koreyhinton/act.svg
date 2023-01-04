@@ -7,6 +7,8 @@ window.gRectSelectState = {
 
 window.gTest = false;
 
+window.gmgNodeSnap = new window.snNodeSnapper();
+
 window.mouse = {x:-1,y:-1};
 
 window.drawing = { id: 'null0', type: 'null', cacheX:-1, cacheY:-1 };
@@ -202,7 +204,12 @@ window.manageDraw = function(type) {
 
 window.manageDrawUpdate = function(x, y) {
    var nd = svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'id' && a.value == window.drawing.id).length > 0)[0];
+    let adjPt = gmgNodeSnap.snapXYToEnv(window.drawing.type, x, y);
+    x = adjPt.x;
+    y = adjPt.y;
     if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/window.lgLogNode('actsvg - draw upd early return',nd);return;}
+        x = gmgNodeSnap.snapNdAttr(x, nd, 'x1');
+        y = gmgNodeSnap.snapNdAttr(y, nd, 'y1');
         nd.attrs.filter(a=>a.name=='x2')[0].value = x+''; // TDDTEST35 FIX
         nd.attrs.filter(a=>a.name=='y2')[0].value = y+''; // should be string
     } else if (window.drawing.type == 'polyline') {
@@ -215,8 +222,10 @@ window.manageDrawUpdate = function(x, y) {
         var pt1 = {};
         var pt2 = {};
 
-        if (Math.abs(x - window.drawing.cacheX) < 11) { x = window.drawing.cacheX; }
-        if (Math.abs(window.drawing.cacheY - y) < 11) { y = window.drawing.cacheY; }
+        x = gmgNodeSnap.snapX(x, window.drawing.cacheX);
+        y = gmgNodeSnap.snapY(y, window.drawing.cacheY);
+        // if (Math.abs(x - window.drawing.cacheX) < 11) { x = window.drawing.cacheX; }
+        // if (Math.abs(window.drawing.cacheY - y) < 11) { y = window.drawing.cacheY; }
         if (window.drawing.cacheX == x) {
             pt1.x = x-10;
             pt2.x = x+10;

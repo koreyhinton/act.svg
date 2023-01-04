@@ -596,11 +596,15 @@ window.issueDraw = function(xml, tagName) {
 
 window.issueClick = function(x, y) {
     var id = null;
+    let types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
     if ([1,2,3,4,8].indexOf(numMode)>-1) {
-        var types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
         id = window.manageDraw(types[numMode]);
         //console.warn(types[numMode]);
     }
+    var adjPt = new window.snNodeSnapper()
+        .snapXYToEnv(types[numMode]+'', x, y);
+    x = adjPt.x;
+    y = adjPt.y;
     if (numMode == 1) {  // TDDTEST2 FTR
         //if (clickCnt == 1) {
             //var id = window.manageDraw();
