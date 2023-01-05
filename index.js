@@ -44,7 +44,7 @@ let leftFrameNode = new window.AggregateNode({
     top: topFrameNode,
     left: null
 });
-window.gSvgFrame = new window.StartEndFrame(750, 88, 750+748, 88+750);
+window.gSvgFrame = new window.StartEndFrame(750, 88, 750+750, 88+750);
 window.gSvgFrameNode = new window.AggregateNode({
     frame: window.gSvgFrame,
     id: 'pageDisplayFrame',
@@ -832,7 +832,15 @@ window.mousedown = function(e) {
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
 
-    if (x<0) { return; }
+    let boundsFrame = new window.StartEndFrame(0,0,
+        window.gSvgFrame.getEnd().x - window.gSvgFrame.getStart().x,
+        window.gSvgFrame.getEnd().y - window.gSvgFrame.getStart().y);
+    let boundsStart = boundsFrame.getStart();
+    let boundsEnd = boundsFrame.getEnd();
+
+    if (x<boundsStart.x||x>boundsEnd.x||y<boundsStart.y||y>boundsEnd.y) {
+        return;  // TDDTEST41 FIX
+    }
     window.lgLogNode('actsvg - mousedown');
     if (window.mgCanSelect(numMode)) {  // TDDTEST25 FIX
         window.issueRectSelectClick(x, y);

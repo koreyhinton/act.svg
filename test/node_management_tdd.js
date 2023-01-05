@@ -292,5 +292,12 @@ window.tddTests = [
         var left = parseInt(markerStyle.left.replace("px,",""));
         var top = parseInt(markerStyle.top.replace("px",""));
         return left <= svgPt.x && top <= svgPt.y;
+    },
+    // TDD TEST 41 - OUT OF BOUNDS DRAW DOES NOT ADD NEW NODE
+    function test41() {
+        onStart({});
+        issueKeyNum(1, {});
+        issueDrag(800,100,    600,100);
+        return document.getElementById('svgFullTextarea').value.indexOf('<line') == -1 && document.getElementsByTagName('line').length == 0;
     }
 ];

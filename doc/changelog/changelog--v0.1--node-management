@@ -21,3 +21,7 @@ gh-8 :: delete a node feature via Cut (Ctrl-x)
 CHANGELOG 2022-11-29 -- V0.1 -- NODE MANAGEMENT
 
 gh-18 :: click-drag to draw rectangle, line, polyline
+
+CHANGELOG 2023-01-05 -- V0.1 -- NODE MANAGEMENT
+
+gh-33 :: clicking outside drawing bounds should not add elements to the xml
