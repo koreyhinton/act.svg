@@ -1,4 +1,4 @@
-window.gLgPattern = 'actsvg';//'actsvg - test';//null;
+window.gLgPattern = 'test';//'actsvg - test';//null;
 window.gLgWarn = null;
 window.gLgCacheKV = {};
 

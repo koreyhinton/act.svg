@@ -818,7 +818,7 @@ window.keydown = function(e) {
         issueKeyNum(parseInt(e.key));
         e.view.event.preventDefault();
     } else if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
-        window.mvIssueMoveKey(e.key);
+        window.mvIssueMoveKey(e.key, e.shiftKey);
         e.view.event.preventDefault();
     } else {
         window.manageKeyDownEvent(e);
