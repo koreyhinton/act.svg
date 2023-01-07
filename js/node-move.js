@@ -8,7 +8,7 @@ window.mvIsMoveKey = function(key) {
 }
 
 // MV - CAN SELECT AND MOVE
-// TODO: this function along with the mvCanMove function follows a bad pattern
+// TODO: this function along with the mvIsMove function follows a bad pattern
 // of returning a true/false value and also setting necessary tracking values;
 // both functions should be refactored to follow the CQS principle
 window.mvCanSelectAndMove = function(x,y) {
