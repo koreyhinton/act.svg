@@ -2,3 +2,7 @@ CHANGELOG 2023-01-07 -- V0.1 -- NODE MOVEMENT
 
 gh-19 :: change arrow-keys move selection behavior
 gh-17 :: click-drag to move nodes
+
+CHANGELOG 2023-01-08 -- V0.1 -- NODE MOVEMENT
+
+gh-19 :: fix losing select color on keypresses when single-click selected

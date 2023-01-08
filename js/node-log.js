@@ -1,4 +1,4 @@
-window.gLgPattern = 'test';//'actsvg - test';//null;
+window.gLgPattern = 'actsvg -';//'actsvg - test';//null;
 window.gLgWarn = null;
 window.gLgCacheKV = {};
 
@@ -17,7 +17,7 @@ window.lgLogNode = function(msg, nd) {
     if (window.gLgPattern == null) return;
     if (!new RegExp(window.gLgPattern).test(msg)) return;
     if (window.gLgWarn == null) window.gLgWarn = window.gTest;
-    let id = nd?.attrs?.filter(a => a.name == 'id')?.value;
+    let id = nd?.attrs?.filter(a => a.name == 'id')?.[0]?.value;
     let attrStr = '';nd?.attrs?.forEach(a => attrStr+=(a.name+':'+a.value+' '));
     let consoleMsg = '--- '+msg+'\n'+
         'TRACE    '+Error().stack.replace(/^Error\n    /,'')+'\n'+

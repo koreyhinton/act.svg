@@ -3,6 +3,13 @@ window.StartEndFrame = class {
         this.start = { x: startX, y: startY };
         this.end = { x: endX, y: endY };
     }
+    static FromRect(el) {
+        let x = parseInt(el.getAttribute("x"));
+        let y = parseInt(el.getAttribute("y"));
+        let x2 = parseInt(el.getAttribute("width")) + x;
+        let y2 = parseInt(el.getAttribute("height")) + y;
+        return new window.StartEndFrame(x,y,    x2,y2);
+    }
     setFrame(startX, startY, endX, endY) {
         this.start.x = startX;
         this.start.y = startY;

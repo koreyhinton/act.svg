@@ -501,12 +501,12 @@ window.updateFrames = function(selNd, ctx) {
     if (curIds.length == 0) return;
     var editNd = id2nd(curIds[curIds.length-1].id);
     // window.lgLogNode('actsvg - updateFrames - editNd, editNd.cacheColor='+(editNd?.cacheColor),editNd);
-    // window.lgLogNode('actsvg - updateFrames - pre-xml selNd', selNd);
+    window.lgLogNode('actsvg - updateFrames - pre-xml selNd. cacheColor='+editNd.cacheColor, selNd);
     document
         .getElementById("svgPartTextarea")
         .value = nd2xml(editNd,
             ctx!=null&&ctx.isSel?null:editNd.cacheColor); // TDDTEST37 FIX (ctx)
-    // window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
+    window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
     cacheNd = {attrs:[]};
     forceMap(editNd, cacheNd);
     window.lgLogNode('actsvg - updateFrames - mapped', selNd);
@@ -858,9 +858,9 @@ window.mouseup = function(e) {
     e = e || window.event;
     window.lgLogNodeCacheFlush('mousemove');
     window.lgLogNodeCacheFlush('drawupd');
-    window.lgLogNode('actsvg - mouseup');
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
+    window.lgLogNode(`actsvg - mouseup client(${e.clientX},${e.clientY}), svg(${x},${y})`);
     window.mvClose();
     if (window.mgIsDragging()) {
         issueRectSelectClick(x, y);
@@ -870,7 +870,7 @@ window.mouseup = function(e) {
     }
     if (window.mgIsOneClickSelect(x,y)) { // TDDTEST26 FIX
         window.lgLogNode('actsvg - select');
-        updateFrames( issueClick(x, y) );
+        updateFrames( issueClick(x, y), {isSel:true} ); // TDDTEST42 FIX isSel
         window.mgCloseSelection();
         return;
     }
