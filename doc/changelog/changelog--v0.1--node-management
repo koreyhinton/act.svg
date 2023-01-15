@@ -25,3 +25,7 @@ gh-18 :: click-drag to draw rectangle, line, polyline
 CHANGELOG 2023-01-05 -- V0.1 -- NODE MANAGEMENT
 
 gh-33 :: clicking outside drawing bounds should not add elements to the xml
+
+CHANGELOG 2023-01-15 -- V0.1 -- NODE MANAGEMENT
+
+gh-1 :: fixed inner rectangle not being selected bug

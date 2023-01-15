@@ -367,7 +367,23 @@ window.nd2xml = function(nd, colorOverride) {
     return xml;
 }
 
-window.xy2nd = function(x, y) {
+window.minxydist = function(nd, x, y) { // TDDTEST43 FIX
+    // Math.abs should not be necessary since it can be assumed that x and y
+    // are within the bounds of the node by the calling code;
+    // e.g., one-click selection decision via issueClick -> xy2nd -> minxydist
+    // to find the node with nearest edge to the x,y coord.
+    //
+    // Math.abs is added regardless of the calling code's boundary guard.
+    // The repititous positive number guard is put in anyway
+    // just in case a large negative value did occur from the subtraction
+    // in which it would choose a small positive over large negative number.
+    return Math.min(
+        /*x minimum=*/ Math.min(Math.abs(x-nd.xmin), Math.abs(nd.xmax-x)),
+        /*y minimum=*/ Math.min(Math.abs(y-nd.ymin), Math.abs(nd.ymax-y))
+    ); // end return Math.min xmin ymin
+} // end minxydist function - returns min. ver./hor. dist. to nd's bounding rect
+
+window.xy2nd = function(x, y, withNearestEdge = false) { // TDDTEST43 FIX
     var nd = null;
     for (var i=0; i<svgNodes.length; i++) {
         var svgNd = svgNodes[i];
@@ -376,12 +392,21 @@ window.xy2nd = function(x, y) {
         && (x <= svgNd.xmax)
         && (y >= svgNd.ymin)
         && (y <= svgNd.ymax)) {
-            nd = svgNd;
-            break;
-        }
-    }    
+            if (!withNearestEdge) {
+                nd = svgNd;
+                break;
+            } // end early-ret. cond - no near. edge logic & ret. 1st in bounds
+            if (nd == null) {
+                nd = svgNd;
+                continue;
+            } // end nd null cont. cond - next it. it will have 2 nds to compare
+            if (window.minxydist(svgNd, x, y) < window.minxydist(nd, x, y)) {
+                nd = svgNd;
+            } // end impli.-cont. cond - near. edge logic performed til loop-end
+        } // end if x y in bounds check
+    } // end for i in svgNodes len. loop
     return nd;
-}
+} // end xy2nd function
 
 window.xdom2nd = function(xdomNd, nd) {
     var push = false;
@@ -754,7 +779,7 @@ window.issueClick = function(x, y) {
         return;
     }
     clickCnt = 0; drawClick = {x:-1,y:-1};
-    var clickedNd = xy2nd(x, y);
+    var clickedNd = xy2nd(x, y, /*withNearestEdge=*/true); // TDDTEST43 FIX
     if (clickedNd == null && x>=0 && x<=750 && y>=0 && y<=750) {
         /*setTimeout(()=>*/issueRectSelectClick(x, y)/*, 100)*/; // TDDTEST21 FTR
         return;

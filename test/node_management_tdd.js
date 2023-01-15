@@ -299,5 +299,22 @@ window.tddTests = [
         issueKeyNum(1, {});
         issueDrag(800,100,    600,100);
         return document.getElementById('svgFullTextarea').value.indexOf('<line') == -1 && document.getElementsByTagName('line').length == 0;
-    }
+    }, // end test41
+    // TDD TEST 43 - SELECTS INNER RECTANGLE
+    function test43() {
+        onStart({});
+        issueKeyNum(3, {});
+        issueDrag(200,200,    400,400); // bug only happened when drawing larger
+                                        // rectangle first
+        issueDrag(250,250,    300,300); // small rect
+
+        var e = {view:{event:{preventDefault:()=>{}}}};
+        e.clientX = window.gSvgFrame.getStart().x + 251;
+        e.clientY = window.gSvgFrame.getStart().y + 251;
+        issueKeyNum(0, {});
+        window.mousedown(e); window.mouseup(e); // should select small rect
+        var selEl = document.getElementById(curIds[0].id);
+        return curIds.length == 1 &&
+            window.StartEndFrame.FromRect(selEl).getStart().x == 250;
+    }, // end test43
 ];
