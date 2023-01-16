@@ -235,8 +235,8 @@ window.setMouseRects = function(nd) {
         var y = getscal(nd.attrs, "y");
         nd.xmin = x;
         nd.xmax = x + (10*nd.text.length); // TDDTEST1 FIX
-        nd.ymin = y - 10;//12;
-        nd.ymax = y + 5;//12;//25;
+        nd.ymin = y - 10; // offsets same as js/addon-palettes.js
+        nd.ymax = y + 5;  // StartEndFrame.FromEl fn
     }
     if (nd.tagName.toLowerCase() == "line") { // TDDTEST3 FTR
         var x1 = getscal(nd.attrs, "x1");

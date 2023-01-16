@@ -315,6 +315,69 @@ window.tddTests = [
         window.mousedown(e); window.mouseup(e); // should select small rect
         var selEl = document.getElementById(curIds[0].id);
         return curIds.length == 1 &&
-            window.StartEndFrame.FromRect(selEl).getStart().x == 250;
+            window.StartEndFrame.FromEl(selEl).getStart().x == 250;
     }, // end test43
+    // TDD TEST 44 - SELECTS INNER ELEMENT OF RECTANGLE PERMUTATIONS
+    function test44() {
+        // like test 43 but with more element types
+        onStart({});
+        issueKeyNum(3, {});
+        issueDrag(1,1,    400,400); // large surrounding rect
+
+        let types = ['line', 'rect', 'circle', 'polyline', 'text'];
+        let drawInfo = {
+            'line': { drag: true, mode: 1 },
+            'polyline': { drag: true, mode: 2 },
+            'rect': { drag: true, mode: 3 },
+            'circle': { drag: false, mode: 6 },
+            'text': { drag: false, mode: 9 }
+        }; // end drawInfo associated array
+        let x = 3;
+        let y = 3;
+        for (var i=0; i<types.length; i++) {
+            let type = types[i];
+            let di = drawInfo[type];
+            issueKeyNum(di.mode, {});
+
+            if (di.drag) {
+                issueDrag(x,y,    x+13,y+13);
+            } // end drag-to-draw cond
+
+            if (!di.drag) {
+                issueClick(x, y);
+            } // end not drag-to-draw cond
+
+            if (di.mode == 6) {
+                // default circle has r=10 so need to offset click by that much:
+                x -= 10;
+                y -= 10;
+            } // end circle mode cond
+
+            if (di.mode == 9) {
+                // text frame is offset based on fromEl and setMouseRects fns
+                y += 3; // it is adjusted based on
+                x -= 7; // issueClick mode 9 cond
+            } // end text mode cond
+
+            issueKeyNum(0, {});
+            var e = {view:{event:{preventDefault:()=>{}}}};
+            e.clientX = window.gSvgFrame.getStart().x + x;
+            e.clientY = window.gSvgFrame.getStart().y + y;
+
+            window.mousedown(e); window.mouseup(e); // should select cur el
+            var selEl = document.getElementById(curIds[0].id);
+            window.lgLogNode(`actsvg - test44 attempt sel inside rect curIds.length==${curIds.length} selEl==${selEl.tagName} StartFrameX==${window.StartEndFrame.FromEl(selEl).getStart().x} x==${x} StartFrameY==${window.StartEndFrame.FromEl(selEl).getStart().y} y==${y}`, selEl);
+            if (    !(curIds.length == 1 &&
+                      window.StartEndFrame.FromEl(selEl).getStart().x == x &&
+                      window.StartEndFrame.FromEl(selEl).getStart().y == y)) {
+                return false;
+            } // end not cur el selected cond
+            x += 26;
+            y += 26;
+            e.clientX = window.gSvgFrame.getStart().x + 600;
+            e.clientY = window.gSvgFrame.getStart().y + 600;
+            window.mousedown(e); window.mouseup(e); //resets to nothing selected
+        } // end for i in types len.
+        return true;
+    }, // end test44
 ];

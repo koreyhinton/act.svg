@@ -3,12 +3,73 @@ window.StartEndFrame = class {
         this.start = { x: startX, y: startY };
         this.end = { x: endX, y: endY };
     }
-    static FromRect(el) {
-        let x = parseInt(el.getAttribute("x"));
+    static FromEl(el) {
+        let x1 = -1;
+        let y1 = -1;
+        let x2 = -1;
+        let y2 = -1;
+        switch (el.tagName.toLowerCase()) {
+            case 'line': {
+                x1 = parseInt(el.getAttribute("x1"));
+                y1 = parseInt(el.getAttribute("y1"));
+                x2 = parseInt(el.getAttribute("x2"));
+                y2 = parseInt(el.getAttribute("y2"));
+                break;
+            }
+            case 'polyline': {
+                let ptStr = el.getAttribute("points");
+                let ndAttrs = [{name: 'points', value: ptStr}];
+                var xs = getscalarr(ndAttrs, "points", "even");
+                var ys = getscalarr(ndAttrs, "points", "odd");
+                let minX = 750;
+                let minY = 750;
+                let maxX = 0;
+                let maxY = 0;
+                for (var i=0; i<xs.length; i++) {
+                    if (xs[i] < minX) { minX = xs[i]; }
+                    if (xs[i] > maxX) { maxX = xs[i]; }
+                }
+                for (var i=0; i<ys.length; i++) {
+                    if (ys[i] < minY) { minY = ys[i]; }
+                    if (ys[i] > maxY) { maxY = ys[i]; }
+                }
+                x1 = minX;
+                y1 = minY;
+                x2 = maxX;
+                y2 = maxY;
+                break;
+            }
+            case 'rect': {
+                x1 = parseInt(el.getAttribute("x"));
+                y1 = parseInt(el.getAttribute("y"));
+                x2 = x1 + parseInt(el.getAttribute("width"));
+                y2 = y1 + parseInt(el.getAttribute("height"));
+                break;
+            }
+            case 'circle': {
+                let cx = parseInt(el.getAttribute("cx"));
+                let cy = parseInt(el.getAttribute("cy"));
+                let r = parseInt(el.getAttribute("r"));
+                x1 = cx - r;
+                y1 = cy - r;
+                x2 = cx + r;
+                y2 = cy + r;
+                break;
+            }
+            case 'text': {
+                x1 =  parseInt(el.getAttribute("x"));
+                y1 = parseInt(el.getAttribute("y"));
+                x2 = x1 + (10*el.innerHTML.length); // offsets are the same as
+                y2 = y1 + 5;                        // in file index.js
+                                                    // setMouseRects fn
+                break;
+            }
+        }
+        /*let x = parseInt(el.getAttribute("x"));
         let y = parseInt(el.getAttribute("y"));
         let x2 = parseInt(el.getAttribute("width")) + x;
-        let y2 = parseInt(el.getAttribute("height")) + y;
-        return new window.StartEndFrame(x,y,    x2,y2);
+        let y2 = parseInt(el.getAttribute("height")) + y;*/
+        return new window.StartEndFrame(x1,y1,    x2,y2);
     }
     setFrame(startX, startY, endX, endY) {
         this.start.x = startX;

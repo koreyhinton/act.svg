@@ -29,3 +29,7 @@ gh-33 :: clicking outside drawing bounds should not add elements to the xml
 CHANGELOG 2023-01-15 -- V0.1 -- NODE MANAGEMENT
 
 gh-1 :: fixed inner rectangle not being selected bug
+
+CHANGELOG 2023-01-16 -- V0.1 -- NODE MANAGEMENT
+
+gh-1 :: add permutation test for selecting elements inside rect

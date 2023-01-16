@@ -5,7 +5,7 @@ window.tddTests = [
         onStart({});
 
         // rect frame in svg coordinate
-        let rectFrame = window.StartEndFrame.FromRect(
+        let rectFrame = window.StartEndFrame.FromEl(
             document.getElementsByTagName('rect')[0]
         ); // frame of the default rect svg element
 
