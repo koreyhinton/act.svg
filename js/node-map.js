@@ -127,7 +127,7 @@ window.smartMap = function(src, dest) {
         case "polyline -> polyline": {
             addscal(dest, "stroke-width", diffscal(cacheNd,src,"stroke-width"));
             addscalarr(dest, "points", "even", diffscalarr(cacheNd,src,"points","even"));
-            addscalarr(dest, "points", "odd", diffscalarr(cacheNd,src,"points","even"));
+            addscalarr(dest, "points", "odd", diffscalarr(cacheNd,src,"points","odd")); // TDDTEST45 FIX // TDDTEST46 FIX
             break;
         }
 

@@ -7,13 +7,8 @@ window.BoolSwitch = class {
         return this.val;
     }
 }
-window.tddTests = [
-    ...(window.tddTests||[]),
-    // TDD TEST 32 - DRAWING ORDER PERMUTATIONS TEST
-    function test32() {
-        onStart({});
-        let types = ['line', 'rect', 'circle', 'polyline', 'text'];
-        let roundedSwitch = new window.BoolSwitch();
+window.tdd = {
+    getDraw: function() {
         var draw = {};
         draw.line = function(x,y) {
 window.lgLogNode('actsvg - test draw line - will draw line');
@@ -30,7 +25,7 @@ window.lgLogNode('actsvg - test draw line - will draw line');
         };
         draw.rect = function(x,y) {
             document.getElementById('svgFullTextarea').focus();
-            let mode = (roundedSwitch.switch()) ? 3 : 4;
+            let mode = (window.tdd.roundedSwitch.switch()) ? 3 : 4;
             issueKeyNum(mode, {});
             issueDrag(x,y,    x+15,y+15);
             window.lgLogNode('actsvg - test'+`${x},${y},${x+15},${y+15}`, null);
@@ -73,6 +68,19 @@ window.lgLogNode('actsvg - test draw line - will draw line');
             window.lgLogNode('actsvg - test drew text, text==null ='+text==null);
             return text;
         }
+        return draw;
+    }
+};
+window.tdd.roundedSwitch = new window.BoolSwitch();
+window.tdd.types = ['line', 'rect', 'circle', 'polyline', 'text'];
+window.tddTests = [
+    ...(window.tddTests||[]),
+    // TDD TEST 32 - DRAWING ORDER PERMUTATIONS TEST
+    function test32() {
+        onStart({});
+        let types = window.tdd.types;
+        var draw = window.tdd.getDraw();
+
         var kx=8; var ky=8; var px=100;var px2=100;
         for (var i=0; i<types.length; i++) {
             for (var j=0; j<types.length; j++) {
