@@ -60,7 +60,7 @@ window.mvCanMove = function() {
 // MV - IS MOVE
 window.mvIsMove = function(x,y) {
     if (!window.gMvState.moving && ((window.mvCanSelectAndMove(x,y)||window.mvCanMove())/*curIds.length > 0*/ && xy2nd(x,y)!=null)) {
-        var clickedNd = xy2nd(x,y);
+        var clickedNd = xy2nd(x,y,/*withNearestEdge=*/true); // TDDTEST47 FIX
         var clickedId = clickedNd.attrs.filter(a => a.name == 'id').length == 0
             ? 'bad0'
             : clickedNd.attrs.filter(a => a.name == 'id')[0].value;

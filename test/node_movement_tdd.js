@@ -151,4 +151,45 @@ window.tddTests = [
         }
         return true;
     }, // end test46
+    // TDD TEST 47 - DRAGGING SELECTED EMPTY RECT INSIDE RECT MOVES INNER RECT
+    function test47() {
+        // code generated from window.lgUserFlush():
+        window.onStart({});
+        window.mousedown({clientX:1024,clientY:102});
+        window.mousemove({clientX:1209,clientY:308,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:1209,clientY:308});
+        window.keydown({key:"Control", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"x", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"3", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+        window.mousedown({clientX:804,clientY:132});
+        window.mousemove({clientX:971,clientY:625,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:971,clientY:625});
+        window.mousedown({clientX:853,clientY:284});
+        window.mousemove({clientX:933,clientY:413,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:933,clientY:413});
+        window.keydown({key:"0", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+        window.mousedown({clientX:889,clientY:360});
+        window.mouseup({clientX:889,clientY:360});
+        window.mousedown({clientX:889,clientY:360});/*added out of necessity: */window.mousemove({clientX:889,clientY:360,view:{event:{preventDefault:()=>{}}}});
+        window.mousemove({clientX:891,clientY:426,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:891,clientY:426});
+
+        // return true if the inner rect moved:
+        // inner rect should have moved beyond
+        // its initial y=196 (196+88 = 284, see mousedown y=284 above)
+        // and its initial x=103 (103+750=853, see mousedown x=853 above)
+        let countYGT196 = 0;
+        let countXGT103 = 0;
+        var rects = document.getElementsByTagName("rect");
+        for (var i=0; i<rects.length; i++) {
+            if (parseInt(rects[i].getAttribute("y")) > 196) { countYGT196+=1; }
+            if (parseInt(rects[i].getAttribute("x")) > 103) { countXGT103+=1; }
+        }
+
+        return countYGT196 == 1 && countXGT103 == 1; // only 1 rect (the inner
+                                                     // rect) should have
+                                                     // moved and this rect
+                                                     // will have x,y >
+                                                     // surrounding rect's x,y
+    }, // end test47
 ];

@@ -831,6 +831,7 @@ window.issueClick = function(x, y) {
 
 window.issueKeyNum = function(num, test) {
     setNumMode(num, test);
+    /*prevents cirun test error (content window undefined):*/test=window.gTest;
     if (!test)document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
 }
 
@@ -839,6 +840,9 @@ window.issueKeyNum = function(num, test) {
 window.keydown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
+    window.lgUser(
+        'window.keydown({key:"'+e.key+'", shiftKey:'+e.shiftKey+',ctrlKey:'+e.ctrlKey+',view:{event:{preventDefault:()=>{}}}});'
+    ); // end log user keydown
     if ("1234567890".indexOf(e.key) > -1) {
         issueKeyNum(parseInt(e.key));
         e.view.event.preventDefault();
@@ -854,6 +858,9 @@ window.keydown = function(e) {
 window.mousedown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
+    window.lgUser(
+        'window.mousedown({clientX:'+e.clientX+',clientY:'+e.clientY+'});'
+    ); // log user mousedown action
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
 
@@ -882,6 +889,10 @@ window.mousedown = function(e) {
 window.mouseup = function(e) {
     e = e || window.event;
     window.lgLogNodeCacheFlush('mousemove');
+    window.lgUserCacheFlush('mousemove');
+    window.lgUser(
+        'window.mouseup({clientX:'+e.clientX+',clientY:'+e.clientY+'});'
+    ); // end user log mouseup
     window.lgLogNodeCacheFlush('drawupd');
     var x = window.gSvgMouse.getX(e.clientX);
     var y = window.gSvgMouse.getY(e.clientY);
@@ -917,6 +928,10 @@ window.mousemove = function(e) {
     let x = window.gSvgMouse.getX(e.clientX);
     let y = window.gSvgMouse.getY(e.clientY);
     window.lgLogNodeCache('mousemove', 'actsvg - mousemove');
+    window.lgUserCache(
+        'mousemove',
+        'window.mousemove({clientX:'+e.clientX+',clientY:'+e.clientY+',view:{event:{preventDefault:()=>{}}}});'
+    ); // end user log mousemove
     if (window.mgCanDrag()) { // TDDTEST23 FTR
         if (window.mvIsMove(x,y)) {
             window.mvMove(x,y);
@@ -1014,6 +1029,7 @@ window.loadSvg = function(xml, test) {
 }
 
 window.onStart = function(test) {
+    window.lgUser('window.onStart({});');
     var svg = document.createElement("div");
     svg.id = "svgId";
     svg.innerHTML = (svgHead + svgEx + svgTrail);
