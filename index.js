@@ -231,12 +231,11 @@ window.setMouseRects = function(nd) {
         nd.ymax = y + height + strokeWidth;
     }
     if (nd.tagName.toLowerCase() == "text") {
-        var x = getscal(nd.attrs, "x");
-        var y = getscal(nd.attrs, "y");
-        nd.xmin = x;
-        nd.xmax = x + (10*nd.text.length); // TDDTEST1 FIX
-        nd.ymin = y - 10; // offsets same as js/addon-palettes.js
-        nd.ymax = y + 5;  // StartEndFrame.FromEl fn
+        var f = window.StartEndFrame.FromText(nd);//frame
+        nd.xmin = f.getStart().x;
+        nd.xmax = f.getEnd().x;
+        nd.ymin = f.getStart().y;
+        nd.ymax = f.getEnd().y;
     }
     if (nd.tagName.toLowerCase() == "line") { // TDDTEST3 FTR
         var x1 = getscal(nd.attrs, "x1");
@@ -761,10 +760,12 @@ window.issueClick = function(x, y) {
         return;
     }
     if (numMode == 9) { // TDDTEST14 FTR
-        var adjY = y +3;
-        var adjX = x -7;
+        let offsetFrameStart = window.StartEndFrame.FromTextThruClick(x,y).getStart();
+        var adjY = offsetFrameStart.y;
+        var adjX = offsetFrameStart.x;
         var elStr = `<text x="${adjX}" y="${adjY}" fill="black">?</text>`;
         issueDraw(elStr, 'text');
+
         issueKeyNum(0, {});
         issueClick(adjX, adjY);    updateFrames();
 

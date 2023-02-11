@@ -354,9 +354,19 @@ window.tddTests = [
             } // end circle mode cond
 
             if (di.mode == 9) {
-                // text frame is offset based on fromEl and setMouseRects fns
-                y += 3; // it is adjusted based on
-                x -= 7; // issueClick mode 9 cond
+                var f = window.StartEndFrame.FromText(/*mock node:*/{
+                    attrs:[
+                        {name: 'x', value: ''+x},
+                        {name: 'y', value: ''+y}
+                    ],
+                    text: '?'
+                });
+
+                x = f.getStart().x; // invisible bounding rect
+                y = f.getStart().y; // determined by FromText
+                let offsetStart = window.StartEndFrame.FromTextThruClick(x, y).getStart();
+                x = offsetStart.x;
+                y = offsetStart.y;
             } // end text mode cond
 
             issueKeyNum(0, {});
@@ -380,4 +390,21 @@ window.tddTests = [
         } // end for i in types len.
         return true;
     }, // end test44
+    // TDD TEST 48 - DRAGGING FROM OUTSIDE DESELECTS RECT
+    function test48() {
+        // code generated from window.lgUserFlush():
+        window.onStart({});
+        window.mousedown({clientX:1162,clientY:230});
+        window.mouseup({clientX:1162,clientY:230});
+        window.mousedown({clientX:1207,clientY:205});
+        window.mousemove({clientX:1207,clientY:205,view:{event:{preventDefault:()=>{}}}});// added uncaptured mousemove
+        window.mousemove({clientX:1080,clientY:235,view:{event:{preventDefault:()=>{}}}});// added uncaptured mousemove
+        window.mousemove({clientX:1057,clientY:260,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:1057,clientY:260});
+
+        let rect = document.getElementsByTagName("rect")[0];
+        return curIds.length == 0 &&
+            rect.getAttribute("x") == "325" &&
+            rect.getAttribute("y") == "112";
+    }, // end test48
 ];

@@ -413,7 +413,40 @@ window.tddTests = [
         mt.moved = true;
 
         return mt.test();
-    }
+    }, // end test18
+    // TDD TEST 49 - BOUNDING CLICK-RECT FOR TEXT DIRECTLY SURROUNDS TEXT
+    function test49() {
+        onStart({});
 
+        // draw long text
+        issueKeyNum(9, {});
+        window.mousedown({clientX:800,clientY:300});
+        window.mouseup({clientX:800,clientY:300});
+        document.getElementById("svgPartTextarea").value = document.getElementById("svgPartTextarea").value.replace("?", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+        window.onApplyEdits();
+
+        // draw small text
+        issueDrag(0,0,    0,0);
+        issueKeyNum(9, {});
+        window.mousedown({clientX:800,clientY:350});
+        window.mouseup({clientX:800,clientY:350});
+        window.onApplyEdits();
+
+        var testNd = null; // small text is the testNd
+        var nodes = svgNodes.filter(nd => nd.tagName == 'text');
+        for (var i=0; i< nodes.length; i++) {
+            var ndVar = nodes[i];
+            issueDraw(`<rect x="${ndVar.xmin}" y="${ndVar.ymin}" width="${ndVar.xmax-ndVar.xmin}" height="${ndVar.ymax-ndVar.ymin}" stroke="black" fill="transparent" stroke-width="1" />`, 'rect');
+            if (ndVar.text == '?') { testNd = ndVar; }
+        } // end nodes loop
+
+        // console.warn(testNd.xmin, testNd.ymin, // uncomment and view manually
+        //    testNd.xmax, testNd.ymax);          // via index.html?tddf=49
+        return testNd.xmin == 42 && parseInt(testNd.xmax)==52 &&
+            testNd.ymin==252 && testNd.ymax==269; // verified these values
+                                           // make for a close fitting
+                                           // bounding rect.
+                                           // see the fit at /index.html?tddf=49
+    }, // end test49
 ];
 

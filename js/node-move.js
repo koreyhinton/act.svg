@@ -7,6 +7,18 @@ window.mvIsMoveKey = function(key) {
         window.getComputedStyle(document.getElementById("svgPartTextarea")).visibility == 'visible';
 }
 
+// MV - SHOULD CANCEL
+
+window.mvShouldCancel = function(x,y) {
+    return Math.abs(window.gRectSelectState.firstX-x)>18 ||
+        Math.abs(window.gRectSelectState.firstY-y)>18;
+/*
+    var markerSty = window.getComputedStyle(document.getElementById("selMarker"));
+    let w = parseInt(markerSty.width.replace('px', ''));
+    let h = parseInt(markerSty.height.replace('px', ''));
+    return w>18||h>18;*/
+}
+
 // MV - CAN SELECT AND MOVE
 // TODO: this function along with the mvIsMove function follows a bad pattern
 // of returning a true/false value and also setting necessary tracking values;
@@ -42,10 +54,8 @@ window.mvCanSelectAndMove = function(x,y) {
                             // contained in the clicked node's bounds
     }
     if (curIds.length > 0){onApplyEdits();}
-    var markerSty = window.getComputedStyle(document.getElementById("selMarker"));
-    let w = parseInt(markerSty.width.replace('px', ''));
-    let h = parseInt(markerSty.height.replace('px', ''));
-    if (w>18||h>18) {
+
+    if (window.mvShouldCancel(x,y)) {
         return false; } // a rectangluar selection was already started outside
                         // the node that is now detected at x,y
     issueClick(x,y);  // select the node
@@ -59,11 +69,15 @@ window.mvCanMove = function() {
 }
 // MV - IS MOVE
 window.mvIsMove = function(x,y) {
-    if (!window.gMvState.moving && ((window.mvCanSelectAndMove(x,y)||window.mvCanMove())/*curIds.length > 0*/ && xy2nd(x,y)!=null)) {
+    if (!window.gMvState.moving && ((window.mvCanSelectAndMove(x,y)||window.mvCanMove()) && xy2nd(x,y)!=null)) {
         var clickedNd = xy2nd(x,y,/*withNearestEdge=*/true); // TDDTEST47 FIX
         var clickedId = clickedNd.attrs.filter(a => a.name == 'id').length == 0
             ? 'bad0'
             : clickedNd.attrs.filter(a => a.name == 'id')[0].value;
+
+          if (window.mvShouldCancel(x,y)) { // TDDTEST48 FIX
+              return false; // cancel the move since it has already dragged
+          }                 // far enough to start a selection rectangle
 
         for (var i=0; i<curIds.length; i++) {
             if (clickedId == id2nd(curIds[i].id).attrs.filter(a => a.name == 'id')[0].value) {

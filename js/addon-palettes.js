@@ -3,6 +3,19 @@ window.StartEndFrame = class {
         this.start = { x: startX, y: startY };
         this.end = { x: endX, y: endY };
     }
+    static FromTextThruClick(clickX, clickY) {
+        return new window.StartEndFrame(clickX-7,clickY+3,    clickX,clickY);
+    }
+    static FromText(elOrNd) { // TDDTEST49 FIX
+        let isNd = elOrNd.attrs != null;
+        let x = parseInt(isNd ? getscal(elOrNd.attrs, "x") : elOrNd.getAttribute("x"));
+        let y = parseInt(isNd ? getscal(elOrNd.attrs, "y") : elOrNd.getAttribute("y"));
+        let startX = x - 1;
+        let startY = y - 13;
+        let endX = x + (9.7 * (isNd ? elOrNd.text : elOrNd.innerHTML).length); // TDDTEST1 FIX
+        let endY =  y + 4;
+        return new window.StartEndFrame(startX,startY,endX,endY);
+    }
     static FromEl(el) {
         let x1 = -1;
         let y1 = -1;
@@ -57,12 +70,7 @@ window.StartEndFrame = class {
                 break;
             }
             case 'text': {
-                x1 =  parseInt(el.getAttribute("x"));
-                y1 = parseInt(el.getAttribute("y"));
-                x2 = x1 + (10*el.innerHTML.length); // offsets are the same as
-                y2 = y1 + 5;                        // in file index.js
-                                                    // setMouseRects fn
-                break;
+                return window.StartEndFrame.FromText(el);
             }
         }
         /*let x = parseInt(el.getAttribute("x"));
