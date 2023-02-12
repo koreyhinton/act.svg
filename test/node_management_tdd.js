@@ -406,5 +406,26 @@ window.tddTests = [
         return curIds.length == 0 &&
             rect.getAttribute("x") == "325" &&
             rect.getAttribute("y") == "112";
-    }, // end test48
+    }, // end test48,
+    // TDD TEST 50 - DRAGGING FROM OUTSIDE LARGE SLIGHTLY OVERLAPPING SMALL RECT
+    // SELECTS BOTH RECTS
+    function test50() {
+        // clear screen code taken from window.lgUserFlush() capture:
+        window.onStart({});
+        window.mousedown({clientX:1012,clientY:100});
+        window.mousemove({clientX:1247,clientY:317,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:1247,clientY:317});
+        window.keydown({key:"Control", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"x", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"3", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+
+        issueDrag(106,94,    106+139,94+22);
+        issueDrag(106,115,    106+295,115+541);        
+
+        window.keydown({key:"0", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+
+        issueDrag(0,0,    750,750);
+
+        return curIds.length == 2;
+    }, // end test50
 ];

@@ -37,3 +37,7 @@ gh-1 :: add permutation test for selecting elements inside rect
 CHANGELOG 2023-02-11 -- V0.1 -- NODE MANAGEMENT
 
 ct/37 :: drag from outside selected rect should cancel rect selection
+
+CHANGELOG 2023-02-12 -- V0.1 -- NODE MANAGEMENT
+
+ct/39 :: selection rectangle to work around two almost aligned rects
