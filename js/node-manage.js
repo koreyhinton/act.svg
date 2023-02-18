@@ -355,9 +355,16 @@ window.issuePaste = function(testCb) {
 }
 
 window.addEventListener("paste", function(e) {
-
-    window.issuePaste();
-});
+    if (window.gStarted && // TDDTEST52 FIX // CT/40
+           window.getComputedStyle(document.getElementById("editModalBG"))
+               .visibility != "visible" // TDDTEST53 FIX // CT/42
+    ) { // end paste condition
+        window.lgUser('// paste'); // TDDTEST52
+                                   // and // TDDTEST53
+                                   // tests look for this value
+        window.issuePaste();
+    } // end started condition
+}); // end paste event listener
 window.managePaste = /*async*/ function() {
 
     //TODO: if instead pasting in textarea could work, it wouldn't

@@ -9,6 +9,7 @@ global.DOMParser = window.DOMParser;
 global.templateXml = null;
 global.addEventListener = window.addEventListener;
 global.NamedNodeMap = window.NamedNodeMap;
+global.Event = window.Event;
 //global.StartEndFrame = class{};
 //global.AggregateNode = class{};
 //global.SvgMouse = class{};

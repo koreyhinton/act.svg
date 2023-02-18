@@ -30,6 +30,7 @@ notifyTextArr = [
 
 // ACTIVITY SVG - GLOBALS
 
+window.gStarted = false;
 window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88);
 let topFrameNode = new window.AggregateNode({
     frame: window.gToolbarFrame,
@@ -767,7 +768,8 @@ window.issueClick = function(x, y) {
         issueDraw(elStr, 'text');
 
         issueKeyNum(0, {});
-        issueClick(adjX, adjY);    updateFrames();
+        /*step1*/issueClick(x,y); // TDDTEST51 FIX // CT/41
+        /*step2*/updateFrames(); // keep step 1 and 2 together
 
         window.gDispatch(()=>{ // TDDTEST31 FIX
             document.getElementById("svgPartTextarea").focus();
@@ -1030,6 +1032,7 @@ window.loadSvg = function(xml, test) {
 }
 
 window.onStart = function(test) {
+    window.gStarted = true;
     window.lgUser('window.onStart({});');
     var svg = document.createElement("div");
     svg.id = "svgId";
@@ -1043,7 +1046,14 @@ window.onStart = function(test) {
     document.getElementById("svgFullTextarea").disabled="disabled";
 
     document.onkeydown = keydown;
-    window.gDispatch(function(){document.onmousedown = mousedown; document.onmousemove = mousemove; document.onmouseup = mouseup; }, 800);// skip first click
+    window.gDispatch(
+        function(){
+            document.onmousedown = mousedown;
+            document.onmousemove = mousemove;
+            document.onmouseup = mouseup;
+        }, // end dispatch callback
+        8 // CT/43
+    );// skip first click
 
     window.loadSvg(document.getElementById("svgFullTextarea").value, test);
 }

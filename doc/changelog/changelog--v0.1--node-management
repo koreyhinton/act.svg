@@ -41,3 +41,9 @@ ct/37 :: drag from outside selected rect should cancel rect selection
 CHANGELOG 2023-02-12 -- V0.1 -- NODE MANAGEMENT
 
 ct/39 :: selection rectangle to work around two almost aligned rects
+
+CHANGELOG 2023-02-18 -- V0.1 -- NODE MANAGEMENT
+
+ct/40 :: paste xml text before onstart does not paste as nodes
+ct/41 :: click to place text opens text in editor not neighboring polyline
+ct/42 :: paste text into element editor doest not paste as nodes

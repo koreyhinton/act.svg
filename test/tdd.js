@@ -448,5 +448,33 @@ window.tddTests = [
                                            // bounding rect.
                                            // see the fit at /index.html?tddf=49
     }, // end test49
+    // TDD TEST 51 - CLICK TO PLACE TEXT SHOULD OPEN TEXT WINDOW NOT POLYLINE
+    function test51() {
+
+        // taken from captured window.lgUserFlush() output:
+        window.onStart({});
+        window.mousedown({clientX:998,clientY:107});
+        window.mousemove({clientX:1255,clientY:317,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:1255,clientY:317});
+        window.keydown({key:"Control", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"x", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+        window.keydown({key:"5", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+        window.mousedown({clientX:855,clientY:189});
+        window.mouseup({clientX:855,clientY:189});
+        window.keydown({key:"2", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+        window.mousedown({clientX:857,clientY:201});
+        window.mousemove({clientX:857,clientY:201,view:{event:{preventDefault:()=>{}}}}); // added uncaptured
+        window.mousemove({clientX:861,clientY:238,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:861,clientY:238});
+        window.keydown({key:"9", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+        window.mousedown({clientX:874,clientY:219});
+        //window.mousemove({clientX:874,clientY:218,view:{event:{preventDefault:()=>{}}}});
+        window.mouseup({clientX:874,clientY:218});
+
+        return document
+            .getElementById("svgPartTextarea")
+            .value
+            .indexOf("<text") > -1;
+    }, // end test51
 ];
 

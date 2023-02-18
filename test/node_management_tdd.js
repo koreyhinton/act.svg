@@ -204,7 +204,9 @@ window.tddTests = [
         //     when using the real dom's outer functions (mousedown/up).
         window.issueDraw(`<text x="0" y="0" fill="black">?</text>`, 'text');
         issueKeyNum(9, {});
-        window.issueClick(0,0);
+        window.issueClick(10,10); // changed from 0,0 since user clicks the
+                                  // the middle of the text and a 0,0 click
+                                  // causes text's left-edge to go offscreen
         svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'x' && a.value =='0').length > 0)[0].attrs.push({name:'id',value:'text10'});    updateFrames();
 
         var ta = document.getElementById("svgPartTextarea");
@@ -428,4 +430,23 @@ window.tddTests = [
 
         return curIds.length == 2;
     }, // end test50
+    // TDD TEST 52 - PASTING INTO FULL XML TEXTAREA WON'T RESULT IN A NODE PASTE
+    function test52() {
+        // no onstart call
+        window.dispatchEvent(new Event('paste'));
+        return window.lgUserFlush().indexOf('paste') == -1;
+    }, // end test52
+    // TDD TEST 53 - PASTING INTO PART XML TEXTAREA WON'T RESULT IN A NODE PASTE
+    function test53() {
+        // copied from lgUserFlush
+        window.onStart({});
+        window.mousedown({clientX:1127,clientY:123});
+        window.mouseup({clientX:1127,clientY:123});
+        // paste
+
+        // non-copied code
+        window.dispatchEvent(new Event('paste'));
+        let logStr = window.lgUserFlush();
+        return logStr.indexOf('paste') == -1;
+    }, // end test53
 ];

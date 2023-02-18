@@ -21,6 +21,8 @@ window.lgUser = function(msg) {
 // after a bug is spotted, call this function
 // and use the output as code for a new unit test
 window.lgUserFlush = function() {
-    console.log(window.gLgUserString);
+    let userLogString = window.gLgUserString;
+    console.log(userLogString);
     window.gLgUserString = "";
-}
+    return userLogString;
+} // end flush user log function
