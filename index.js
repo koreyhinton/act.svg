@@ -861,6 +861,7 @@ window.keydown = function(e) {
 window.mousedown = function(e) {
     if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
     e = e || window.event;
+    if (e.button > 0) return; // TDDTEST54 FIX // TDDTEST55 FIX // CT/44
     window.lgUser(
         'window.mousedown({clientX:'+e.clientX+',clientY:'+e.clientY+'});'
     ); // log user mousedown action

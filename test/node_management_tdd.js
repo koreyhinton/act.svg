@@ -449,4 +449,51 @@ window.tddTests = [
         let logStr = window.lgUserFlush();
         return logStr.indexOf('paste') == -1;
     }, // end test53
+    // TDD TEST 54 - RIGHT-CLICK INTERRUPTING RECT DRAW THEN LEFT-CLICK DISMISS
+    // DOESN'T CREATE A NEW RECT WITH NEGATIVE WIDTH (OR HEIGHT)
+    function test54() {
+        let x2 = 100;
+        let y2 = 100;
+        issueClear();
+        issueMK(4);
+        issueDrag(10,10,    x2,y2,    false);
+        x2 += window.gSvgFrame.getStart().x;
+        y2 += window.gSvgFrame.getStart().y;
+        window.mousedown({clientX:x2, clientY:y2,button:2}); // 2 => right-click
+        window.mousemove({clientX:x2-20, clientY:y2-20}); // mouse moves
+        window.mouseup({clientX:x2, clientY:y2,button:2}); // 2 => right-click
+        x2 /= 2; // divide in half to click somewhere
+        y2 /= 2; // in the middle of the originally drawn rectangle
+        window.mousedown({clientX:x2, clientY:y2,button:0}); // 0 => left-click
+        window.mouseup({clientX:x2, clientY:y2,button:0}); // 0 => left-click
+        return document.getElementsByTagName("rect").length == 1 &&
+            parseInt(document.getElementsByTagName("rect")[0].getAttribute("width"))>0 &&
+            parseInt(document.getElementsByTagName("rect")[0].getAttribute("height"))>0;
+    }, // end test54
+    // TDD TEST 55 - RIGHT-CLICK INTERRUPTING RECT DRAW THEN LEFT-CLICK DISMISS
+    // AND THEN TRY TO SELECT ORIGINAL RECTANGLE SHOULD RESULT IN A SELECTION
+    function test55() {
+        // starts from same code as test54
+        let x2 = 100;
+        let y2 = 100;
+        issueClear();
+        issueMK(4);
+        issueDrag(10,10,    x2,y2,    false);
+        x2 += window.gSvgFrame.getStart().x;
+        y2 += window.gSvgFrame.getStart().y;
+        window.mousedown({clientX:x2, clientY:y2,button:2}); // 2 => right-click
+        window.mousemove({clientX:x2-20, clientY:y2-20}); // mouse moves
+        window.mouseup({clientX:x2, clientY:y2,button:2}); // 2 => right-click
+        x2 /= 2; // divide in half to click somewhere
+        y2 /= 2; // in the middle of the originally drawn rectangle
+        window.mousedown({clientX:x2, clientY:y2,button:0}); // 0 => left-click
+        window.mouseup({clientX:x2, clientY:y2,button:0}); // 0 => left-click
+
+        // continuing on beyond test54 code
+        issueMK(0);
+        issueDrag(0,0,    750,750);
+        window.updateFrames(); // necessary so next test can run
+        return svgNodes.length == 1 && // should only have 1 node (the original rect)
+            curIds.length == 1; // original rect should be be selected
+    }, // end test55
 ];

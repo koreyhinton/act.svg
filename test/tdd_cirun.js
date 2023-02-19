@@ -125,6 +125,8 @@ function run3(imports, cb) {
                 });
             }
 global.issueDrag = window.issueDrag;
+global.issueClear = window.issueClear;
+global.issueMK = window.issueMK;
 global.rotate = window.rotate;
 global.notifyMsg = window.notifyMsg;
             return import(imp);

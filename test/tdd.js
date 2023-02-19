@@ -8,7 +8,21 @@
 //     at setcolor
 //     at onDone
 //     at onApplyEdits
-window.issueDrag = function(x1,y1,x2,y2){
+window.issueClear = function() {
+    //if (!window.gStarted) {
+        window.onStart({});
+    //} // end started condition
+    // select original elements and issue cut (Ctrl-x) to clear them
+    window.mousedown({clientX:1012,clientY:100});
+    window.mousemove({clientX:1247,clientY:317,view:{event:{preventDefault:()=>{}}}});
+    window.mouseup({clientX:1247,clientY:317});
+    window.keydown({key:"Control", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+    window.keydown({key:"x", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
+} // end issue clear function
+window.issueMK = function(num) { // Mode Key
+    window.keydown({key:""+num, shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
+} // end issue mk function
+window.issueDrag = function(x1,y1,x2,y2,close=true){
     x1 += window.gSvgFrame.getStart().x;
     x2 += window.gSvgFrame.getStart().x;
     y1 += window.gSvgFrame.getStart().y;
@@ -19,9 +33,11 @@ window.issueDrag = function(x1,y1,x2,y2){
     window.mousemove({clientX:x1, clientY:y1,view:{event:{preventDefault:function(){}}}});
     window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
     window.mousemove({clientX:x2, clientY:y2,view:{event:{preventDefault:function(){}}}});
-    window.mouseup({clientX:x2, clientY:y2});
-    window.updateFrames();
-}
+    if (close) {
+        window.mouseup({clientX:x2, clientY:y2});
+        window.updateFrames();
+    } // end close condition
+} // end issue drag function
 window.tddTests = [
     ...(window.tddTests||[]),
     // TDD TEST 0 - RECT MOVE X,Y SHOULD MOVE SUBSELECTED TEXT
