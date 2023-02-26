@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    padding: 0;
+    margin: 0;
+}
+pre {
+    color:black;background-color:rgb(239,239,239);border:1px solid black;width:66px;height:66px;
+}
+pre:hover {
+    color:white;background-color:black;font-weight:bold;cursor:pointer;
+}
+pre.active {
+    color:black;background-color:#EEFFEE;font-weight:bold;
+}
+pre{
+    padding:0;
+    margin: 0;
+}
+table,tbody,tr,td{
+    margin: 0;
+    padding: 0;
+}
+td {
+    padding-left:36px;
+}
+td {
+    padding-top:7px;
+}
+td.title {
+    vertical-align:bottom;
+    text-decoration: underline;
+}
+</style>
+<script>
+window.num = function(num) {
+    window.parent.postMessage('num:'+num, '*');
+    window.parent.focus();
+}
+
+/*window.addEventListener("DOMContentLoaded", function(e) {
+    document.onkeydown = (e) => {
+        e = e || window.event;
+        if ("1234567890".indexOf(e.key) > -1) {
+            window.parent.postMessage('key:'+e.key, '*');
+            window.parent.focus();
+            e.view.event.preventDefault();
+        }
+    };
+});*/
+window.onmessage = function(e) {
+    var msgComponents = e.data.split(':');
+    if (msgComponents.length >= 2 && msgComponents[0]=='num') {
+        var els = document.getElementsByTagName('pre');
+        for (var i=0; i<els.length; i++) {
+            var el = els[i];
+            if (el.innerHTML.indexOf(msgComponents[1]) > -1) {
+                el.classList.add('active');
+            }
+            else {
+                el.classList.remove('active');
+            }
+        }
+    }
+}
+</script>
+</head>
+<body onclick="window.parent.focus()">
+<!--target will be _parent, also add stylesheet-->
+<table><tbody><tr><td>
+<pre onclick="num(1)">
+
+   ____
+  
+       1</pre></td><td>
+<pre onclick="num(2)">
+
+   ___\
+      /
+       2
+</pre></td>
+<td><pre onclick="num(3)">
+ _______
+ |     |
+ |_____|
+       3
+</pre></td>
+<td><pre onclick="num(4)">
+  _____
+       )
+ (_____
+       4
+</pre></td>
+<td><pre onclick="num(5)">
+
+  _/\_
+   \/
+       5
+</pre></td>
+<td><pre onclick="num(6)">
+    _
+   (_)
+    
+       6
+</pre></td>
+<td><pre onclick="num(7)">
+    _
+   (*)
+    
+       7
+</pre></td>
+<td><pre onclick="num(8)">
+     _
+   _I
+    I_
+       8
+</pre></td>
+<td><pre onclick="num(9)">
+
+  Text
+   
+       9
+</pre></td>
+<td><pre onclick="num(0)" class="active">
+  . .
+  .* . 
+    \
+     \ 0
+</pre></td>
+<td class="title"><a style="font-size:40px">A</a>ct.svg</td>
+</tr></tbody></table>
+</body>
+</html>

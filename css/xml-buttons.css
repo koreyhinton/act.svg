@@ -1,0 +1,19 @@
+#xmlButtonFrame {
+    position:absolute;
+    z-index:100000;
+    top:690px;
+    left:0px;
+    width:730px;
+    height:40px;
+    background-color: black;
+    padding: 10px;
+}
+
+#xmlButtonFrame button {
+    margin-top:0;
+    border: 0;
+    padding-top:6px;
+    font-size: 20px;
+    color: white;
+    background-color: green;
+}
