@@ -83,7 +83,62 @@ templateXml = {'swim3': `
     <text x="300" y="126" fill="black">Collaboration</text>
     <circle cx="350" cy="350" r="320" fill="transparent" stroke="black" stroke-width="1" stroke-linecap="round" stroke-dasharray="0 10 0" stroke-dashoffset="100" stroke-mitterlimit="0" /><!--315-->
 
-`
+`, // end collab
+'decision': `
+    <text x="45" y="533" fill="black" id="text4">is brave?</text>
+    <text x="80" y="434" fill="black" id="text3">is firefox?</text>
+    <text x="181" y="337" fill="black" id="text2">is chrome?</text>
+    <text x="304" y="218" fill="black" id="text1">is web browser?</text>
+    <text x="208" y="197" fill="black" id="text5">yes</text>
+    <text x="115" y="310" fill="black" id="text6">no</text>
+    <text x="23" y="630" fill="black" id="text7">notify of</text>
+    <text x="18" y="653" fill="black" id="text8">unsupported browser</text>
+    <text x="507" y="203" fill="black" id="text9">no</text>
+    <text x="560" y="375" fill="black" id="text10">notify of</text>
+    <text x="560" y="399" fill="black" id="text11">unsupported device</text>
+    <text x="348" y="479" fill="black" id="text12">configure web</text>
+    <text x="347" y="501" fill="black" id="text13">app</text>
+    <text x="288" y="319" fill="black" id="text14">yes</text>
+    <text x="195" y="421" fill="black" id="text15">yes</text>
+    <text x="159" y="512" fill="black" id="text16">yes</text>
+    <text x="43" y="414" fill="black" id="text17">no</text>
+    <text x="8" y="509" fill="black" id="text18">no</text>
+    <polyline points="32 526 39 499 139 499 146 526 139 553 39 553 32 526" stroke="black" fill="transparent" stroke-width="1" id="polyline2"/>
+    <polyline points="76 427 83 410 183 410 190 427 183 444 83 444 76 427" stroke="black" fill="transparent" stroke-width="1" id="polyline3"/>
+    <polyline points="168 328 175 301 275 301 282 328 275 355 175 355 168 318" stroke="black" fill="transparent" stroke-width="1" id="polyline1"/>
+    <polyline points="279 212 286 195 486 195 493 212 486 229 286 229 279 212" stroke="black" fill="transparent" stroke-width="1" id="polyline4"/>
+    <line x1="277" y1="210" x2="220" y2="210" stroke="black" stroke-width="1" id="line1"/>
+    <polyline points="221 212 221 294 211 284 221 294 231 284" stroke="black" fill="transparent" stroke-width="1" id="polyline5"/>
+    <line x1="165" y1="324" x2="126" y2="324" stroke="black" stroke-width="1" id="line2"/>
+    <line x1="126" y1="324" x2="131" y2="329" stroke="black" stroke-width="1" id="line3"/>
+    <polyline points="128 328 128 400 118 390 128 400 138 390" stroke="black" fill="transparent" stroke-width="1" id="polyline6"/>
+    <line x1="74" y1="425" x2="50" y2="425" stroke="black" stroke-width="1" id="line4"/>
+    <polyline points="50 425 50 489 40 479 50 489 60 479" stroke="black" fill="transparent" stroke-width="1" id="polyline7"/>
+    <line x1="498" y1="213" x2="581" y2="213" stroke="black" stroke-width="1" id="line5"/>
+    <polyline points="582 213 582 345 572 335 582 345 592 335" stroke="black" fill="transparent" stroke-width="1" id="polyline8"/>
+    <line x1="28" y1="528" x2="12" y2="528" stroke="black" stroke-width="1" id="line6"/>
+    <polyline points="12 529 12 598 2 588 12 598 22 588" stroke="black" fill="transparent" stroke-width="1" id="polyline10"/>
+    <rect rx="10" ry="10" x="8" y="605" width="210" height="64" stroke="black" fill="transparent" stroke-width="1" id="rect1"/>
+    <rect rx="10" ry="10" x="543" y="349" width="203" height="65" stroke="black" fill="transparent" stroke-width="1" id="rect2"/>
+    <rect rx="10" ry="10" x="332" y="454" width="161" height="73" stroke="black" fill="transparent" stroke-width="1" id="rect3"/>
+    <line x1="285" y1="329" x2="375" y2="329" stroke="black" stroke-width="1" id="line7"/>
+    <line x1="192" y1="427" x2="346" y2="427" stroke="black" stroke-width="1" id="line8"/>
+    <polyline points="152 522 322 522 312 512 322 522 312 532" stroke="black" fill="transparent" stroke-width="1" id="polyline11"/>
+    <polyline points="347 427 347 449 337 439 347 449 357 439" stroke="black" fill="transparent" stroke-width="1" id="polyline12"/>
+    <polyline points="376 330 376 448 366 438 376 448 386 438" stroke="black" fill="transparent" stroke-width="1" id="polyline13"/>
+    <polyline points="583 608 590 601 597 608 590 615 583 608" stroke="black" fill="transparent" stroke-width="1" id="polyline15"/>
+    <line x1="634" y1="416" x2="634" y2="607" stroke="black" stroke-width="1" id="line9"/>
+    <polyline points="633 608 598 608 608 598 598 608 608 618" stroke="black" fill="transparent" stroke-width="1" id="polyline16"/>
+    <line x1="496" y1="496" x2="587" y2="497" stroke="black" stroke-width="1" id="line10"/>
+    <polyline points="589 497 589 603 579 593 589 603 599 593" stroke="black" fill="transparent" stroke-width="1" id="polyline17"/>
+    <polyline points="224 608 578 608 568 598 578 608 568 618" stroke="black" fill="transparent" stroke-width="1" id="polyline18"/>
+    <polyline points="591 617 591 654 581 644 591 654 601 644" stroke="black" fill="transparent" stroke-width="1" id="polyline19"/>
+    <circle cx="591" cy="665" r="6" fill="black" stroke="black" stroke-width="1"/>
+    <circle cx="591" cy="665" r="10" fill="transparent" stroke="black" stroke-width="1"/>
+    <circle cx="385" cy="97" r="10" fill="black" stroke="black" stroke-width="1"/>
+    <polyline points="385 112 385 190 375 180 385 190 395 180" stroke="black" fill="transparent" stroke-width="1" id="polyline20"/>    
+`, // end decision // CT/45
+
 
 };
 addEventListener('DOMContentLoaded', (e) => {
@@ -91,7 +146,7 @@ addEventListener('DOMContentLoaded', (e) => {
     if (template == null) {
         return;
     }
-    if ("swim3|pins|connectors|collab".indexOf(template) > -1) {
+    if ("swim3|pins|connectors|collab|decision".indexOf(template) > -1) {
         setTimeout(function() {
             document.getElementById("svgFullTextarea").value = 
                 svgHead + templateXml[template] + svgTrail;

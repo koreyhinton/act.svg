@@ -16,6 +16,9 @@ window.lgUser = function(msg) {
     window.gLgUserString += (msg+`
 `);
 
+    if (window.gLgUserString.length > 6000) {
+        window.lgUserFlush(); // don't hold onto all this extra memory
+    } // end user log length cond
 }
 
 // after a bug is spotted, call this function

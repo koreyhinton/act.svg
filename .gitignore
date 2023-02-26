@@ -5,3 +5,6 @@
 
 # node
 node_modules/
+
+# backlog file. backed up separately
+doc/changetask/backlog
