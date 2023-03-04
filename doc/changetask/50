@@ -1,0 +1,12 @@
+CT/50      V0.2      NODE-RESIZING             ABLE TO RESIZE EACH NODE  FTR
+same as ct/48 except for all the other types that already have resize behavior
+on the initial draw action.
+
+By clicking on an end part of a node and start dragging in select mode it will
+start resizing.
+
+   \
+    \
+    \/
+       \__  e.g. click arrow point
+            and drag starts resizing it in mode=0

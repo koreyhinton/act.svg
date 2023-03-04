@@ -1,0 +1,13 @@
+CT/48      V0.2      NODE-RESIZING             RESIZE DECISION NODE      FTR
+
+/\
+\/ 
+  \
+    dragging from bottom-right corner area will start resizing the polyine shape
+   ______
+  /      \
+  \______/
+           \
+            resized
+
+depends on shared code to-be-created as part of ct/47
