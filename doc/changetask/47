@@ -17,3 +17,20 @@ See plantuml activity diagram documentation. 'Graphviz installed?' diamond
     |                  |  /
     |__\ ..     .. /__ /\__\ ..
        /           \   \/  /
+
+Update: originally I thought the click-drag flexible sizing feature would
+also handle drawing normal (4-line) decision nodes but larger in size.
+However, the drag logic would have to determine if its a 4-line or 6-line.
+
+Backlog: a configuration item of 'default decision node size' can be configured.
+This task: A single click creates a 4-line decision node whereas a click-drag
+(of noticeable sized movement) creates a flexible 6-line polyline.
+
+Click (4-line):
+    /\
+    \/
+
+Click-Drag (6-line):
+    __
+   /  \
+   \__/

@@ -13,8 +13,8 @@ selColor = "#C0D6FC";
 editColor = "#CAFFB5";
 
 numMode = 0;
-clickCnt = 0;
-drawClick = { x:-1, y: -1 };
+// clickCnt = 0;
+// drawClick = { x:-1, y: -1 };
 notifyTextArr = [
     "0 =&gt; Select Mode",
     "1 =&gt; Line Mode",
@@ -620,19 +620,15 @@ window.issueDraw = function(xml, tagName) {
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
 window.issueClick = function(x, y) {
-    var id = null;
-    let types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
-    if ([1,2,3,4,8].indexOf(numMode)>-1) {
-        id = window.manageDraw(types[numMode]);
-        //console.warn(types[numMode]);
-    }
+    var id = window.dwNewId(numMode);
+
     var adjPt = new window.snNodeSnapper()
-        .snapXYToEnv(types[numMode]+'', x, y);
+        .snapXYToEnv(window.tyFromMode(numMode)+'', x, y);
     x = adjPt.x;
     y = adjPt.y;
     if (numMode == 1) {  // TDDTEST2 FTR
         //if (clickCnt == 1) {
-            //var id = window.manageDraw();
+            //var id = window.dwDraw();
             issueDraw(`<line x1="`
                 +/*drawClick.x*/(x)+`" y1="`
                 +/*drawClick.y*/(y)+`" x2="`
@@ -732,13 +728,13 @@ window.issueClick = function(x, y) {
             x3=x+segLen,        y3=y,
             x4=x,               y4=y+segLen,
             x5=x-segLen,        y5=y;
-        issueDraw(`<polyline points="${x1} ${y1} ${x2} ${y2} ${x3} ${y3} ${x4} ${y4} ${x5} ${y5}" stroke="black" fill="transparent" stroke-width="1"/>`, 'polyline');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        issueDraw(`<polyline points="${x1} ${y1} ${x2} ${y2} ${x3} ${y3} ${x4} ${y4} ${x5} ${y5}" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'polyline'); // +id // CT/47
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 6) { // TDDTEST11 FTR
         issueDraw(`<circle cx="${x}" cy="${y}" r="10" fill="black" stroke="black" stroke-width="1"/>`, 'circle');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 7) { // TDDTEST12 FTR
@@ -746,7 +742,7 @@ window.issueClick = function(x, y) {
         // clicking and selecting both
         issueDraw(`<circle cx="${x}" cy="${y}" r="6" fill="black" stroke="black" stroke-width="1"/>`, 'circle');
         issueDraw(`<circle cx="${x}" cy="${y}" r="10" fill="transparent" stroke="black" stroke-width="1"/>`, 'circle');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 8) { // TDDTEST13 FTR
@@ -778,10 +774,10 @@ window.issueClick = function(x, y) {
                 document.getElementById("svgPartTextarea").value.indexOf("?")+1
             );
         },100);
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
-    clickCnt = 0; drawClick = {x:-1,y:-1};
+    // clickCnt = 0; drawClick = {x:-1,y:-1};
     var clickedNd = xy2nd(x, y, /*withNearestEdge=*/true); // TDDTEST43 FIX
     if (clickedNd == null && x>=0 && x<=750 && y>=0 && y<=750) {
         /*setTimeout(()=>*/issueRectSelectClick(x, y)/*, 100)*/; // TDDTEST21 FTR
@@ -919,9 +915,9 @@ window.mouseup = function(e) {
         window.onDone();
         window.mgCloseSelection();
     }
-    if (!window.mgIsDrawingClosed()) {
+    if (!window.dwIsDrawingClosed()) {
         window.lgLogNode('actsvg - closing drawing');
-        window.mgCloseDrawing();
+        window.dwCloseDrawing();
         //console.warn('done draw');
         window.updateFrames();
     }
@@ -948,9 +944,9 @@ window.mousemove = function(e) {
     if (x>0 && x<750
         && y>0 && y<750) { // TDDTEST25 FIX -should reach bot-right
         window.mgSetMouse(x, y);
-        //window.lgLogNodeCache('mousemove', 'actsvg - mousemove - isClosed = '+window.mgIsDrawingClosed());
-        if (!window.mgIsDrawingClosed()) {
-            window.manageDrawUpdate(x, y);
+        //window.lgLogNodeCache('mousemove', 'actsvg - mousemove - isClosed = '+window.dwIsDrawingClosed());
+        if (!window.dwIsDrawingClosed()) {
+            window.dwDrawUpdate(x, y);
         }
     }
 }
