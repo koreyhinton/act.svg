@@ -13,3 +13,9 @@ setx 100  # set all x to be 100
 incx 100  # increment all x be 100
 setw 120  # set all width to be 120
 incw 120  # increment all selected width to be 120
+
+Update: to keep things a consistent UI, use multiline and allow multiple command
+entries. Since multiline is enabled, it might as well autofill the relevant
+commands with their current values, e.g.:
+    setx 103
+    incx 0

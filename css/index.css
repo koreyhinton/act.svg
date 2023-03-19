@@ -81,11 +81,55 @@ svg {
     background-color: rgb(255,255,240);
 }
 
+textarea.inptrue {}
+textarea.inpfalse {
+    visibility: hidden !important;
+    height: 0px !important;
+}
+button.subm.inpfalse {
+    visibility: hidden !important;
+    height: 0px !important;
+}
+.tabtrue {
+    background-color: rgb(255,255,240) !important;
+}
+.tabfalse {
+    background-color: white !important;
+}
+.tabfalse, .tabtrue {
+    margin-top:0;
+    border: 0;
+    padding-top:6px;
+    font-size: 20px;
+    position: relative;
+    top: -30px;
+    margin-right: 0px;
+    margin-left: 0px;
+    height: 30px;
+}
+
 #svgPartTextarea {
     width: 500px;
     height: 250px;
 }
 
+#commandTextarea {
+    width:480px;
+    height:200px; /*height:35px;*/
+    background-color: rgb(255,255,240);
+    position: relative;
+    top: -45px;
+    padding-top: 30px;
+}
+
+#run {
+    margin-top:0;
+    border: 0;
+    padding-top:6px;
+    font-size: 20px;
+    color: white;
+    background-color: green;
+}
 
 #btnModal {
     margin-top:0;
@@ -94,6 +138,9 @@ svg {
     font-size: 20px;
     color: white;
     background-color: green;
+    position:relative;
+    left: -49px;
+    top: -41px;
 }
 
 /* TOP-PANE TOOLBAR ELEMENTS  */

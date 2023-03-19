@@ -531,6 +531,7 @@ window.updateFrames = function(selNd, ctx) {
         .getElementById("svgPartTextarea")
         .value = nd2xml(editNd,
             ctx!=null&&ctx.isSel?null:editNd.cacheColor); // TDDTEST37 FIX (ctx)
+    window.cmFill(editNd); // CT/49
     window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
     cacheNd = {attrs:[]};
     forceMap(editNd, cacheNd);

@@ -36,8 +36,11 @@ var html = `
             <textarea id="svgFullTextarea"></textarea>
             <div id="editModalBG">
                 <div id="editModal">
-                    <textarea id="svgPartTextarea" onchange="onApplyEdits()"></textarea>
-                    <button id="btnModal" onclick="onDone()">Done</button>
+                    <button class="tabtrue inptrue clickfalse" onclick="cssToggle(this)">Node XML</button>
+                    <button class="tabfalse inpfalse clicktrue" onclick="cssToggle(this)">Node Cmd</button>
+                    <textarea class="inptrue" id="svgPartTextarea" onchange="onApplyEdits()"></textarea>
+                    <textarea class="inpfalse" id="commandTextarea">setw 100</textarea>
+                    <button class="inpfalse subm" id="run" onclick="onRun()">Run</button><button class="inptrue subm" id="btnModal" onclick="onDone()">Done</button>
                 </div>
             </div>
         </div>
