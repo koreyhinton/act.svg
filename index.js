@@ -30,6 +30,7 @@ notifyTextArr = [
 
 // ACTIVITY SVG - GLOBALS
 
+window.gXmlEditor = new window.xeEditor();
 window.gStarted = false;
 window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88);
 let topFrameNode = new window.AggregateNode({
@@ -933,8 +934,18 @@ window.mousemove = function(e) {
         'mousemove',
         'window.mousemove({clientX:'+e.clientX+',clientY:'+e.clientY+',view:{event:{preventDefault:()=>{}}}});'
     ); // end user log mousemove
+    let nd = xy2nd(x,y);
+    let ndVtx = window.vxUnitCoord(nd, x, y); // unit coords: 0,0  0,1  1,0  1,1
+    if (// resize cond
+        curIds.length > 0 &&
+        window.dwTriggerResize(nd, ndVtx, x, y)
+    ) { // CT/50
+        window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
+        window.dwDrawUpdate(x, y, ndVtx);
+        return;
+    } // end resize cond
     if (window.mgCanDrag()) { // TDDTEST23 FTR
-        if (window.mvIsMove(x,y)) {
+        if (window.mvIsMove(nd, x,y)) {
             window.mvMove(x,y);
         } else {
             window.updateVisibleRectSelection(x,y);
@@ -1040,8 +1051,8 @@ window.onStart = function(test) {
     document.getElementById("tools1").style.visibility = "hidden";
     document.getElementById("tools2").style.visibility = "visible";
 
-    document.getElementById("pageCodeFrame").classList.add("disabled");
-    document.getElementById("svgFullTextarea").disabled="disabled";
+    // document.getElementById("pageCodeFrame").classList.add("disabled");
+    // document.getElementById("svgFullTextarea").disabled="disabled";
 
     document.onkeydown = keydown;
     window.gDispatch(

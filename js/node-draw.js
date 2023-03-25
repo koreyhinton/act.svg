@@ -12,6 +12,10 @@ window.dwIsDrawingClosed = function() {
     return window.drawing.type == 'null';
 }
 
+window.dwTriggerResize = function(nd, ndVtx, x, y) { // CT/50
+    return window.dwIsDrawingClosed && ndVtx != null;
+};
+
 window.dwCloseDrawing = function() {
     window.drawing.type = 'null';
     window.drawing.cacheX = -1;
@@ -21,8 +25,8 @@ window.dwCloseDrawing = function() {
 
 // NODE DRAW
 
-window.dwDraw = function(type) {
-    window.drawing.id = type+(window.getMaxNodeId(type)+1);
+window.dwDraw = function(type, id) {
+    window.drawing.id = (id==null) ? type+(window.getMaxNodeId(type)+1) : id;
     window.drawing.type = type;
     window.drawing.cacheX = -1;
     window.drawing.cacheY = -1;
@@ -31,7 +35,7 @@ window.dwDraw = function(type) {
 
 // NODE DRAW - EVENT - UPDATE
 
-window.dwDrawUpdate = function(x, y) {
+window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
    var nd = svgNodes.filter(nd => nd.attrs.filter(a => a.name == 'id' && a.value == window.drawing.id).length > 0)[0];
     let adjPt = gmgNodeSnap.snapXYToEnv(window.drawing.type, x, y);
     x = adjPt.x;

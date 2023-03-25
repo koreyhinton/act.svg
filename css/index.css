@@ -46,9 +46,9 @@ svg {
     background-color: rgb(255,255,240);
 }
 
-.disabled {
+/*.disabled {
     background-color: lightgrey !important;
-}
+}*/
 
 #svgFullTextarea {
     position: relative;
