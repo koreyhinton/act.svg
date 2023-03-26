@@ -546,6 +546,7 @@ window.trackNd = function(nd) {
         nd.attrs.push({name: 'id', value: id});
     }
     curIds.push({id: id});
+    window.cmFill(nd); // CT/49
 }
 
 window.untrackNd = function(nd) {

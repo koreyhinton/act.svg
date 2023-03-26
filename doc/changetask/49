@@ -19,3 +19,6 @@ entries. Since multiline is enabled, it might as well autofill the relevant
 commands with their current values, e.g.:
     setx 103
     incx 0
+
+Update 2: incx, incy should get updated values as you drag nodes, so the user
+can see to place it back where it started
