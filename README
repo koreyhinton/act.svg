@@ -21,3 +21,12 @@ Testing in cli:
             47 - pass
             # 48 will be next test #
 
+Build
+    npm install browserify
+    npm install saxophone
+    node_modules/browserify/bin/cmd.js lib/saxophone.js -o lib/dist/saxophone.js
+    echo -n > lib/dist/saxophone.js # reset back for git
+
+    npm install fast-xml-parser
+    node_modules/browserify/bin/cmd.js lib/fast-xml-parser.js -o lib/dist/fast-xml-parser.js
+    echo -n > lib/dist/fast-xml-parser.js # reset back for git

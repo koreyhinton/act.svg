@@ -1,0 +1,4 @@
+CHANGELOG 2023-04-01 -- V0.2 -- XML EDITING
+
+ct/52 :: auto-start svg display for immediate edit updates
+ct/53 :: add svg text (xml) attribute validation
