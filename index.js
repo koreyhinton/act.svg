@@ -890,6 +890,7 @@ window.mousedown = function(e) {
 
 window.mouseup = function(e) {
     e = e || window.event;
+    window.gDwVtx = null;window.dwCloseDrawing(); // CT/50
     window.lgLogNodeCacheFlush('mousemove');
     window.lgUserCacheFlush('mousemove');
     window.lgUser(
@@ -935,13 +936,25 @@ window.mousemove = function(e) {
         'window.mousemove({clientX:'+e.clientX+',clientY:'+e.clientY+',view:{event:{preventDefault:()=>{}}}});'
     ); // end user log mousemove
     let nd = xy2nd(x,y);
-    let ndVtx = window.vxUnitCoord(nd, x, y); // unit coords: 0,0  0,1  1,0  1,1
+    let th = window.gVxThreshold; // CT/50
+    let ndXY = nd ||
+        xy2nd(x-th,y-th)/*1,1*/ || 
+        xy2nd(x+th,y+th)/*0,0*/ ||
+        xy2nd(x-th,y+th)/*1,0*/ ||
+        xy2nd(x+th,y-th)/*0,1*/; // CT/50
+    if (window.gDwVtx==null) window.gDwVtx = window.vxUnitCoord(nd||ndXY, x, y); // unit coords: 0,0  0,1  1,0  1,1 // CT/50
+    let ndVtx = window.gDwVtx;
     if (// resize cond
-        curIds.length > 0 &&
-        window.dwTriggerResize(nd, ndVtx, x, y)
+        //curIds.length > 0 &&
+        window.dwTriggerResize(nd||ndXY, ndVtx, x, y, numMode)
     ) { // CT/50
-        window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
-        window.dwDrawUpdate(x, y, ndVtx);
+        nd = nd||ndXY;
+        if (window.drawing.id == 'null0') {
+            window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
+            window.gDwVtx = ndVtx;
+        }
+        window.window.mgCloseSelection();window.gRectSelectState.state = window.gRectSelectStates.Down;
+        window.dwDrawUpdate(x, y/*, ndVtx*/);
         return;
     } // end resize cond
     if (window.mgCanDrag()) { // TDDTEST23 FTR

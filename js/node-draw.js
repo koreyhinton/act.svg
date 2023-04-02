@@ -1,4 +1,5 @@
 window.drawing = { id: 'null0', type: 'null', cacheX:-1, cacheY:-1 };
+window.gDwVtx = null;
 
 window.dwNewId = function (mode) {
     var id = null;
@@ -12,8 +13,11 @@ window.dwIsDrawingClosed = function() {
     return window.drawing.type == 'null';
 }
 
-window.dwTriggerResize = function(nd, ndVtx, x, y) { // CT/50
-    return window.dwIsDrawingClosed && ndVtx != null;
+window.dwTriggerResize = function(nd, ndVtx, x, y, mode) { // CT/50
+    return (window.gRectSelectState.state == window.gRectSelectStates.Down/* || window.gRectSelectState.state == window.gRectSelectStates.Drag*/) &&
+        mode==0 &&
+        ndVtx != null;
+        // window.dwIsDrawingClosed &&
 };
 
 window.dwCloseDrawing = function() {
@@ -40,11 +44,13 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
     let adjPt = gmgNodeSnap.snapXYToEnv(window.drawing.type, x, y);
     x = adjPt.x;
     y = adjPt.y;
+    // NODE DRAW - EVENT - UPDATE - LINE
     if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/window.lgLogNode('actsvg - draw upd early return',nd);return;}
         x = gmgNodeSnap.snapNdAttr(x, nd, 'x1');
         y = gmgNodeSnap.snapNdAttr(y, nd, 'y1');
         nd.attrs.filter(a=>a.name=='x2')[0].value = x+''; // TDDTEST35 FIX
         nd.attrs.filter(a=>a.name=='y2')[0].value = y+''; // should be string
+    // NODE DRAW - EVENT - UPDATE - POLYLINE
     } else if (window.drawing.type == 'polyline') {
 
         if (window.drawing.cacheX == -1) {
@@ -94,66 +100,36 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
             }
         }*/
         nd.attrs.filter(a => a.name == 'points')[0].value = `${window.drawing.cacheX} ${window.drawing.cacheY} ${x} ${y} ${pt1.x} ${pt1.y} ${x} ${y} ${pt2.x} ${pt2.y}`;
-        
-    } else if (window.drawing.type == 'rect') {
-        //console.log(x,nd.attrs.filter(a=>a.name=='x')[0].value,nd.attrs);
+    // NODE DRAW - EVENT - UPDATE - RECT
+    } else if (window.drawing.type == 'rect') { // CT/50
 
+        if (window.gDwVtx == null) window.gDwVtx = window.vxUnitCoord(nd, x, y);
+        var ndVtx2 = window.gDwVtx;//window.vxUnitCoord(nd, x, y);
+
+        if (ndVtx2==null) return;
+        let scal = (name) => // [node attribute] scalar (as int)
+            parseInt(nd.attrs.filter(a=>a.name==name)[0].value);
+        let set = (name, value) => // [node attribute] set
+            nd.attrs.filter(a=>a.name==name)[0].value = value+'';
+        let pivX = (pX) => // pivoted X(crossed the X pivot point)
+            ndVtx2.x == 1 ? x < pX : x > pX;
+
+        var pivotX = ndVtx2.x==0?scal("x")+scal("width"):scal("x");
+        var pivotY = ndVtx2.y==0?scal("y")+scal("height"):scal("y");
         if (window.drawing.cacheX == -1) {
-            window.drawing.cacheX = x;
-            window.drawing.cacheY = y;
+            window.drawing.cacheX = pivotX;
+            window.drawing.cacheY = pivotY;
         }
+        pivotX = window.drawing.cacheX;
+        pivotY = window.drawing.cacheY;
 
-        var backwardsX = false;
-        var backwardsY = false;
-        if (x < window.drawing.cacheX) {
-            nd.attrs.filter(a=>a.name=='width')[0].value = (window.drawing.cacheX - x)+''; // TDDTEST36 FIX (should be string)
-//Math.abs(x - (nd.attrs.filter(a=>a.name=='x')[0].value+nd.attrs.filter(a=>a.name=='width')[0].value));
-            nd.attrs.filter(a=>a.name=='x')[0].value = x+'';// TDDTEST35 FIX
-                                                           // (should be string)
-            backwardsX = true;
-        }
-        if (y < window.drawing.cacheY) {
-            nd.attrs.filter(a=>a.name=='height')[0].value = (window.drawing.cacheY - y)+''; // TDDTEST36 FIX (should be string)
-            nd.attrs.filter(a=>a.name=='y')[0].value = y+'';// TDDTEST35 FIX
-                                                         // (should be string)
-            backwardsY = true;
-        }
-        var newX = nd.attrs.filter(a=>a.name=='x')[0].value;//Math.min(x, nd.attrs.filter(a=>a.name=='x')[0].value);
-        var newW = //Math.abs(
-            (x - nd.attrs.filter(a=>a.name=='x')[0].value)+'';// TDDTEST35 FIX
-                                                           // (should be string)
-        //);
-        var newY = nd.attrs.filter(a=>a.name=='y')[0].value;//Math.min(y, nd.attrs.filter(a=>a.name=='y')[0].value);
-        var newH = //Math.abs(
-            (y - parseInt(nd.attrs.filter(a=>a.name=='y')[0].value))+''// TDDTEST36 FIX (should be string)
-        //);
-        if (!backwardsX) {nd.attrs.filter(a=>a.name=='x')[0].value = newX;
-            nd.attrs.filter(a=>a.name=='width')[0].value = newW;}
-        if (!backwardsY) {
-            nd.attrs.filter(a=>a.name=='y')[0].value = newY;
-            nd.attrs.filter(a=>a.name=='height')[0].value = newH;
-        }
+        set('x', Math.min(x, pivotX));
+        set('y', Math.min(y, pivotY));
 
-/*        var w = x - parseInt(nd.attrs.filter(a=>a.name=='x')[0].value);
-        var h = y - parseInt(nd.attrs.filter(a=>a.name=='y')[0].value);
-        if (w < 0) {
-            nd.attrs.filter(a=>a.name=='width')[0].value = (parseInt(nd.attrs.filter(a=>a.name=='x')[0].value) - x)+'';// TDDTEST36 FIX (should be string)
-            nd.attrs.filter(a=>a.name=='x')[0].value = x+'';// TDDTEST35 FIX
-                                                           // (should be string)
-            
-        } else {
-            nd.attrs.filter(a=>a.name=='width')[0].value = w+'';// TDDTEST36 FIX
-                                                           // (should be string)
-        }
-        if (h < 0) {
-            nd.attrs.filter(a=>a.name=='height')[0].value = (parseInt(nd.attrs.filter(a=>a.name=='y')[0].value) - y);// TDDTEST36 FIX (should be string)
-            nd.attrs.filter(a=>a.name=='y')[0].value = y+'';// TDDTEST35 FIX
-                                                           // (should be string)
-        } else {
-            nd.attrs.filter(a=>a.name=='height')[0].value =h+'';// TDDTEST36 FIX
-                                                           // (should be string)
-        }
-*/
+        var w = Math.max(x, pivotX) - scal('x');
+        var h = Math.max(y, pivotY) - scal('y');
+        set('width', w);
+        set('height', h);
     }
     window.lgLogNodeCache('drawupd', 'actsvg - draw upd', nd);
     window.updateFrames();
