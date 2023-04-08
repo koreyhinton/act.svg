@@ -11,12 +11,22 @@ window.gVxThreshold = 24;
 // the edge that started the drawing or the max edge at the end of the drawing
 // and for the purpose of calculating which edge is doing the resize we pretend
 // the line/polyline last-drawn edge is at position 1,1.
-window.vxUnitCoord = function(nd, x, y) {
+window.vxUnitCoord = function(nd, x, y) { // CT/50
     // null value if x,y isn't on a vertex (vtx that can trigger a resize)
     if (nd == null) return null;
     let tn = nd.tagName;
     const th = window.gVxThreshold; // threshold
     setMouseRects(nd);
+    let minTh = 6; // minimum threshold
+    let dist = (x1,y1,x2,y2) => {
+        return Math.sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)));
+    };// end dist func
+    // console.warn('vtxTest', x, y, nd.xmin, nd.ymin, nd.xmax, nd.ymax, dist(nd.xmin,nd.ymin,x,y), dist(nd.xmax,nd.ymax,x,y));
+    if (dist(nd.xmin,nd.ymin,x,y) < minTh && dist(nd.xmax,nd.ymax,x,y) < minTh){
+        return null; // e.g., if rect is just barely more than a dot,
+                     // you cannot determine the vertex that is closest to the
+                     // mouse (x,y) until the mousemove changes x,y more
+    } // end min cond
     if (tn == 'rect' || (tn == 'polyline' && window.tyIsDecisionNd(nd))) {
         if (Math.abs(x-nd.xmin) < th && Math.abs(y-nd.ymin) < th) {
             return { x: 0, y: 0 };

@@ -13,10 +13,18 @@ window.dwIsDrawingClosed = function() {
     return window.drawing.type == 'null';
 }
 
+window.dwIsHoveringCorner = function(ndVtx, mode) { // CT/50
+    return mode==0 && ndVtx != null;
+}; // end hover resize func
+
+window.dwHover = function(vtx) { // CT/50
+    if (vtx == null) { document.getElementById("pageDisplayFrame").style.cursor = "default"; return; }
+    document.getElementById("pageDisplayFrame").style.cursor = `url("img/${vtx.x}${vtx.y}.svg") ${vtx.x==0?10:-vtx.x*20} ${vtx.y==0?10:-vtx.y*20}, default`;
+};
+
 window.dwTriggerResize = function(nd, ndVtx, x, y, mode) { // CT/50
     return (window.gRectSelectState.state == window.gRectSelectStates.Down/* || window.gRectSelectState.state == window.gRectSelectStates.Drag*/) &&
-        mode==0 &&
-        ndVtx != null;
+        window.dwIsHoveringCorner(ndVtx, mode);
         // window.dwIsDrawingClosed &&
 };
 

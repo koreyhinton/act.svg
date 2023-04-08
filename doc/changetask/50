@@ -11,8 +11,12 @@ start resizing.
        \__  e.g. click arrow point
             and drag starts resizing it in mode=0
 
-To avoid interfering with selection, it will only activate re-size behavior
-if the node is already selected.
+Update:
+It will activate re-size behavior even if the node is not already selected.
 
-Also, should be able to resize multiple at once (e.g., select 3 rects in a line
-and resize all 3 to be a larger width).
+Hovering corners will display the resize icon according to the vertex being
+hovered (e.g., img/00.svg x=0,y=0).
+
+Future changetask:
+    Also, should be able to resize multiple at once (e.g., select 3 rects in a
+    line and resize all 3 to be a larger width).
