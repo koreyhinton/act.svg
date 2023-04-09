@@ -1,4 +1,32 @@
 window.gCmCacheObj = {id: null, x: 0, y: 0};
+window.cmParser = class {
+    constructor(cmdStrProvider, cbReceiver) {
+        this.cmdStrProvider = cmdStrProvider;
+        this.cbReceiver = cbReceiver;
+    } // end constructor
+    parseArgs() {
+        let commandText = this.cmdStrProvider();
+        let commands = commandText
+            .replace(/;/g,'\n') // convert ; delimiter to be \n
+            .replace(/^\s+/gm,'') // remove leading space on each line
+            .split('\n');
+        for (var i=0; i<commands.length; i++) {
+            var c = commands[i].split(' ');
+            if (c.length == 0) continue;
+            let c1 = c[0];
+            let c2 = c[1];
+            let args = {};
+            switch (c1) {
+                case 'setx':
+                    args.x = parseInt(c2);
+                    break; // break setx
+                default:
+                    break; // break default
+            } // end c1 switch
+            this.cbReceiver(c1, args);
+        } // end for cmd
+    } // end parse arg func
+}; // end comamnd parser class
 window.cmFill = function(nd) { // CT/49
     let text = "";
     let x = window.getX1(nd);
@@ -26,19 +54,22 @@ window.cmFill = function(nd) { // CT/49
 window.onRun = function() { // CT/49
 
     let nd = window.id2nd(curIds[curIds.length-1].id);
-    let commandText = document.getElementById("commandTextarea").value;
-    let commands = commandText.split('\n');
+    let parser = new window.cmParser(
+        () => /*command text=*/
+            document.getElementById("commandTextarea").value,
+        (cmd,args) => {
+            switch (cmd) {
+                case 'setx': // TDDTEST56 FTR
+                    window.setPos(nd, args.x,
+                        parseInt(nd.attrs.filter(a=>a.name=='y')[0].value));
+                    break; // break setx
+                default:
+                    break; // break default
+            } // end cmd switch
+        } // end callback arg
+    ); // end init parser
+    parser.parseArgs();
 
-    for (var i=0; i<commands.length; i++) {
-        var c = commands[i].split(' ');
-        if (c.length == 0) continue;
-        let c1 = c[0];
-        let c2 = c[1];
-        if (c1 == 'setx') { // TDDTEST56 FTR
-            window.setPos(nd, parseInt(c2),
-                parseInt(nd.attrs.filter(a=>a.name=='y')[0].value));
-        }
-    }
     window.gCmCacheObj.id = null;
     window.onDone();
 };
