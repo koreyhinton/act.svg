@@ -36,5 +36,49 @@ window.tddTests = [
             .length == 1;
 
         return cond11 && cond10 && cond01 && cond00;
-    },
+    }, // end test 56
+    // TDD TEST 57 - DRAG LINE @ VERTICES RESIZES
+    function test57() {
+        issueClear();
+        issueKeyNum(1, {}); // line mode
+        issueDrag(20,20,    60,20); // create horiz. line
+        issueKeyNum(0, {}); // sel mode
+
+        // 1,1 vertex drag
+        issueDrag(60,20,    80,20); // => 20,20,    80,20
+        let cond11 = [...document.getElementsByTagName("line")]
+            .filter(el => parseInt(el.getAttribute("x2"))==80 &&
+                parseInt(el.getAttribute("y2"))==20)
+            .length == 1;
+
+        // 0,0 vertex drag
+        issueDrag(20,20,    10,20); // => 10,20,    80,20
+        let cond00 = [...document.getElementsByTagName("line")]
+            .filter(el => parseInt(el.getAttribute("x1"))==10 &&
+                parseInt(el.getAttribute("y1"))==20)
+            .length == 1;
+
+        return cond11 && cond00;
+    }, // end test 57
+    // TDD TEST 58 - DRAG ARROW @ VERTICES RESIZES
+    function test58() {
+        issueClear();
+        issueKeyNum(2, {}); // arrow mode
+        issueDrag(20,20,    60,20); // create horiz. arrow
+        issueKeyNum(0, {}); // sel mode
+
+        // 1,1 vertex drag
+        issueDrag(60,20,    80,20); // => 20,20,    80,20
+        let cond11 = [...document.getElementsByTagName("polyline")]
+            .filter(el => el.getAttribute("points").indexOf("80 20")>-1)
+            .length == 1;
+
+        // 0,0 vertex drag
+        issueDrag(20,20,    10,20); // => 10,20,    80,20
+        let cond00 = [...document.getElementsByTagName("polyline")]
+            .filter(el => el.getAttribute("points").indexOf("10 20")>-1)
+            .length == 1;
+
+        return cond11 && cond00;
+    }, // end test 58
 ];

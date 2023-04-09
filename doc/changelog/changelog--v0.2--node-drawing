@@ -5,3 +5,7 @@ ct/50 :: rect resizing
 CHANGELOG 2023-04-08 -- V0.2 -- NODE DRAWING
 
 ct/50 :: rect resizing with tests
+
+CHANGELOG 2023-04-09 -- V0.2 -- NODE DRAWING
+
+ct/50 :: line/arrow (failing) resize tests
