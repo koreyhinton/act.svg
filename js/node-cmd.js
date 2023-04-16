@@ -17,9 +17,22 @@ window.cmParser = class {
             let c2 = c[1];
             let args = {};
             switch (c1) {
-                case 'setx':
+                case 'setx': // TDDTEST59 FTR
+                case 'incx': // TDDTEST60 FTR
                     args.x = parseInt(c2);
-                    break; // break setx
+                    break;
+                case 'sety': // TDDTEST59 FTR
+                case 'incy': // TDDTEST60 FTR
+                    args.y = parseInt(c2);
+                    break;
+                case 'setw': // TDDTEST61 FTR // TDDTEST65 FTR
+                case 'incw': // TDDTEST62 FTR
+                    args.w = parseInt(c2);
+                    break;
+                case 'seth':
+                case 'inch':
+                    args.h = parseInt(c2);
+                    break;
                 default:
                     break; // break default
             } // end c1 switch
@@ -51,25 +64,41 @@ window.cmFill = function(nd) { // CT/49
     document.getElementById("commandTextarea").value = text;
 };
 
-window.onRun = function() { // CT/49
-
-    let nd = window.id2nd(curIds[curIds.length-1].id);
+window.cmNd = function(nd, cmd) {
     let parser = new window.cmParser(
         () => /*command text=*/
-            document.getElementById("commandTextarea").value,
+            cmd,
         (cmd,args) => {
             switch (cmd) {
-                case 'setx': // TDDTEST56 FTR
-                    window.setPos(nd, args.x,
-                        parseInt(nd.attrs.filter(a=>a.name=='y')[0].value));
+                case 'setx': // TDDTEST63 FTR // TDDTEST64 FTR
+                    window.vxSet(nd, args.x, window.getY1(nd), {x:0,y:0});
+                    //window.setPos(nd, args.x,
+                    //    parseInt(nd.attrs.filter(a=>a.name=='y')[0].value));
                     break; // break setx
+                case 'sety': // TDDTEST63 FTR // TDDTEST64 FTR
+                    window.vxSet(nd, window.getX1(nd), args.y, {x:0, y:0});
+                    break; // break sety
+                case 'setw': // TDDTEST65 FTR
+                    let h = window.vxGet(nd,{x:0, y:1}).y;
+                    window.vxSet(nd, args.w, h, {x:1, y:0});
+                    break; // break setw
+                case 'seth': // TDDTEST65 FTR
+                    let w = window.vxGet(nd,{x:1, y:0}).x;
+                    window.vxSet(nd, w, args.h, {x:0, y:1});
+                    break; // break seth
                 default:
                     break; // break default
             } // end cmd switch
         } // end callback arg
     ); // end init parser
     parser.parseArgs();
+    
+}; // end command node func
 
+window.onRun = function() { // CT/49
+    let nd = window.id2nd(curIds[curIds.length-1].id);
+    window.cmNd(nd, document.getElementById("commandTextarea").value);//inttests
+                                                        // setx // TDDTEST56 FTR
     window.gCmCacheObj.id = null;
     window.onDone();
 };

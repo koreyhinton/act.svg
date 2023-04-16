@@ -5,3 +5,7 @@ ct/49 :: added setx functionality, and incx/y updates on move
 CHANGELOG 2023-04-09 -- V0.2 -- NODE COMMAND
 
 ct/49 :: add (failing) command tests
+
+CHANGELOG 2023-04-16 -- V0.2 -- NODE COMMAND
+
+ct/49 :: add set x,y,w,h impl and add (failing) inc tests
