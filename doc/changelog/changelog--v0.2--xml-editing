@@ -2,3 +2,11 @@ CHANGELOG 2023-04-01 -- V0.2 -- XML EDITING
 
 ct/52 :: auto-start svg display for immediate edit updates
 ct/53 :: add svg text (xml) attribute validation
+
+CHANGELOG 2023-04-22 -- V0.2 -- XML EDITING
+
+ct/52 :: fixed bug where xml element order changed after dragging to select
+ct/53 :: build package.json for xml validation libraries
+ct/53 :: visual indication that xml edit fails validation
+ct/53 :: added rect, line, polyline, circle attribute validation
+
