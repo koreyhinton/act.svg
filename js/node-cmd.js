@@ -65,11 +65,28 @@ window.cmFill = function(nd) { // CT/49
 };
 
 window.cmNd = function(nd, cmd) {
+    const vtx0 = {x: 0, y: 0};
     let parser = new window.cmParser(
         () => /*command text=*/
             cmd,
         (cmd,args) => {
             switch (cmd) {
+                case 'incx': // TDDTEST66 FTR
+                    let vtxA = window.vxGet(nd, vtx0);
+                    window.vxSet(nd, args.x + vtxA.x, vtxA.y, vtx0);
+                    break; // break increase x
+                case 'incy': // TDDTEST66 FTR
+                    let vtxB = window.vxGet(nd, vtx0);
+                    window.vxSet(nd, vtxB.x, args.y+vtxB.y, vtx0);
+                    break; // break increase y
+                case 'incw': // TDDTEST67 FTR
+                    let vtxC = window.vxGet(nd, {x: 1, y: 1});
+                    window.vxSet(nd, vtxC.x + args.w, vtxC.y, {x: 1, y: 1});
+                    break; // break increase width
+                case 'inch': // TDDTEST67 FTR
+                    let vtxD = window.vxGet(nd, {x: 1, y: 1});
+                    window.vxSet(nd, vtxD.x, vtxD.y+args.h, {x: 0, y: 1});
+                    break;// break increase height
                 case 'setx': // TDDTEST63 FTR // TDDTEST64 FTR
                     window.vxSet(nd, args.x, window.getY1(nd), {x:0,y:0});
                     //window.setPos(nd, args.x,

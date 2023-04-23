@@ -136,10 +136,32 @@ window.tddTests = [
     }, // end test 65
     // TDD TEST 66 - INC X,Y COMMANDS ALL TYPES
     function test66() {
-        return false;// todo
+        let startX = 13; let startY = 13;
+        let inputX = '13'; let inputY = '13';
+        let expectX = '26'; let expectY = '26';
+        let types = ['rect', 'line', 'polyline', 'circle', 'text'];
+        let valid = true;
+        types.forEach((type) => {
+            let nd = window.unittestnd(startX,startY,0,0, type);
+            window.cmNd(nd, `incx ${inputX}; incy ${inputY}`);
+            // console.warn('check', type, window.unittestndattr(nd, 'x'), window.unittestndattr(nd, 'y'), expectX, expectY);
+            valid &&= ((window.unittestndattr(nd, 'x') == expectX && window.unittestndattr(nd, 'y') == expectY));
+        }); // end for each type
+        return valid;
     }, // end test 66
     // TDD TEST 67 - INC W,H COMMANDS ALL TYPES
     function test67() {
-        return false;// todo
+        let startW = 13; let startH = 13;
+        let inputW = '13'; let inputH = '13';
+        let expectW = '26'; let expectH = '26';
+        let types = ['rect', 'line', 'polyline', 'circle', 'text'];
+        let valid = true;
+        types.forEach((type) => {
+            let nd = window.unittestnd(0,0,startW,startH, type);
+            window.cmNd(nd, `incw ${inputW}; inch ${inputH}`);
+            // console.warn('check', type, window.unittestndattr(nd, 'width'), window.unittestndattr(nd, 'height'), expectW, expectH);
+            valid &&= nd.tagName == 'text' || ((window.unittestndattr(nd, 'width') == expectW && window.unittestndattr(nd, 'height') == expectH));
+        }); // end for each type
+        return valid;
     }, // end test 67
 ];
