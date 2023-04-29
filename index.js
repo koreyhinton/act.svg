@@ -96,8 +96,8 @@ window.setNumMode = function(num, test) {
 }
 
 window.gDispatch = function(call, delay) {
-    if (window.gTest) { call(); }
-    else { setTimeout(call, delay); }
+    if (window.gTest) { call(); return 1; }
+    else { return setTimeout(call, delay); }
 }
 
 // ATTRIBUTE ACCESS FUNCTIONS

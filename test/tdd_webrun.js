@@ -14,7 +14,7 @@ addEventListener('DOMContentLoaded', (e) => {
     if (testNo == null) {
         testNo = new URL(location.href).searchParams.get("tddf");
         if (testNo == null) {
-            window.onStart();  // auto-start if not testing
+            window.onStart();  // auto-start if not testing // CT/52
             return;
         } // end testno nullCheck
         freeze = true;
