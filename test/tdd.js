@@ -39,6 +39,25 @@ window.issueDrag = function(x1,y1,x2,y2,close=true){
         window.updateFrames();
     } // end close condition
 } // end issue drag function
+window.issueDragOver = function(x1,y1,x2,y2,x3,y3) {
+    x1 += window.gSvgFrame.getStart().x;
+    x2 += window.gSvgFrame.getStart().x;
+    x3 += window.gSvgFrame.getStart().x;
+    y1 += window.gSvgFrame.getStart().y;
+    y2 += window.gSvgFrame.getStart().y;
+    y3 += window.gSvgFrame.getStart().y;
+    document.activeElement?.blur();  // mousedown to start drag won't work
+                                     // if an element (besides body) is focused.
+    window.mousedown({clientX:x1, clientY:y1});
+    let th = (numMode  == 3 || numMode == 4) ? window.gVxThreshold : 0;
+    window.mousemove({clientX:x1+th, clientY:y1+th,view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2,view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x3, clientY:y3,view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x3, clientY:y3,view:{event:{preventDefault:function(){}}}});
+    window.mouseup({clientX:x3, clientY:y3}); //console.warn('curIds', curIds);
+    window.updateFrames();
+}; // end issue drag over (point) function
 window.tddTests = [
     ...(window.tddTests||[]),
     // TDD TEST 0 - RECT MOVE X,Y SHOULD MOVE SUBSELECTED TEXT

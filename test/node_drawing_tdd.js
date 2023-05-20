@@ -81,4 +81,58 @@ window.tddTests = [
 
         return cond11 && cond00;
     }, // end test 58
+    // TDD TEST 73 - DRAG ON NON-ID RECT VERTEX RESIZES
+    function test73() {
+
+        onStart({}); // don't issue clear because we are testing the case of the
+                     // default provided <rect> node which does not have an id
+                     // attribute yet.
+
+        let rect = document.getElementsByTagName("rect")[0];
+        let x0 =parseInt(rect.getAttribute("x"));
+        let y0 = parseInt(rect.getAttribute("y"))
+        let startW = parseInt(rect.getAttribute("width"));
+        let startH = parseInt(rect.getAttribute("height"));
+        issueDrag(x0,y0, 5, 5);
+        let endW = parseInt(
+            document.getElementsByTagName("rect")[0].getAttribute("width")
+        ); // end width
+        let endH = parseInt(
+            document.getElementsByTagName("rect")[0].getAttribute("height")
+        ); // end height
+
+        // dragging to the top left corner (5,5) should have greatly increased
+        // the width and height (more than doubling it) of the rect.
+        return endW > (startW*2) && endH > (startH*2);
+    }, // end test 73
+    // TDD TEST 74 - MOVE-DRAG OVER ANOTHER ELEMENT'S VERTEX DOES NOT RESIZE
+    function test74() {
+        onStart({});
+
+        let text = document.getElementsByTagName("text")[0];
+        let x = parseInt(text.getAttribute("x"));
+        let y = parseInt(text.getAttribute("y"));
+
+        let rect = document.getElementsByTagName("rect")[0];
+        let rectW = parseInt(rect.getAttribute("width"));
+        let rectH = parseInt(rect.getAttribute("height"));
+        let rectCX = parseInt(rect.getAttribute("x")) + rectW; // rect corner X
+        let rectCY = parseInt(rect.getAttribute("y")) + rectH; // rect corner Y
+
+        window.issueDragOver(x,y,  rectCX,rectCY,  rectCX+50,rectCY+50);
+
+        //console.warn(x,y, document.getElementsByTagName("text")[0].getAttribute("x"),document.getElementsByTagName("text")[0].getAttribute("y"));
+        //console.warn(rectW, rectH, document.getElementsByTagName("rect")[0].getAttribute("width"), document.getElementsByTagName("rect")[0].getAttribute("height"));
+        // should have moved the text towards bottom-right, passing over the
+        // bottom-right corner of the rect without resizing the rect
+        return (
+          document.getElementsByTagName("rect")[0].getAttribute("width")==rectW
+        ) && (
+          document.getElementsByTagName("rect")[0].getAttribute("height")==rectH
+        ) && (
+          parseInt(document.getElementsByTagName("text")[0].getAttribute("x"))>x
+        ) && (
+          parseInt(document.getElementsByTagName("text")[0].getAttribute("y"))>y
+        ); // end return conds
+    }, // end test 74
 ];

@@ -944,12 +944,17 @@ window.mousemove = function(e) {
         xy2nd(x+th,y-th)/*0,1*/; // CT/50 // TDDTEST56 FTR
     if (window.gDwVtx==null) window.gDwVtx = window.vxUnitCoord(nd||ndXY, x, y); // unit coords: 0,0  0,1  1,0  1,1 // CT/50 // TDDTEST56 FTR
     let ndVtx = window.gDwVtx;
-    if (// resize cond
+
+    if (// resize cond // CT/50
+        !window.gMvState.moving && // TDDTEST74 FIX
         //curIds.length > 0 &&
         window.dwTriggerResize(nd||ndXY, ndVtx, x, y, numMode)
     ) { // CT/50 // TDDTEST56 FTR
         nd = nd||ndXY;
         if (window.drawing.id == 'null0') {
+            if (nd.attrs.filter(a => a.name == "id").length == 0) {
+                nd.attrs.push({name: 'id', value: window.dwNewId({"line":1,"rect":3,"polyline":2,"circle":6}[nd.tagName])}); // TDDTEST73 FIX
+            } // end id not present cond
             window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
             window.gDwVtx = ndVtx;
         }
