@@ -41,5 +41,27 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
             return { x: 1, y: 1 };
         } // end 1,1 cond
     } // end rect-drag nd type cond
+    else if (tn == 'line') {
+        let lnVtx = null;
+        if (Math.abs(x-nd.xmin) < th && Math.abs(y-nd.ymin) < th) {
+            lnVtx = { x: 0, y: 0 };
+        } // end 0,0 cond
+        if (Math.abs(x-nd.xmax) < th && Math.abs(y-nd.ymax) < th) {
+            lnVtx = { x: 1, y: 1 };
+        } // end 1,1 cond
+        if (lnVtx != null) {
+            let x1 = parseInt(nd.attrs.filter(a=>a.name=='x1')[0].value);
+            let y1 = parseInt(nd.attrs.filter(a=>a.name=='y1')[0].value);
+            let x2 = parseInt(nd.attrs.filter(a=>a.name=='x2')[0].value);
+            let y2 = parseInt(nd.attrs.filter(a=>a.name=='y2')[0].value);
+            let diffMin1/*x1,y1*/ = Math.abs(nd.xmin-x1)+Math.abs(nd.ymin-y1);
+            let diffMin2/*x2,y2*/ = Math.abs(nd.xmin-x2)+Math.abs(nd.ymin-y2);
+            if (diffMin2 < diffMin1) { // flip
+                lnVtx.x = (lnVtx.x+1)%2;
+                lnVtx.y = (lnVtx.y+1)%2;
+            } // end diff comp
+        } // end line vertex cond
+        return lnVtx;
+    } // end line nd type cond
     return null; // unit coords: 0,0  0,1  1,0  1,1
 };

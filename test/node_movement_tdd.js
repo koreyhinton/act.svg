@@ -46,8 +46,7 @@ window.tddTests = [
         onStart({});
 
         issueDrag(0,0,    750,750); // select fork + 2 polylines
-        issueDrag(228,forkY1,    228,forkY2); // drag from fork Y-pos downward
-
+        issueDrag(325,forkY1,    325,forkY2); // drag from fork Y-pos downward
         return [...document.getElementsByTagName("polyline")]
             .filter(el =>
                 parseInt(el.getAttribute("points").split(" ")[1])<forkY2)

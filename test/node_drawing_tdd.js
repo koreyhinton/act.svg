@@ -42,6 +42,7 @@ window.tddTests = [
         issueClear();
         issueKeyNum(1, {}); // line mode
         issueDrag(20,20,    60,20); // create horiz. line
+        //issueDrag(60,20,    20,20); // create horiz. line
         issueKeyNum(0, {}); // sel mode
 
         // 1,1 vertex drag

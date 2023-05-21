@@ -54,10 +54,29 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
     y = adjPt.y;
     // NODE DRAW - EVENT - UPDATE - LINE
     if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/window.lgLogNode('actsvg - draw upd early return',nd);return;}
-        x = gmgNodeSnap.snapNdAttr(x, nd, 'x1');
-        y = gmgNodeSnap.snapNdAttr(y, nd, 'y1');
-        nd.attrs.filter(a=>a.name=='x2')[0].value = x+''; // TDDTEST35 FIX
-        nd.attrs.filter(a=>a.name=='y2')[0].value = y+''; // should be string
+
+        let xAttrName = 'x1'; let yAttrName = 'y1';
+        let ndVtx2 = window.gDwVtx;
+        (() => { // TDDTEST57 FIX
+            // calculate which x/y attribute to update
+            if (ndVtx2?.x == 1) {
+                xAttrName = 'x2';    yAttrName = 'y2';
+            } // end 1,1 vertex cond
+            else{}//end 0,0 vertex cond (default values: x1, y1)
+        })(); // TOGGLE (); <-> ;
+        if (ndVtx2==null) return;
+
+        x = gmgNodeSnap.snapNdAttr(x, nd, xAttrName);
+        y = gmgNodeSnap.snapNdAttr(y, nd, yAttrName);
+
+        let xVal = x;
+        let yVal = y;
+        (() => { // TDDTEST35 FIX
+            // assign x,y vals as strings
+            xVal += '';    yVal += '';
+        })(); // TOGGLE (); <-> ;
+        nd.attrs.filter(a=>a.name==xAttrName)[0].value = xVal;
+        nd.attrs.filter(a=>a.name==yAttrName)[0].value = yVal;
     // NODE DRAW - EVENT - UPDATE - POLYLINE
     } else if (window.drawing.type == 'polyline') {
 
