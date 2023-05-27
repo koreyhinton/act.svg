@@ -22,3 +22,8 @@ ct/50 :: fixed a move test that was failing because it was dragging to move from
 ct/50 :: implement line resize (test passes)
 ct/46 :: started implementing toggled () code block invocations, to assure a
          particular code fix/feature really maps 1:1 code<-->test
+
+CHANGELOG 2023-04-27 -- V0.2 -- NODE DRAWING
+
+ct/50 :: implement arrow connector resize (test passes)
+

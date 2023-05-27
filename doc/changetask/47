@@ -1,4 +1,4 @@
-CT/47      V0.2      NODE-DRAWING              DRAG 2 DRAW LG DEC. ND    FTR
+CT/47      V0.2      NODE-DRAWING              DRAG 2 RESHAPE DEC. ND    FTR
 Dragging the decision node right or left draws changes the drawn width.
 Dragging it up or down changes the drawn height.
 
@@ -34,3 +34,5 @@ Click-Drag (6-line):
     __
    /  \
    \__/
+
+Update 2: this task will focus on the reshaping between 4-sided and 6-sided

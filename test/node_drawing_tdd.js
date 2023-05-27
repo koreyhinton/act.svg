@@ -40,26 +40,41 @@ window.tddTests = [
     // TDD TEST 57 - DRAG LINE @ VERTICES RESIZES
     function test57() {
         issueClear();
-        issueKeyNum(1, {}); // line mode
-        issueDrag(20,20,    60,20); // create horiz. line
-        //issueDrag(60,20,    20,20); // create horiz. line
-        issueKeyNum(0, {}); // sel mode
-
-        // 1,1 vertex drag
-        issueDrag(60,20,    80,20); // => 20,20,    80,20
-        let cond11 = [...document.getElementsByTagName("line")]
-            .filter(el => parseInt(el.getAttribute("x2"))==80 &&
-                parseInt(el.getAttribute("y2"))==20)
-            .length == 1;
-
-        // 0,0 vertex drag
-        issueDrag(20,20,    10,20); // => 10,20,    80,20
-        let cond00 = [...document.getElementsByTagName("line")]
-            .filter(el => parseInt(el.getAttribute("x1"))==10 &&
-                parseInt(el.getAttribute("y1"))==20)
-            .length == 1;
-
-        return cond11 && cond00;
+        let passes = true;
+        [ // lines (left-to-right drawn, right-to-left drawn)
+            {x1: 20, y1:20, x2: 60, y2: 20},
+            {x1: 60, y1:20, x2: 20, y2: 20}
+        ].forEach(({x1,y1,x2,y2},i) => {    
+            issueKeyNum(1, {}); // line mode
+            issueDrag(x1,y1,    x2,y2); // create horiz. line
+            issueKeyNum(0, {}); // sel mode
+    
+            // 1,1 vertex drag
+            issueDrag(60,20,    80,20); // => 20,20,    80,20
+            let cond11 = [...document.getElementsByTagName("line")]
+                .filter(el => [
+                        parseInt(el.getAttribute("x2")),
+                        parseInt(el.getAttribute("x1"))
+                    ].indexOf(80) > -1 &&
+                    parseInt(el.getAttribute("y2"))==20)
+                .length == 1;
+    
+            // 0,0 vertex drag
+            issueDrag(20,20,    10,20); // => 10,20,    80,20
+            let cond00 = [...document.getElementsByTagName("line")]
+                .filter(el => [
+                        parseInt(el.getAttribute("x1")),
+                        parseInt(el.getAttribute("x2"))
+                    ].indexOf(10) > -1 &&
+                    parseInt(el.getAttribute("y1"))==20)
+                .length == 1;
+            passes = passes && (cond11 && cond00);
+            if (i == 0) { // cleanup
+                issueDrag(1,1,    100,100);
+                window.manageKeyDownEvent({key: 'x', ctrlKey: true});
+            } //end cleanup cond
+        }); // end for each line
+        return passes;
     }, // end test 57
     // TDD TEST 58 - DRAG ARROW @ VERTICES RESIZES
     function test58() {
@@ -70,6 +85,7 @@ window.tddTests = [
 
         // 1,1 vertex drag
         issueDrag(60,20,    80,20); // => 20,20,    80,20
+
         let cond11 = [...document.getElementsByTagName("polyline")]
             .filter(el => el.getAttribute("points").indexOf("80 20")>-1)
             .length == 1;

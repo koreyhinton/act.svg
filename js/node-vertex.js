@@ -41,6 +41,24 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
             return { x: 1, y: 1 };
         } // end 1,1 cond
     } // end rect-drag nd type cond
+    else if (tn == 'polyline' && !window.tyIsDecisionNd(nd)) {
+        let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ");
+        let x1 = parseFloat(pts[0]);
+        let y1 = parseFloat(pts[1]);
+        let x2 = parseFloat(pts[2]);
+        let y2 = parseFloat(pts[3]);
+        if (dist(x1,y1,x2,y2) < 11) {
+            return {x: 1, y: 1}; // when drawing from scratch (ie: not resizing
+                                 // existing arrow), assume user is dragging at
+                                 // the arrow point vtx=(1,1)
+        } // end draw from scratch cond
+        if (Math.abs(x1-x) < th && Math.abs(y1-y) < th) {
+            return {x: 0, y: 0};
+        } // end 0,0 cond
+        else if (Math.abs(x2-x) < th && Math.abs(y2-y) < th) {
+            return {x: 1, y: 1};
+        } // end 1,1 cond
+    } // end arrow connector node type
     else if (tn == 'line') {
         let lnVtx = null;
         if (Math.abs(x-nd.xmin) < th && Math.abs(y-nd.ymin) < th) {
@@ -64,4 +82,14 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
         return lnVtx;
     } // end line nd type cond
     return null; // unit coords: 0,0  0,1  1,0  1,1
-};
+}; // end vertex unit coord
+
+window.vx2 = function(zeroPtOrPrim/*vtx 0,0*/, onePtOrPrim/*vtx 1,1*/, vtx) {
+        let pointOrPrimitive = (onePtOrPrim.x==null)?onePtOrPrim:{x:onePtOrPrim.x, y:onePtOrPrim.y};
+        (() => { // TDDTEST58 FTR
+            // calculate which point (or primitive) to use
+            let pointOrPrimitive2 = (zeroPtOrPrim.x==null)?zeroPtOrPrim:{x:zeroPtOrPrim.x, y:zeroPtOrPrim.y};
+            pointOrPrimitive = [pointOrPrimitive2, pointOrPrimitive][vtx.x];
+        })(); // TOGGLE (); <-> ;
+        return pointOrPrimitive;
+}; // end vertex choose which of 2 points function
