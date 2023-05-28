@@ -2,8 +2,13 @@ window.drawing = { id: 'null0', type: 'null', cacheX:-1, cacheY:-1 };
 window.gDwVtx = null;
 
 window.dwNewId = function (mode) {
+    // dwDraw is the standard way to create a new Id (e.g., initial creation or
+    // normal selection of existing shape), however when resizing from a cold
+    // state, like you just started resizing without selecting the shape first,
+    // then a new Id must be forcefully created to get it to work, hence dwNewId
     var id = null;
-    if ([1,2,3,4,5,8].indexOf(mode)>-1) {
+    if (Object.keys(window.tyResizable()).map(k => parseInt(k))
+            .indexOf(mode)>-1) {
         id = window.dwDraw(window.tyFromMode(mode));
     }
     return id;
@@ -190,6 +195,19 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
         }*/
 
         nd.attrs.filter(a => a.name == 'points')[0].value = `${lnPt1.x} ${lnPt1.y} ${lnPt2.x} ${lnPt2.y} ${pt1.x} ${pt1.y} ${lnPt2.x} ${lnPt2.y} ${pt2.x} ${pt2.y}`;
+    // NODE DRAW - EVENT - UPDATE - CIRCLE
+    } else if (window.drawing.type == 'circle') {
+        // make this one simple (don't change position,
+        // and don't care about which vertex),
+        // just adjust the r attr
+        let dist = (x1,y1,x2,y2) => {
+            return Math.sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)));
+        };// end dist func
+        if (nd==null)return;
+        let cx = parseInt(nd.attrs.filter(a => a.name == 'cx')[0].value);
+        let cy = parseInt(nd.attrs.filter(a => a.name == 'cy')[0].value);
+        let r = Math.ceil(dist(x,y,cx,cy));
+        nd.attrs.filter(a => a.name == 'r')[0].value = r+'';
     // NODE DRAW - EVENT - UPDATE - RECT
     } else if (window.drawing.type == 'rect') { // CT/50
 

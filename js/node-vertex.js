@@ -81,6 +81,24 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
         } // end line vertex cond
         return lnVtx;
     } // end line nd type cond
+    else if (tn == 'circle') {
+        let cx = parseInt(nd.attrs.filter(a => a.name == 'cx')[0].value);
+        let cy = parseInt(nd.attrs.filter(a => a.name == 'cy')[0].value);
+        let r = parseInt(nd.attrs.filter(a => a.name == 'r')[0].value);
+        let o = 2; // offset
+        if (x>cx+o && y>cy+o && x<cx+r+o && y<cy+r+o) {
+            return { x: 1, y: 1 };
+        } // end bottom-right cond
+        if (x>cx+o && y>cy-r-o && x<cx+r+o && y<cy-o) {
+            return { x: 1, y: 0 };
+        } // end top-right cond
+        if (x>cx-r-o && y>cy+o && x<cx-o && y<cy+r+o) {
+            return { x: 0, y: 1 };
+        } // end bottom-left cond
+        if (x>cx-r-o && y>cy-r-o && x<cx-o && y<cy-o) {
+            return { x: 0, y: 0};
+        } // end top-left cond
+    } // end circle (node) type name cond
     return null; // unit coords: 0,0  0,1  1,0  1,1
 }; // end vertex unit coord
 

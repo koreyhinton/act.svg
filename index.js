@@ -953,7 +953,10 @@ window.mousemove = function(e) {
         nd = nd||ndXY;
         if (window.drawing.id == 'null0') {
             if (nd.attrs.filter(a => a.name == "id").length == 0) {
-                nd.attrs.push({name: 'id', value: window.dwNewId({"line":1,"rect":3,"polyline":2,"circle":6}[nd.tagName])}); // TDDTEST73 FIX
+                let map = window.tyResizable();
+                let keys = Object.keys(map);let key=null;
+                for (var i=0; i<keys.length; i++) if (map[keys[i]]==nd.tagName)key=keys[i];
+                nd.attrs.push({name: 'id', value: window.dwNewId(parseInt(key))}); // TDDTEST73 FIX
             } // end id not present cond
             window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
             window.gDwVtx = ndVtx;

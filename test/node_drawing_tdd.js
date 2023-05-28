@@ -152,4 +152,26 @@ window.tddTests = [
           parseInt(document.getElementsByTagName("text")[0].getAttribute("y"))>y
         ); // end return conds
     }, // end test 74
+    // TDD TEST 75 - CIRCLE SHOULD RESIZE
+    function test75() {
+        issueClear();
+        issueKeyNum(6, {}); // circle mode
+        issueClick(10,10);     updateFrames();// create circle (exactly top-
+                                              // left since it has default
+                                              // radius size of 10)
+        issueKeyNum(0, {}); // sel mode
+        window.mousedown({clientX:1012,clientY:100});
+        window.mouseup({clientX:1012,clientY:100});
+        //issueClick(100,100);     updateFrames(); // A random user click is
+                                                 // needed to get it out of
+                                                 // the rectangular selection
+                                                 // state; minor bug perhaps
+        // 1,1 vertex drag
+        try{issueDrag(16,16,    400,400);}catch(e){}
+
+        let cond11 = [...document.getElementsByTagName("circle")]
+            .filter(el => parseInt(el.getAttribute("r"))>100)
+            .length == 1;
+        return cond11;
+    }, // end test 75
 ];
