@@ -216,4 +216,3 @@ window.vx2 = function(zeroPtOrPrim/*vtx 0,0*/, onePtOrPrim/*vtx 1,1*/, vtx) {
 window.vxInverse = function(vtx) {
     return { x: (vtx.x+1)%2, y: (vtx.y+1)%2 };
 }; // end inverse vertex function
-
