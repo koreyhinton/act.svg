@@ -11,8 +11,7 @@ S-RIGHT (org-table-move-cell-right)
 | Todo                | In-Progress         | Done                |
 | (change identified) | (tests are failing) | (tests are passing) |
 |---------------------+---------------------+---------------------|
-| ct/47               |                     |                     |
-| ct/48               |                     |                     |
 |                     |                     | ct/50               |
+|                     |                     | ct/51               |
 |---------------------+---------------------+---------------------|
 

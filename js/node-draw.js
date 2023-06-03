@@ -60,19 +60,22 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
     // NODE DRAW - EVENT - UPDATE - LINE
     if (window.drawing.type == 'line') {if (nd.attrs.filter(a=>a.name=='x2').length<1) {/*console.warn(nd);*/window.lgLogNode('actsvg - draw upd early return',nd);return;}
 
-        let xAttrName = 'x1'; let yAttrName = 'y1';
         let ndVtx2 = window.gDwVtx;
-        (() => { // TDDTEST57 FIX
+        let posName = window.atPosName(nd, null);
+        let oppPosName = window.atPosName(nd, {x:1,y:1});
+        (() => { // TDDTEST57 FIX // CT/50
             // calculate which x/y attribute to update
-            if (ndVtx2?.x == 1) {
-                xAttrName = 'x2';    yAttrName = 'y2';
-            } // end 1,1 vertex cond
-            else{}//end 0,0 vertex cond (default values: x1, y1)
+            posName = window.atPosName(nd, ndVtx2);
         })(); // TOGGLE (); <-> ;
+        (() => { // TDDTEST77 FTR // CT/51
+            // calculate which x/y attribute to use for snapping/aligntment
+            oppPosName = window.atPosName(nd, window.vxInverse(ndVtx2));
+        })(); // TOGGLE (); <-> ;
+
         if (ndVtx2==null) return;
 
-        x = gmgNodeSnap.snapNdAttr(x, nd, xAttrName);
-        y = gmgNodeSnap.snapNdAttr(y, nd, yAttrName);
+        x = gmgNodeSnap.snapNdAttr(x, nd, oppPosName.x);
+        y = gmgNodeSnap.snapNdAttr(y, nd, oppPosName.y);
 
         let xVal = x;
         let yVal = y;
@@ -80,8 +83,8 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
             // assign x,y vals as strings
             xVal += '';    yVal += '';
         })(); // TOGGLE (); <-> ;
-        nd.attrs.filter(a=>a.name==xAttrName)[0].value = xVal;
-        nd.attrs.filter(a=>a.name==yAttrName)[0].value = yVal;
+        nd.attrs.filter(a=>a.name==posName.x)[0].value = xVal;
+        nd.attrs.filter(a=>a.name==posName.y)[0].value = yVal;
     // NODE DRAW - EVENT - UPDATE - POLYLINE
     } else if (window.drawing.type == 'polyline') {
 
@@ -118,9 +121,10 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
         var pt1 = {};
         var pt2 = {};
 
-        x = gmgNodeSnap.snapX(x, window.drawing.cacheX);
-        y = gmgNodeSnap.snapY(y, window.drawing.cacheY);
-
+        (() => { // TDDTEST78 FTR // CT/51
+            x = gmgNodeSnap.snapX(x, window.drawing.cacheX);
+            y = gmgNodeSnap.snapY(y, window.drawing.cacheY);
+        })(); // TOGGLE (); <-> ;
         let cachePt = {x: window.drawing.cacheX, y: window.drawing.cacheY};
 
         //          * pt1

@@ -174,4 +174,26 @@ window.tddTests = [
             .length == 1;
         return cond11;
     }, // end test 75
+    // TDD TEST 77 - LINE SHOULD SNAP TO OPPOSITE VERTEX POINT
+    function test77() {
+        let preSnapX2 = 4;
+        let snapX2 = 2;
+        issueClear();
+        issueKeyNum(1, {}); // line mode
+        issueDrag(/*x1*/snapX2,2,    /*x2*/preSnapX2,100);
+        return [...document.getElementsByTagName("line")]
+            .filter(el => parseInt(el.getAttribute("x2"))==snapX2)
+            .length == 1;
+    }, // end test 77
+    // TDD TEST 78 - ARROW SHOULD SNAP TO OPPOSITE VERTEX POINT
+    function test78() {
+        let preSnapX2 = 4;
+        let snapX2 = 2;
+        issueClear();
+        issueKeyNum(2, {}); // arrow mode
+        issueDrag(/*x1*/snapX2,2,    /*x2*/preSnapX2,100);
+        return [...document.getElementsByTagName("polyline")]
+            .filter(el => parseInt(el.getAttribute("points").split(" ")[2])==snapX2)
+            .length == 1;
+    }, // end test 77
 ];

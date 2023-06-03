@@ -5,7 +5,7 @@ echo "$res1"
 failed1_txt=$(echo "$res1" | grep fail)
 failed2_txt=""
 
-array=( 35 57 58 75 )
+array=( 35 57 58 75 77 78)
 
 echo "--- toggled for failure. All tests should fail: ---"
 
@@ -15,6 +15,7 @@ do
     # echo "$fname"
     if [[ ! -f "$fname" ]]; then
         echo "  ${n} Error!"
+        failed2_txt="${failed2_txt}"$'\n'"test${n} - error"
     else
         sed -i.bak "s/\/\/ TDDTEST${n}/return;\/\/ TDDTEST${n}/" "$fname"
         res=$(node --experimental-modules test/tdd_cirun.js 2>&1 ) # | grep "\- fail")

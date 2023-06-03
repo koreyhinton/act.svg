@@ -8,7 +8,8 @@ window.snNodeSnapper = class {
         return (Math.abs(y - target) < snSnapThreshold) ? target : y;
     }
     snapNdAttr(val, nd, attr) {
-        return val;// todo: implementation
+        let target = parseInt(nd.attrs.filter(a => a.name == attr)[0].value);
+        return (Math.abs(val - target) < snSnapThreshold) ? target : val;
     }
     snapXYToEnv(type, x, y) {
         return { x: x, y: y };// todo: implementation
