@@ -5,19 +5,19 @@ echo "$res1"
 failed1_txt=$(echo "$res1" | grep fail)
 failed2_txt=""
 
-array=( 35 57 58 75 77 78)
+array=( 5 35 57 58 75 76 77 78 )
 
 echo "--- toggled for failure. All tests should fail: ---"
 
 for n in "${array[@]}"
 do
-    fname=$(grep -r "// TDDTEST${n}" . | cut -d : -f1 | grep -v ".bak")
+    fname=$(grep -r "// TDDTEST${n} F" . | cut -d : -f1 | grep -v ".bak" | grep -v '~')
     # echo "$fname"
     if [[ ! -f "$fname" ]]; then
         echo "  ${n} Error!"
         failed2_txt="${failed2_txt}"$'\n'"test${n} - error"
     else
-        sed -i.bak "s/\/\/ TDDTEST${n}/return;\/\/ TDDTEST${n}/" "$fname"
+        sed -i.bak "s/\/\/ TDDTEST${n} F/return;\/\/ TDDTEST${n} F/" "$fname"
         res=$(node --experimental-modules test/tdd_cirun.js 2>&1 ) # | grep "\- fail")
         # echo "$res"
         res=$(echo "$res" | grep "test${n} - ")
@@ -28,7 +28,7 @@ do
         # else
         #     echo "  ${n} no"
         # fi
-        sed -i.bak2 "s/return;\/\/ TDDTEST${n}/\/\/ TDDTEST${n}/" "$fname"
+        sed -i.bak2 "s/return;\/\/ TDDTEST${n} F/\/\/ TDDTEST${n} F/" "$fname"
     fi
 done
 

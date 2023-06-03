@@ -255,8 +255,8 @@ window.setMouseRects = function(nd) {
 // Text nodes MUST be first in the array in order to
 // ensure text in a box gets prioritized on the click
 // over the surrounding rectangle
-window.sortSvgNodes = function() {return;//todo:remove sortSvgNodes + references
-    function swimLane(nd) { // TDDTEST5 FTR
+window.sortedSvgNodes = function() {
+    function swimLane(nd) {
         return (
             nd.tagName.toLowerCase() == "rect" &&
             ((nd.xmax - nd.xmin) > 200) &&
@@ -272,16 +272,17 @@ window.sortSvgNodes = function() {return;//todo:remove sortSvgNodes + references
     }
     for (var i=0; i<svgNodes.length; i++) {
         if (svgNodes[i].tagName.toLowerCase() != "text") {
-            if (swimLane(svgNodes[i])) { continue; } // TDDTEST5 FTR
+            if (swimLane(svgNodes[i])) { continue; }
             newArray.push(svgNodes[i]);
         }
     }
-    for (var i=0; i<svgNodes.length; i++) { // TDDTEST5 FTR
+    for (var i=0; i<svgNodes.length; i++) {
         if (swimLane(svgNodes[i])) {
             newArray.push(svgNodes[i]);
         }
     }
-    svgNodes = newArray;
+    // svgNodes = newArray;
+    return newArray;
 }
 // CONVERSIONS
 
@@ -386,8 +387,12 @@ window.minxydist = function(nd, x, y) { // TDDTEST43 FIX
 
 window.xy2nd = function(x, y, withNearestEdge = false) { // TDDTEST43 FIX
     var nd = null;
-    for (var i=0; i<svgNodes.length; i++) {
-        var svgNd = svgNodes[i];
+    let sorted = svgNodes;
+    (() => { // TDDTEST5 FTR
+        sorted = window.sortedSvgNodes();
+    })(); // TOGGLE (); <-> ;
+    for (var i=0; i<sorted.length; i++) {
+        var svgNd = sorted[i];
         // console.log(x,y,svgNd.xmin, svgNd.ymin, svgNd.xmax, svgNd.ymax);
         if ((x >= svgNd.xmin)
         && (x <= svgNd.xmax)
@@ -450,7 +455,7 @@ window.xml2nd = function(xml, tagName) {  // TDDTEST2 FTR
     var xdomNd = xmlDocument.getElementsByTagName(tagName)[0];
     /*var nd = */xdom2nd(xdomNd, nd);
     window.lgLogNode('actsvg - xml converted to nd', nd);
-    sortSvgNodes();
+    // sortSvgNodes();
 }
 
 // DIFFERENCES
@@ -694,7 +699,7 @@ window.issueClick = function(x, y) {
         //}
         return;
     }
-    if (numMode == 3) { // TDDTEST5 FTR
+    if (numMode == 3) {
         //if (clickCnt == 1) {
             issueDraw(`<rect rx="0" ry="0" x="`
                 +x+`" y="`
@@ -1063,7 +1068,7 @@ window.loadSvg = function(xml, test) {
             setMouseRects(svgNodes[sni]);
         }*/
     }
-    sortSvgNodes();
+    // sortSvgNodes();
     issueKeyNum(0, test);
     updateFrames();
 }

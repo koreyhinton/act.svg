@@ -115,7 +115,7 @@ window.cmNd = function(nd, cmd) {
 window.onRun = function() { // CT/49
     let nd = window.id2nd(curIds[curIds.length-1].id);
     window.cmNd(nd, document.getElementById("commandTextarea").value);//inttests
-                                                        // setx // TDDTEST56 FTR
+                                                        // setx // TDDTEST79 FTR
     window.gCmCacheObj.id = null;
     window.onDone();
 };
