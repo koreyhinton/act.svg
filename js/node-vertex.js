@@ -113,5 +113,5 @@ window.vx2 = function(zeroPtOrPrim/*vtx 0,0*/, onePtOrPrim/*vtx 1,1*/, vtx) {
 }; // end vertex choose which of 2 points function
 
 window.vxInverse = function(vtx) {
-    return { x: (vtx.x+1)%2, y: (vtx.x+1)%2 };
+    return { x: (vtx.x+1)%2, y: (vtx.y+1)%2 };
 }; // end inverse vertex function
