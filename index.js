@@ -546,6 +546,7 @@ window.trackNd = function(nd) {
         nd.attrs.push({name: 'id', value: id});
     }
     curIds.push({id: id});
+    window.cmFill(nd); // CT/49
 }
 
 window.untrackNd = function(nd) {
@@ -698,8 +699,8 @@ window.issueClick = function(x, y) {
             issueDraw(`<rect rx="0" ry="0" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(10)+`" height="`
-                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(3)+`" height="`
+                +(3)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
@@ -713,8 +714,8 @@ window.issueClick = function(x, y) {
             issueDraw(`<rect rx="10" ry="10" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(10)+`" height="`
-                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(3)+`" height="`
+                +(3)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
@@ -890,6 +891,7 @@ window.mousedown = function(e) {
 
 window.mouseup = function(e) {
     e = e || window.event;
+    window.gDwVtx = null;window.dwCloseDrawing(); // CT/50
     window.lgLogNodeCacheFlush('mousemove');
     window.lgUserCacheFlush('mousemove');
     window.lgUser(
@@ -935,15 +937,41 @@ window.mousemove = function(e) {
         'window.mousemove({clientX:'+e.clientX+',clientY:'+e.clientY+',view:{event:{preventDefault:()=>{}}}});'
     ); // end user log mousemove
     let nd = xy2nd(x,y);
-    let ndVtx = window.vxUnitCoord(nd, x, y); // unit coords: 0,0  0,1  1,0  1,1
-    if (// resize cond
-        curIds.length > 0 &&
-        window.dwTriggerResize(nd, ndVtx, x, y)
-    ) { // CT/50
-        window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
-        window.dwDrawUpdate(x, y, ndVtx);
+    let th = window.gVxThreshold; // CT/50 // TDDTEST56 FTR
+    let ndXY = nd ||
+        xy2nd(x-th,y-th)/*1,1*/ || 
+        xy2nd(x+th,y+th)/*0,0*/ ||
+        xy2nd(x-th,y+th)/*1,0*/ ||
+        xy2nd(x+th,y-th)/*0,1*/; // CT/50 // TDDTEST56 FTR
+    if (window.gDwVtx==null) window.gDwVtx = window.vxUnitCoord(nd||ndXY, x, y); // unit coords: 0,0  0,1  1,0  1,1 // CT/50 // TDDTEST56 FTR
+    let ndVtx = window.gDwVtx;
+
+    if (// resize cond // CT/50
+        !window.gMvState.moving && // TDDTEST74 FIX
+        //curIds.length > 0 &&
+        window.dwTriggerResize(nd||ndXY, ndVtx, x, y, numMode)
+    ) { // CT/50 // TDDTEST56 FTR
+        nd = nd||ndXY;
+        if (window.drawing.id == 'null0') {
+            if (nd.attrs.filter(a => a.name == "id").length == 0) {
+                let map = window.tyResizable();
+                let keys = Object.keys(map);let key=null;
+                for (var i=0; i<keys.length; i++) if (map[keys[i]]==nd.tagName)key=keys[i];
+                nd.attrs.push({name: 'id', value: window.dwNewId(parseInt(key))}); // TDDTEST73 FIX
+            } // end id not present cond
+            window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
+            window.gDwVtx = ndVtx;
+        }
+        window.window.mgCloseSelection();window.gRectSelectState.state = window.gRectSelectStates.Down;
+        window.dwDrawUpdate(x, y/*, ndVtx*/);
+        let vtx = window.gDwVtx;
+        window.dwHover(vtx);
         return;
     } // end resize cond
+    else if (window.dwIsHoveringCorner(ndVtx, numMode)) { // CT/50
+        window.dwHover(ndVtx);window.gDwVtx=null;//force it to re-caculate
+    } // end draw hover
+    else { window.dwHover(null); } // CT/50
     if (window.mgCanDrag()) { // TDDTEST23 FTR
         if (window.mvIsMove(nd, x,y)) {
             window.mvMove(x,y);

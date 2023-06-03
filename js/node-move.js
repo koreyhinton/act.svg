@@ -90,6 +90,7 @@ window.mvIsMove = function(nd, x,y) {
 }
 // MV - CLOSE MOVE
 window.mvClose = function() {
+    window.gCmCacheObj.id = null; // CT/49
     let wasMoving = window.gMvState.moving;
     window.gMvState.moving = false;
     window.gMvState.offsetX = null;

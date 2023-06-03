@@ -46,8 +46,7 @@ window.tddTests = [
         onStart({});
 
         issueDrag(0,0,    750,750); // select fork + 2 polylines
-        issueDrag(228,forkY1,    228,forkY2); // drag from fork Y-pos downward
-
+        issueDrag(325,forkY1,    325,forkY2); // drag from fork Y-pos downward
         return [...document.getElementsByTagName("polyline")]
             .filter(el =>
                 parseInt(el.getAttribute("points").split(" ")[1])<forkY2)
@@ -161,12 +160,12 @@ window.tddTests = [
         window.keydown({key:"Control", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
         window.keydown({key:"x", shiftKey:false,ctrlKey:true,view:{event:{preventDefault:()=>{}}}});
         window.keydown({key:"3", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
-        window.mousedown({clientX:804,clientY:132});
+        /*window.mousedown({clientX:804,clientY:132});
         window.mousemove({clientX:971,clientY:625,view:{event:{preventDefault:()=>{}}}});
-        window.mouseup({clientX:971,clientY:625});
-        window.mousedown({clientX:853,clientY:284});
+        window.mouseup({clientX:971,clientY:625});*/window.issueDrag(804-window.gSvgFrame.getStart().x,132-window.gSvgFrame.getStart().y,971-window.gSvgFrame.getStart().x,625-window.gSvgFrame.getStart().y,true);
+        /*window.mousedown({clientX:853,clientY:284});
         window.mousemove({clientX:933,clientY:413,view:{event:{preventDefault:()=>{}}}});
-        window.mouseup({clientX:933,clientY:413});
+        window.mouseup({clientX:933,clientY:413});*/window.issueDrag(853-window.gSvgFrame.getStart().x,284-window.gSvgFrame.getStart().y,933-window.gSvgFrame.getStart().x,413-window.gSvgFrame.getStart().y,true);
         window.keydown({key:"0", shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
         window.mousedown({clientX:889,clientY:360});
         window.mouseup({clientX:889,clientY:360});

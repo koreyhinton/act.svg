@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node --experimental-modules test/tdd_cirun.js 1>>/dev/null"
+    "test": "test/test"
   },
   "repository": {
     "type": "git",
