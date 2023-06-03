@@ -96,8 +96,8 @@ window.setNumMode = function(num, test) {
 }
 
 window.gDispatch = function(call, delay) {
-    if (window.gTest) { call(); }
-    else { setTimeout(call, delay); }
+    if (window.gTest) { call(); return 1; }
+    else { return setTimeout(call, delay); }
 }
 
 // ATTRIBUTE ACCESS FUNCTIONS
@@ -255,7 +255,7 @@ window.setMouseRects = function(nd) {
 // Text nodes MUST be first in the array in order to
 // ensure text in a box gets prioritized on the click
 // over the surrounding rectangle
-window.sortSvgNodes = function() {
+window.sortSvgNodes = function() {return;//todo:remove sortSvgNodes + references
     function swimLane(nd) { // TDDTEST5 FTR
         return (
             nd.tagName.toLowerCase() == "rect" &&

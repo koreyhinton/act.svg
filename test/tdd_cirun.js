@@ -10,6 +10,8 @@ global.templateXml = null;
 global.addEventListener = window.addEventListener;
 global.NamedNodeMap = window.NamedNodeMap;
 global.Event = window.Event;
+global.gLibFastXmlValidator = null;
+global.gLibSaxophoneParser = null;
 //global.StartEndFrame = class{};
 //global.AggregateNode = class{};
 //global.SvgMouse = class{};
@@ -99,6 +101,12 @@ function run3(imports, cb) {
     while (imports.length > 0) {
         let imp = imports.shift();
         last = last.then(m => {
+            if (imp.indexOf('fast')>-1) {
+                import('../lib/dist/fast-xml-parser.js').then(m => {gLibFastXmlValidator = window.gLibFastXmlValidator;});
+            } // end fast xml parser cond
+            if (imp.indexOf('saxophone')>-1) {
+                import('../lib/dist/saxophone.js').then(m => { gLibSaxophoneParser = window.gLibSaxophoneParser; });
+            } // end sax cond
             // console.warn('imp', imp);
             if (imp.endsWith('tdd_move.js')) {
                 Object.keys(window).forEach(function(key) {
@@ -134,13 +142,13 @@ global.rotate = window.rotate;
 global.notifyMsg = window.notifyMsg;
 global.gCmCacheObj = window.gCmCacheObj;
             return import(imp);
-        });
+        })  .catch((err) => { console.warn(err.message); });
     }
     last = last.then(m => cb());
 }
 
 function run2(imports,cb) {
-    var imports = ['./tdd_cmd.js', '../js/node-snap.js',...imports,'../index.js', './tdd_move.js', './tdd.js', '../js/svg-mouse.js'];//manually setting node-snap since it must precede node-manage
+    var imports = ['./tdd_cmd.js', '../js/node-snap.js','../lib/dist/fast-xml-parser.js', '../lib/dist/saxophone.js',...imports,'../index.js', './tdd_move.js', './tdd.js', '../js/svg-mouse.js'];//manually setting node-snap since it must precede node-manage
     fs.readdir('./test', (err, files) => {
         files.forEach(file => {
             var isEditorFile = file.indexOf('#')>-1;

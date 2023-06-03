@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Activity Svg</title>
+    <script src="lib/dist/saxophone.js"></script>
+    <script src="lib/dist/fast-xml-parser.js"></script>
     <script src="js/css-toggle.js"></script>
     <script src="js/user-log.js"></script>
     <script src="js/xml-edit.js"></script>
@@ -49,7 +51,7 @@
         </div>
 <!-- PAGE CONTENT - CODE FRAME -->
         <div id="pageCodeFrame">
-            <textarea id="svgFullTextarea" onkeypress="window.gXmlEditor.backgroundUpdate()"></textarea>
+            <textarea id="svgFullTextarea" onkeydown="window.gXmlEditor.backgroundUpdate()" onkeypress="window.gXmlEditor.backgroundUpdate()"></textarea><!-- onkeydown captures delete and arrow events -->
             <div id="editModalBG">
                 <div id="editModal">
                     <button class="tabtrue inptrue clickfalse" onclick="cssToggle(this)">Node XML</button>

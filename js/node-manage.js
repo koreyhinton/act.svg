@@ -407,12 +407,13 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
 
     for (var i=0; i<selLst.length; i++) {
 
-        svgNodes = [
+        /*svgNodes = [
             selLst[i], // bring to-be-selected node to the front of nodes list
             ...svgNodes.filter(nd => nd != selLst[i])
-        ]; // TDDTEST50 FIX
-
-        /*setTimeout(function(){*/window.issueClick(selLst[i].xmin, selLst[i].ymin);/*},10);*/
+        ];*/ // TDDTEST50 FIX
+        //        /*setTimeout(function(){*/window.issueClick(selLst[i].xmin, selLst[i].ymin);/*},10);*/
+        setMouseRects(selLst[i]); // TDDTEST50 FIX // CT/52
+        issueSelection(selLst[i]); // TDDTEST50 FIX // CT/52
         //console.log('click',selLst[i]);
         window.updateFrames(selLst[i], {isSel:true}); // TDDTEST37 FIX
         window.lgLogNode('actsvg - issued rect click', selLst[i]);

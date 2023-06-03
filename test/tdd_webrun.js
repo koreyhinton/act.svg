@@ -13,7 +13,10 @@ addEventListener('DOMContentLoaded', (e) => {
     var freeze = false;
     if (testNo == null) {
         testNo = new URL(location.href).searchParams.get("tddf");
-        if (testNo == null) return;
+        if (testNo == null) {
+            window.onStart();  // auto-start if not testing // CT/52
+            return;
+        } // end testno nullCheck
         freeze = true;
     }
     window.gTest=true;  // only set if early return didn't happen

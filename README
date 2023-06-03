@@ -21,3 +21,8 @@ Testing in cli:
             47 - pass
             # 48 will be next test #
 
+BUILD
+    npm run build
+
+BUILD REVERT
+    npm run clean # reset back for git
