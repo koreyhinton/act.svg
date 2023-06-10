@@ -22,6 +22,16 @@ window.issueClear = function() {
 window.issueMK = function(num) { // Mode Key
     window.keydown({key:""+num, shiftKey:false,ctrlKey:false,view:{event:{preventDefault:()=>{}}}});
 } // end issue mk function
+window.issueHover = function(x1,y1,x2,y2) {
+    x1 += window.gSvgFrame.getStart().x;
+    x2 += window.gSvgFrame.getStart().x;
+    y1 += window.gSvgFrame.getStart().y;
+    y2 += window.gSvgFrame.getStart().y;
+    let th = (numMode  == 3 || numMode == 4) ? window.gVxThreshold : 0;
+    window.mousemove({clientX:x1+th, clientY:y1+th,view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
+    window.mousemove({clientX:x2, clientY:y2,view:{event:{preventDefault:function(){}}}});
+} // end issue hover
 window.issueDrag = function(x1,y1,x2,y2,close=true){
     x1 += window.gSvgFrame.getStart().x;
     x2 += window.gSvgFrame.getStart().x;

@@ -7,7 +7,7 @@ window.tddTests = [
             {name:'points',value:'0 0 0 0'},
         ]}; // main selected node
 
-        global.cacheNd = {attrs:[]}
+        /*global.*/cacheNd = {attrs:[]}
         window.forceMap(src,cacheNd);  // cacheNd is a pre-edit copy
 
         src.attrs.filter(a => a.name == 'points')[0].value = '1 1 1 1'; // edit

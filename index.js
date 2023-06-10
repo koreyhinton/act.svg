@@ -892,6 +892,13 @@ window.mousedown = function(e) {
     // curId.x = x;
     // curId.y = y;
     updateFrames( /*selNd=*/ issueClick(x, y) );
+
+    (()=>{ // TDDTEST80 FTR
+        // Cancels out resize vertex from hovering mouse
+        // arrow mode. Otherwise a vtx=={0,0}
+        // would result in a new arrow being drawn backwards.
+        window.gDwVtx = null;
+    })(); // TOGGLE (); <-> ;
 }
 
 window.mouseup = function(e) {
@@ -976,7 +983,7 @@ window.mousemove = function(e) {
     else if (window.dwIsHoveringCorner(ndVtx, numMode)) { // CT/50
         window.dwHover(ndVtx);window.gDwVtx=null;//force it to re-caculate
     } // end draw hover
-    else { window.dwHover(null); } // CT/50
+    else { window.dwHover(null);/*window.gDwVtx={x:1,y:1};*/ } // CT/50
     if (window.mgCanDrag()) { // TDDTEST23 FTR
         if (window.mvIsMove(nd, x,y)) {
             window.mvMove(x,y);

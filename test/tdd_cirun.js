@@ -136,6 +136,7 @@ function run3(imports, cb) {
                 });
             }
 global.issueDrag = window.issueDrag;
+global.issueHover = window.issueHover;
 global.issueClear = window.issueClear;
 global.issueMK = window.issueMK;
 global.rotate = window.rotate;

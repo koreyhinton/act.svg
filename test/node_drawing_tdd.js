@@ -195,5 +195,19 @@ window.tddTests = [
         return [...document.getElementsByTagName("polyline")]
             .filter(el => parseInt(el.getAttribute("points").split(" ")[2])==snapX2)
             .length == 1;
-    }, // end test 77
+    }, // end test 78
+    // TDD TEST 80 - QUICK ARROW DRAW RIGHT SHOULD FACE RIGHT
+    function test80() {
+        issueClear();
+        issueKeyNum(2, {}); // arrow mode
+        issueDrag(10,10,    100,10);
+        issueHover(10,10,    11,10);  // resets it to {0,0} which arrow
+                                      // to draw backwards
+        issueKeyNum(0, {}); // select mode
+        issueKeyNum(2, {}); // arrow mode
+        issueDrag(10,50,    100,50);
+        return [...document.getElementsByTagName("polyline")]
+            .filter(el => parseInt(el.getAttribute("points").split(" ")[0])==10)
+            .length == 2;
+    }, // end test 80
 ];
