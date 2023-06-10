@@ -15,7 +15,7 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
     // null value if x,y isn't on a vertex (vtx that can trigger a resize)
     if (nd == null) return null;
     let tn = nd.tagName;
-    const th = window.gVxThreshold; // threshold
+    let th = window.gVxThreshold; // threshold
     setMouseRects(nd);
     let minTh = 6; // minimum threshold
     let dist = (x1,y1,x2,y2) => {
@@ -28,6 +28,11 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
                      // mouse (x,y) until the mousemove changes x,y more
     } // end min cond
     if (tn == 'rect' || (tn == 'polyline' && window.tyIsDecisionNd(nd))) {
+
+        (() => { // TDDTEST81 FIX
+            th = 21;
+        })(); // TOGGLE (); <-> ;
+
         if (Math.abs(x-nd.xmin) < th && Math.abs(y-nd.ymin) < th) {
             return { x: 0, y: 0 };
         } // end 0,0 cond
