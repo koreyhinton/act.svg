@@ -5,7 +5,7 @@ echo "$res1"
 failed1_txt=$(echo "$res1" | grep fail)
 failed2_txt=""
 
-array=( 5 35 57 58 75 76 77 78 80 81 )
+array=( 5 35 57 58 75 76 77 78 80 81 82 )
 
 echo "--- toggled for failure. All tests should fail: ---"
 

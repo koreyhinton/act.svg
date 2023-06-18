@@ -25,5 +25,14 @@ window.tddTests = [
 </svg>`;
         return window.issueUploadText(/*"<svg><rect id='test'/></svg>"*/t, {})
             .indexOf('test') > -1;
-    }
+    }, // end test27
+    // TDD TEST 82 - SVG UPLOAD SHOULD RESULT IN JUST 1 SVG ELEMENT
+    function test82() {
+        window.onStart({});
+        window.issueKeyNum(0, {});
+        svgNodes=[];window.onStart({});// just enough issueUpload implementation
+                                       // to cause onStart bug (where 2nd svg
+                                       // was being added rather than replaced)
+        return document.getElementsByTagName("svg").length == 1;
+    }, // end test82
 ];

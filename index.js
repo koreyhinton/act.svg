@@ -1083,6 +1083,9 @@ window.loadSvg = function(xml, test) {
 window.onStart = function(test) {
     window.gStarted = true;
     window.lgUser('window.onStart({});');
+    (() => { // TDDTEST82 FIX
+        document.getElementById("svgId")?.remove();
+    })(); // TOGGLE (); <-> ;
     var svg = document.createElement("div");
     svg.id = "svgId";
     svg.innerHTML = (svgHead + svgEx + svgTrail);
