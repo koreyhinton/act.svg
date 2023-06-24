@@ -13,7 +13,13 @@ addEventListener('DOMContentLoaded', (e) => {
     var freeze = false;
     if (testNo == null) {
         testNo = new URL(location.href).searchParams.get("tddf");
-        if (testNo == null) return;
+        if (testNo == null) {
+            if (new window.urPageUrl(location.href).template() == null) {
+                window.onStart();  // auto-start if not testing // CT/52
+                                   // or when not a template
+            } // end not template check
+            return;
+        } // end testno nullCheck
         freeze = true;
     }
     window.gTest=true;  // only set if early return didn't happen

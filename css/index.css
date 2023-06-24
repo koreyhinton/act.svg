@@ -2,6 +2,7 @@
 
 body {
     font-family: "Courier New";
+    background-color: rgb(8,8,8);
 }
 
 textarea {
@@ -9,8 +10,15 @@ textarea {
     resize: none;
     background-color: transparent;
     font-family: "Courier New";
-    color: rgb(80,80,80);
     font-size: 22px;
+}
+
+#svgPartTextarea {
+    color: rgb(80,80,80);
+}
+
+#svgFullTextarea {
+    color: white;/*rgb(80,80,80);*/
 }
 
 textarea:focus {
@@ -31,6 +39,7 @@ svg {
     top:88px;
     border:1px solid black;
     box-shadow: 1px 2px 3px black;
+    background-color: white;
 }
 
 
@@ -43,12 +52,12 @@ svg {
     width:750px;
     height:750px;
     border:1px solid black;
-    background-color: rgb(255,255,240);
+    background-color: rgb(1,1,1);/*see xml-edit.js, toggles black and red*/  /*rgb(255,255,240);*/
 }
 
-.disabled {
+/*.disabled {
     background-color: lightgrey !important;
-}
+}*/
 
 #svgFullTextarea {
     position: relative;
@@ -81,19 +90,66 @@ svg {
     background-color: rgb(255,255,240);
 }
 
+textarea.inptrue {}
+textarea.inpfalse {
+    visibility: hidden !important;
+    height: 0px !important;
+}
+button.subm.inpfalse {
+    visibility: hidden !important;
+    height: 0px !important;
+}
+.tabtrue {
+    background-color: rgb(255,255,240) !important;
+}
+.tabfalse {
+    background-color: white !important;
+}
+.tabfalse, .tabtrue {
+    margin-top:0;
+    border: 0;
+    padding-top:6px;
+    font-size: 20px;
+    position: relative;
+    top: -30px;
+    margin-right: 0px;
+    margin-left: 0px;
+    height: 30px;
+}
+
 #svgPartTextarea {
     width: 500px;
     height: 250px;
 }
 
+#commandTextarea {
+    width:480px;
+    height:200px; /*height:35px;*/
+    background-color: rgb(255,255,240);
+    position: relative;
+    top: -45px;
+    padding-top: 30px;
+}
+
+#run {
+    margin-top:0;
+    border: 0;
+    padding-top:6px;
+    font-size: 20px;
+    color: black;/*white;*/
+    background-color: rgb(100,150,100);/*green;*/
+}
 
 #btnModal {
     margin-top:0;
     border: 0;
     padding-top:6px;
     font-size: 20px;
-    color: white;
-    background-color: green;
+    color: black;/*white;*/
+    background-color: rgb(100,150,100);/*green;*/
+    position:relative;
+    left: -49px;
+    top: -41px;
 }
 
 /* TOP-PANE TOOLBAR ELEMENTS  */
@@ -104,8 +160,8 @@ svg {
     left:0px;
     width: 1500px;
     height:88px;
-    background-color: white;
-    //background-color: rgba(0,0,0,0.88);
+    background-color: white; /*it actually appears black, see buttonbar.html*/
+    /*background-color: rgba(0,0,0,0.88);*/
 }
 
 #buttonStart {
@@ -144,11 +200,12 @@ svg {
     bottom:0px;
     left:0px;
     width: 1500px;
-    height:90px;//130px;
+    height:90px;/*130px;*/
     line-height:8pt;
     padding-top:10px;
     padding-left:10px;
-    background-color: white;//#CE3C05;//lightblue;
+    background-color: black;/*#CE3C05;*/ /*lightblue;*/
+    color: white;
 }
 /* MOVE MARKER */
 #moveMarker {

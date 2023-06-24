@@ -267,7 +267,9 @@ window.tddTests = [
         issueKeyNum(1, {});
         issueDrag(20,200,    80,260);
         issueKeyNum(0, {});
-        issueDrag(10,190,    90,270);
+        issueDrag(/*10,190,*/0,0,    90,270); // now w/ edge resizing can't
+                                              // select so close to line vertex,
+                                              // so start selection at 0,0
         // needs to be tracked as a selected curId,
         // and be changed to a color indicating that it is selected
         return curIds.length > 0 && document.getElementsByTagName('line')[0].getAttribute('stroke')!='black';

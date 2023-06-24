@@ -23,7 +23,7 @@ window.mvShouldCancel = function(x,y) {
 // TODO: this function along with the mvIsMove function follows a bad pattern
 // of returning a true/false value and also setting necessary tracking values;
 // both functions should be refactored to follow the CQS principle
-window.mvCanSelectAndMove = function(x,y) {
+window.mvCanSelectAndMove = function(nd, x,y) {
     // If you click on whitespace inside a rectangle with no other nodes
     // anywhere inside the rect, then drag, it should select & start moving it.
     // However if you click the whitespace inside a rectangle to drag a
@@ -31,7 +31,7 @@ window.mvCanSelectAndMove = function(x,y) {
     // inside the rectangle then it should return false and not select and move,
     // but rather let the selection rectangle choose what gets selected.
     if (window.gMvState.moving) return false;//don't cancel a move-in-progress
-    let nd = xy2nd(x,y);
+    // let nd = xy2nd(x,y);
     if (nd == null) {
         return false; } // can't select and move if it didn't click a node
     if (curIds.length > 0) {
@@ -68,8 +68,8 @@ window.mvCanMove = function() {
     return curIds.length > 0;
 }
 // MV - IS MOVE
-window.mvIsMove = function(x,y) {
-    if (!window.gMvState.moving && ((window.mvCanSelectAndMove(x,y)||window.mvCanMove()) && xy2nd(x,y)!=null)) {
+window.mvIsMove = function(nd, x,y) {
+    if (!window.gMvState.moving && ((window.mvCanSelectAndMove(nd, x,y)||window.mvCanMove()) && xy2nd(x,y)!=null)) {
         var clickedNd = xy2nd(x,y,/*withNearestEdge=*/true); // TDDTEST47 FIX
         var clickedId = clickedNd.attrs.filter(a => a.name == 'id').length == 0
             ? 'bad0'
@@ -90,6 +90,7 @@ window.mvIsMove = function(x,y) {
 }
 // MV - CLOSE MOVE
 window.mvClose = function() {
+    window.gCmCacheObj.id = null; // CT/49
     let wasMoving = window.gMvState.moving;
     window.gMvState.moving = false;
     window.gMvState.offsetX = null;

@@ -8,3 +8,6 @@ node_modules/
 
 # backlog file. backed up separately
 doc/changetask/backlog
+
+# sed in-place backup files
+*.bak*

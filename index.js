@@ -13,8 +13,8 @@ selColor = "#C0D6FC";
 editColor = "#CAFFB5";
 
 numMode = 0;
-clickCnt = 0;
-drawClick = { x:-1, y: -1 };
+// clickCnt = 0;
+// drawClick = { x:-1, y: -1 };
 notifyTextArr = [
     "0 =&gt; Select Mode",
     "1 =&gt; Line Mode",
@@ -30,6 +30,7 @@ notifyTextArr = [
 
 // ACTIVITY SVG - GLOBALS
 
+window.gXmlEditor = new window.xeEditor();
 window.gStarted = false;
 window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88);
 let topFrameNode = new window.AggregateNode({
@@ -95,8 +96,8 @@ window.setNumMode = function(num, test) {
 }
 
 window.gDispatch = function(call, delay) {
-    if (window.gTest) { call(); }
-    else { setTimeout(call, delay); }
+    if (window.gTest) { call(); return 1; }
+    else { return setTimeout(call, delay); }
 }
 
 // ATTRIBUTE ACCESS FUNCTIONS
@@ -254,8 +255,8 @@ window.setMouseRects = function(nd) {
 // Text nodes MUST be first in the array in order to
 // ensure text in a box gets prioritized on the click
 // over the surrounding rectangle
-window.sortSvgNodes = function() {
-    function swimLane(nd) { // TDDTEST5 FTR
+window.sortedSvgNodes = function() {
+    function swimLane(nd) {
         return (
             nd.tagName.toLowerCase() == "rect" &&
             ((nd.xmax - nd.xmin) > 200) &&
@@ -271,16 +272,17 @@ window.sortSvgNodes = function() {
     }
     for (var i=0; i<svgNodes.length; i++) {
         if (svgNodes[i].tagName.toLowerCase() != "text") {
-            if (swimLane(svgNodes[i])) { continue; } // TDDTEST5 FTR
+            if (swimLane(svgNodes[i])) { continue; }
             newArray.push(svgNodes[i]);
         }
     }
-    for (var i=0; i<svgNodes.length; i++) { // TDDTEST5 FTR
+    for (var i=0; i<svgNodes.length; i++) {
         if (swimLane(svgNodes[i])) {
             newArray.push(svgNodes[i]);
         }
     }
-    svgNodes = newArray;
+    // svgNodes = newArray;
+    return newArray;
 }
 // CONVERSIONS
 
@@ -385,8 +387,12 @@ window.minxydist = function(nd, x, y) { // TDDTEST43 FIX
 
 window.xy2nd = function(x, y, withNearestEdge = false) { // TDDTEST43 FIX
     var nd = null;
-    for (var i=0; i<svgNodes.length; i++) {
-        var svgNd = svgNodes[i];
+    let sorted = svgNodes;
+    (() => { // TDDTEST5 FTR
+        sorted = window.sortedSvgNodes();
+    })(); // TOGGLE (); <-> ;
+    for (var i=0; i<sorted.length; i++) {
+        var svgNd = sorted[i];
         // console.log(x,y,svgNd.xmin, svgNd.ymin, svgNd.xmax, svgNd.ymax);
         if ((x >= svgNd.xmin)
         && (x <= svgNd.xmax)
@@ -449,7 +455,7 @@ window.xml2nd = function(xml, tagName) {  // TDDTEST2 FTR
     var xdomNd = xmlDocument.getElementsByTagName(tagName)[0];
     /*var nd = */xdom2nd(xdomNd, nd);
     window.lgLogNode('actsvg - xml converted to nd', nd);
-    sortSvgNodes();
+    // sortSvgNodes();
 }
 
 // DIFFERENCES
@@ -531,6 +537,7 @@ window.updateFrames = function(selNd, ctx) {
         .getElementById("svgPartTextarea")
         .value = nd2xml(editNd,
             ctx!=null&&ctx.isSel?null:editNd.cacheColor); // TDDTEST37 FIX (ctx)
+    window.cmFill(editNd); // CT/49
     window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
     cacheNd = {attrs:[]};
     forceMap(editNd, cacheNd);
@@ -544,6 +551,7 @@ window.trackNd = function(nd) {
         nd.attrs.push({name: 'id', value: id});
     }
     curIds.push({id: id});
+    window.cmFill(nd); // CT/49
 }
 
 window.untrackNd = function(nd) {
@@ -620,19 +628,15 @@ window.issueDraw = function(xml, tagName) {
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
 window.issueClick = function(x, y) {
-    var id = null;
-    let types={'1':'line', '2':'polyline', '3': 'rect', '4': 'rect', '8':'line'};
-    if ([1,2,3,4,8].indexOf(numMode)>-1) {
-        id = window.manageDraw(types[numMode]);
-        //console.warn(types[numMode]);
-    }
+    var id = window.dwNewId(numMode);
+
     var adjPt = new window.snNodeSnapper()
-        .snapXYToEnv(types[numMode]+'', x, y);
+        .snapXYToEnv(window.tyFromMode(numMode)+'', x, y);
     x = adjPt.x;
     y = adjPt.y;
     if (numMode == 1) {  // TDDTEST2 FTR
         //if (clickCnt == 1) {
-            //var id = window.manageDraw();
+            //var id = window.dwDraw();
             issueDraw(`<line x1="`
                 +/*drawClick.x*/(x)+`" y1="`
                 +/*drawClick.y*/(y)+`" x2="`
@@ -695,13 +699,13 @@ window.issueClick = function(x, y) {
         //}
         return;
     }
-    if (numMode == 3) { // TDDTEST5 FTR
+    if (numMode == 3) {
         //if (clickCnt == 1) {
             issueDraw(`<rect rx="0" ry="0" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(10)+`" height="`
-                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(3)+`" height="`
+                +(3)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
@@ -715,8 +719,8 @@ window.issueClick = function(x, y) {
             issueDraw(`<rect rx="10" ry="10" x="`
                 +x+`" y="`
                 +y+`" width="`
-                +(10)+`" height="`
-                +(10)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
+                +(3)+`" height="`
+                +(3)+`" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'rect');
             //clickCnt = 0;  drawClick = {x:-1,y:-1};
         //}
         //else {
@@ -732,13 +736,13 @@ window.issueClick = function(x, y) {
             x3=x+segLen,        y3=y,
             x4=x,               y4=y+segLen,
             x5=x-segLen,        y5=y;
-        issueDraw(`<polyline points="${x1} ${y1} ${x2} ${y2} ${x3} ${y3} ${x4} ${y4} ${x5} ${y5}" stroke="black" fill="transparent" stroke-width="1"/>`, 'polyline');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        issueDraw(`<polyline points="${x1} ${y1} ${x2} ${y2} ${x3} ${y3} ${x4} ${y4} ${x5} ${y5}" stroke="black" fill="transparent" stroke-width="1" id="${id}"/>`, 'polyline'); // +id // CT/47
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 6) { // TDDTEST11 FTR
         issueDraw(`<circle cx="${x}" cy="${y}" r="10" fill="black" stroke="black" stroke-width="1"/>`, 'circle');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 7) { // TDDTEST12 FTR
@@ -746,7 +750,7 @@ window.issueClick = function(x, y) {
         // clicking and selecting both
         issueDraw(`<circle cx="${x}" cy="${y}" r="6" fill="black" stroke="black" stroke-width="1"/>`, 'circle');
         issueDraw(`<circle cx="${x}" cy="${y}" r="10" fill="transparent" stroke="black" stroke-width="1"/>`, 'circle');
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
     if (numMode == 8) { // TDDTEST13 FTR
@@ -778,10 +782,10 @@ window.issueClick = function(x, y) {
                 document.getElementById("svgPartTextarea").value.indexOf("?")+1
             );
         },100);
-        drawClick = {x:-1,y:-1}; clickCnt = 0;
+        // drawClick = {x:-1,y:-1}; clickCnt = 0;
         return;
     }
-    clickCnt = 0; drawClick = {x:-1,y:-1};
+    // clickCnt = 0; drawClick = {x:-1,y:-1};
     var clickedNd = xy2nd(x, y, /*withNearestEdge=*/true); // TDDTEST43 FIX
     if (clickedNd == null && x>=0 && x<=750 && y>=0 && y<=750) {
         /*setTimeout(()=>*/issueRectSelectClick(x, y)/*, 100)*/; // TDDTEST21 FTR
@@ -888,10 +892,18 @@ window.mousedown = function(e) {
     // curId.x = x;
     // curId.y = y;
     updateFrames( /*selNd=*/ issueClick(x, y) );
+
+    (()=>{ // TDDTEST80 FTR
+        // Cancels out resize vertex from hovering mouse
+        // arrow mode. Otherwise a vtx=={0,0}
+        // would result in a new arrow being drawn backwards.
+        window.gDwVtx = null;
+    })(); // TOGGLE (); <-> ;
 }
 
 window.mouseup = function(e) {
     e = e || window.event;
+    window.gDwVtx = null;window.dwCloseDrawing(); // CT/50
     window.lgLogNodeCacheFlush('mousemove');
     window.lgUserCacheFlush('mousemove');
     window.lgUser(
@@ -919,9 +931,9 @@ window.mouseup = function(e) {
         window.onDone();
         window.mgCloseSelection();
     }
-    if (!window.mgIsDrawingClosed()) {
+    if (!window.dwIsDrawingClosed()) {
         window.lgLogNode('actsvg - closing drawing');
-        window.mgCloseDrawing();
+        window.dwCloseDrawing();
         //console.warn('done draw');
         window.updateFrames();
     }
@@ -936,8 +948,44 @@ window.mousemove = function(e) {
         'mousemove',
         'window.mousemove({clientX:'+e.clientX+',clientY:'+e.clientY+',view:{event:{preventDefault:()=>{}}}});'
     ); // end user log mousemove
+    let nd = xy2nd(x,y);
+    let th = window.gVxThreshold; // CT/50 // TDDTEST56 FTR
+    let ndXY = nd ||
+        xy2nd(x-th,y-th)/*1,1*/ || 
+        xy2nd(x+th,y+th)/*0,0*/ ||
+        xy2nd(x-th,y+th)/*1,0*/ ||
+        xy2nd(x+th,y-th)/*0,1*/; // CT/50 // TDDTEST56 FTR
+    if (window.gDwVtx==null) window.gDwVtx = window.vxUnitCoord(nd||ndXY, x, y); // unit coords: 0,0  0,1  1,0  1,1 // CT/50 // TDDTEST56 FTR
+    let ndVtx = window.gDwVtx;
+
+    if (// resize cond // CT/50
+        !window.gMvState.moving && // TDDTEST74 FIX
+        //curIds.length > 0 &&
+        window.dwTriggerResize(nd||ndXY, ndVtx, x, y, numMode)
+    ) { // CT/50 // TDDTEST56 FTR
+        nd = nd||ndXY;
+        if (window.drawing.id == 'null0') {
+            if (nd.attrs.filter(a => a.name == "id").length == 0) {
+                let map = window.tyResizable();
+                let keys = Object.keys(map);let key=null;
+                for (var i=0; i<keys.length; i++) if (map[keys[i]]==nd.tagName)key=keys[i];
+                nd.attrs.push({name: 'id', value: window.dwNewId(parseInt(key))}); // TDDTEST73 FIX
+            } // end id not present cond
+            window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
+            window.gDwVtx = ndVtx;
+        }
+        window.window.mgCloseSelection();window.gRectSelectState.state = window.gRectSelectStates.Down;
+        window.dwDrawUpdate(x, y/*, ndVtx*/);
+        let vtx = window.gDwVtx;
+        window.dwHover(vtx);
+        return;
+    } // end resize cond
+    else if (window.dwIsHoveringCorner(ndVtx, numMode)) { // CT/50
+        window.dwHover(ndVtx);window.gDwVtx=null;//force it to re-caculate
+    } // end draw hover
+    else { window.dwHover(null);/*window.gDwVtx={x:1,y:1};*/ } // CT/50
     if (window.mgCanDrag()) { // TDDTEST23 FTR
-        if (window.mvIsMove(x,y)) {
+        if (window.mvIsMove(nd, x,y)) {
             window.mvMove(x,y);
         } else {
             window.updateVisibleRectSelection(x,y);
@@ -948,9 +996,9 @@ window.mousemove = function(e) {
     if (x>0 && x<750
         && y>0 && y<750) { // TDDTEST25 FIX -should reach bot-right
         window.mgSetMouse(x, y);
-        //window.lgLogNodeCache('mousemove', 'actsvg - mousemove - isClosed = '+window.mgIsDrawingClosed());
-        if (!window.mgIsDrawingClosed()) {
-            window.manageDrawUpdate(x, y);
+        //window.lgLogNodeCache('mousemove', 'actsvg - mousemove - isClosed = '+window.dwIsDrawingClosed());
+        if (!window.dwIsDrawingClosed()) {
+            window.dwDrawUpdate(x, y);
         }
     }
 }
@@ -1027,7 +1075,7 @@ window.loadSvg = function(xml, test) {
             setMouseRects(svgNodes[sni]);
         }*/
     }
-    sortSvgNodes();
+    // sortSvgNodes();
     issueKeyNum(0, test);
     updateFrames();
 }
@@ -1035,6 +1083,9 @@ window.loadSvg = function(xml, test) {
 window.onStart = function(test) {
     window.gStarted = true;
     window.lgUser('window.onStart({});');
+    (() => { // TDDTEST82 FIX
+        document.getElementById("svgId")?.remove();
+    })(); // TOGGLE (); <-> ;
     var svg = document.createElement("div");
     svg.id = "svgId";
     svg.innerHTML = (svgHead + svgEx + svgTrail);
@@ -1043,8 +1094,8 @@ window.onStart = function(test) {
     document.getElementById("tools1").style.visibility = "hidden";
     document.getElementById("tools2").style.visibility = "visible";
 
-    document.getElementById("pageCodeFrame").classList.add("disabled");
-    document.getElementById("svgFullTextarea").disabled="disabled";
+    // document.getElementById("pageCodeFrame").classList.add("disabled");
+    // document.getElementById("svgFullTextarea").disabled="disabled";
 
     document.onkeydown = keydown;
     window.gDispatch(

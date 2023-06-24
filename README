@@ -21,6 +21,8 @@ Testing in cli:
             47 - pass
             # 48 will be next test #
 
-* When determining new unit test numbers, you should also take into account any
-  feature branches that have new tests in them. e.g. merge all branches first
-  and then run tests to see the last number
+BUILD
+    npm run build
+
+BUILD REVERT
+    npm run clean # reset back for git
