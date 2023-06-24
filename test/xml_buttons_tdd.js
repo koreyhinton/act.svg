@@ -35,4 +35,11 @@ window.tddTests = [
                                        // was being added rather than replaced)
         return document.getElementsByTagName("svg").length == 1;
     }, // end test82
+    // TDD TEST 84 - COPYING XML SHOULD NOT DISABLE TEXTAREA
+    function test84() {
+        document.execCommand = (cmd) => cmd=='copy';
+        var copied = issueCopy();
+        document.execCommnad = null;
+        return document.getElementById("svgFullTextarea").disabled == false;
+    }, // end test84
 ];

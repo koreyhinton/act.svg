@@ -17,11 +17,13 @@ window.issueDownload = function() { // TDDTEST19 FTR
 
 window.issueCopy = function() { // TDDTEST20 FTR
     var ta = document.getElementById("svgFullTextarea");
-    ta.disabled = false;
     ta.focus();
     ta.select();
     var copied = document.execCommand("copy");
     ta.disabled = true;
+    (() => { // TDDTEST84 FIX
+        ta.disabled = false; // old version used to not allow textarea editing
+    })();
     console.log('copy');
     return copied;
 }

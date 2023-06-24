@@ -122,13 +122,13 @@ window.xeEditor = class {
     }
     // only updates 1x when called Nx (within timeFrame)
     backgroundUpdate() { // CT/52 // CT/53
-        console.log("backgroundUpdate");
+        // console.log("backgroundUpdate");
         clearTimeout(this.backgroundId);
         //this.dispatched = false; //this.backgroundId = null;
         let self = this;
         this.backgroundId = window.gDispatch(() => {
             if (self.valid(document.getElementById("svgFullTextarea").value)) {
-                document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(255,255,240)"; // CT/53
+                document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(1,1,1)"; // CT/53
                 //if (self.backgroundId != null) {
                     svgNodes=[]; window.loadSvg(
                         document.getElementById("svgFullTextarea").value
@@ -136,7 +136,7 @@ window.xeEditor = class {
                     // todo: save op.
                 //}
             } else { // not valid
-                document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(255,240,240)"; // CT/53
+                document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(220,170,170)"; // CT/53 // rgb(255,240,240)
             }
         }, this.timeFrame);
     }
