@@ -8,7 +8,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "test/test",
+    "test": "node test2/run.js && test/test",
+    "test2": "node test2/run.js",
     "build": "(npm install browserify && npm install saxophone && node_modules/browserify/bin/cmd.js lib/saxophone.js -o lib/dist/saxophone.js) && (npm install fast-xml-parser && node_modules/browserify/bin/cmd.js lib/fast-xml-parser.js -o lib/dist/fast-xml-parser.js)",
     "clean": "echo -n > lib/dist/saxophone.js; echo -n > lib/dist/fast-xml-parser.js"
   },
@@ -31,6 +32,10 @@
     "browserify": "^17.0.0",
     "fast-xml-parser": "^4.2.2",
     "jsdom": "^20.0.2",
-    "saxophone": "^0.8.0"
+    "saxophone": "^0.8.0",
+    "uvu": "^0.5.6"
+  },
+  "devDependencies": {
+    "uvu": "^0.5.6"
   }
 }
