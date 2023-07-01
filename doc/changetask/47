@@ -1,4 +1,4 @@
-CT/47      V0.2      NODE-DRAWING              DRAG 2 RESHAPE DEC. ND    FTR
+CT/47      V0.3      NODE-DRAWING              4S DECISION ND RESIZE     FTR
 Dragging the decision node right or left draws changes the drawn width.
 Dragging it up or down changes the drawn height.
 
@@ -36,3 +36,7 @@ Click-Drag (6-line):
    \__/
 
 Update 2: this task will focus on the reshaping between 4-sided and 6-sided
+
+Update 3: this task will solely be focused on re-sizing a 4-sided decision node,
+          for 6-sided see CT/48
+
