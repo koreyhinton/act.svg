@@ -1,0 +1,98 @@
+CT/62      V0.3      USER-KEYBOARD             V0.3 REFACTOR             FTR
+
+various refactors to prepare to branch
+
+app-key/node-clip      refactor keydown out of index.js and various out of
+                       js/node-manage into app-key and node-clip
+
+node-sel/node-del      refactor from js/node-manage
+
+app-mode               refactor setNumMode, etc to now support non-num modes
+
+xml-hist              add xml-hist for ctrl-z,ctrl-y
+
+REFACTORS -- APP-KEY, NODE-CLIP REFACTOR
+
+js/app-key.js*
+js/node-clip.js
+
+* app-key naming makes the most sense since actions will apply broadly to both
+  xml frame and the svg frame (so it can't be xml-key / svg-key) and application
+  changes are the result, so a user-key naming also won't make sense since the
+  resultant action changes app space outside the bounds of just user input space
+
+Refactor manageKeyDownEvent into app-key AppClipKeyDispatcher.dispatchKey
+
+Replace this block in index.js keydown:
+    if ("1234567890".indexOf(e.key) > -1) {
+        issueKeyNum(parseInt(e.key));
+        e.view.event.preventDefault();
+    } else if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
+        window.mvIssueMoveKey(e.key, e.shiftKey);
+        e.view.event.preventDefault();
+    } else {
+        window.manageKeyDownEvent(e);
+        //e.view.event.preventDefault();
+    }
+With:
+    const key = (({key,shiftKey,ctrlKey}) => ({key,shiftKey,ctrlKey}))(e);
+    let dispatched = new AppKeyDispatcher({
+        gAppModeKeyDispatcher, // app mode dispatch stores key hist state
+        ndMoveKeyDispatcher,
+        gNdClipKeyDispatcher // clip dispatch stores key hist state
+                             // in 2 parts: 1) place cursor in textarea
+                             //             2) handle textarea pasted content
+                             // so gNdClipKeyDispatcher will also be referenced
+                             // in the "paste" event listener
+    }).dispatchKey(key);
+    if (dispatched) e.view.event.preventDefault();
+
+js/app-key.js
+
+    let dispatched = false;
+    let q = [appModeKeyDispatcher,ndMoveKeyDispatcher,ndClipKeyDispatcher];
+    while (q.length > 0) {
+        let dispatcher = q.shift();
+        dispatched = dispatcher.dispatchKey(key);
+        if (dispatched) {
+            return true;
+        }
+    }
+    return false;
+
+Refactor these:
+    index.js/manageKeyDownEvent   -> js/app-key.js/AppClipboardKeyDispatcher
+                                                       .dispatchKey()
+    js/node-manage.js/managePaste -> js/node-clip.js/NodeClipboard
+                      issuePaste   ->                     .cut/copy/paste()
+                      paste eventls-> js/app-key.js/paste event listener
+    // it seems all managePaste does is prepare the cursor to receive the paste
+    // directly into the full textarea.
+
+REFACTORS -- NODE-SEL, NODE-DEL REFACTOR
+
+node-sel refactor - just take everything *Select function and dump it into
+                    node-sel for now.
+
+node-del refactor - factor out code within this if statement to be also called
+                    by node-clip
+        if (e.key == 'x') { // TDDTEST30 FTR
+            var curIdsCopy = [];
+            for (var i=0; i<curIds.length; i++) {
+                curIdsCopy.push({id: curIds[i].id});
+            }
+            window.onDone(); // stop selection
+            svgNodes = svgNodes.filter(nd =>
+                curIdsCopy.filter(c =>
+                    c.id==nd.attrs.filter(a=>
+                        a.name=='id')?.[0]?.value).length==0);
+            window.updateFrames();
+        }
+to be something like this:
+    window.onDone();/*stop sel*/
+    new NodeDeleter(/*ref*/svgNodes).delete(curIdsCopy);
+
+
+REFACTOR - APP-MODE
+
+    a lot to fix here

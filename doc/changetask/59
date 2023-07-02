@@ -1,0 +1,4 @@
+CT/59      V0.3      NODE-DEL                  SELECT 2 DELETE           FTR
+draws a red selection rectangle and deletes anything it selects within it,
+with an x (deletion) cursor.
+

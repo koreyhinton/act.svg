@@ -1,0 +1,6 @@
+CT/58      V0.3      NODE-DRAWING              DECIS./RECT ND CLCK SZ    FTR
+Just click once for Mode 3-rect should be large enough to match what's expected
+for a Pin (object node).
+
+Mode 5 click should place correct standard sized decision node.
+

@@ -1,0 +1,7 @@
+CT/56      V0.3      XML-HISTORY               CTL-A/Z/Y SVG SHORTCUT    FTR
+These should only happen with textarea is not focused (when xml is focused it
+should let textarea do it's ctrl-a/z/y functionality.
+
+ctrl-a    When xml editor is not selected it should select all nodes on screen
+ctrl-z    In-memory Undo stack
+ctrl-y    In-memory Redo stack

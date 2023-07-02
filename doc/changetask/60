@@ -1,0 +1,10 @@
+CT/60      V0.3      NODE-DRAWING              + BUILT-IN UMLS           FTR
+The keyboard shortcuts listed below will be done in this task, but the UI 
+button elements will be accomplished in the later CT/61 task.
+a    Action node
+c    Connector
+d    Delete selector
+o    Object node (w/ text)
+|1   (Vertical) swimlanes (1+)
+-1   (Horizontal) swimlanes (1+)
+

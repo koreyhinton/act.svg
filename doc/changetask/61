@@ -1,0 +1,5 @@
+CT/61      V0.3      BUTTON-BAR                + UML BTNS                FTR
+
+Add new buttons and implement similar parent.postMessage and onMessage
+mechanism as already exists for the num buttons
+
