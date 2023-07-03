@@ -149,7 +149,7 @@ global.gCmCacheObj = window.gCmCacheObj;
 }
 
 function run2(imports,cb) {
-    var imports = ['./tdd_cmd.js', '../js/node-snap.js','../lib/dist/fast-xml-parser.js', '../lib/dist/saxophone.js',...imports,'../index.js', './tdd_move.js', './tdd.js', '../js/svg-mouse.js'];//manually setting node-snap since it must precede node-manage
+    var imports = ['./tdd_cmd.js', '../js/node-del.js', '../js/node-snap.js','../lib/dist/fast-xml-parser.js', '../lib/dist/saxophone.js',...imports,'../index.js', './tdd_move.js', './tdd.js', '../js/svg-mouse.js'];//manually setting node-snap since it must precede node-manage
     fs.readdir('./test', (err, files) => {
         files.forEach(file => {
             var isEditorFile = file.indexOf('#')>-1;
