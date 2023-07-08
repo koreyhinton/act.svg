@@ -155,8 +155,8 @@ window.tddTests = [
         window.mouse.x = 600;
         window.mouse.y = 600; // will paste into quadrant 4
 
-        window.manageKeyDownEvent({key:'c',ctrlKey:true});
-        window.issuePaste(()=>{
+        gAppModeKeyDispatcher.dispatchKey({key:'c',ctrlKey:true});
+        new window.NodeClipboard().paste2(()=>{
             var ta=document.getElementById('svgFullTextarea');
             ta.value = ta.value.replace('</svg>', `
     <circle cx="375" cy="39" r="10" fill="black" stroke="black" stroke-width="1"  class='unresolvedmover'/>
@@ -185,7 +185,7 @@ window.tddTests = [
         window.mousemove({view:{event:{preventDefault:()=>{}}},clientX:750+700, clientY:88+700});
         window.mouseup({clientX:750+700, clientY:88+700}); // selects everything
         // console.warn(curIds.length);
-        window.manageKeyDownEvent({key:'x',ctrlKey:true});
+        new window.AppClipKeyDispatcher().dispatchKey({key:'x',ctrlKey:true});
 
         return svgNodes.length == 0;
     },
@@ -251,7 +251,7 @@ window.tddTests = [
     // bug fix unit test, was seeing nonquoted int numbers
     function test36() {
         onStart({});
-        issueKeyNum(3, {}); // line mode
+        issueKeyNum(3, {}); // rect mode
         issueDrag(10,10,    40,20);
         issueKeyNum(0, {});
         issueClick(10,10);

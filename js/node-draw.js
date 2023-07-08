@@ -7,7 +7,7 @@ window.dwNewId = function (mode) {
     // state, like you just started resizing without selecting the shape first,
     // then a new Id must be forcefully created to get it to work, hence dwNewId
     var id = null;
-    if (Object.keys(window.tyResizable()).map(k => parseInt(k))
+    if (Object.keys(window.tyResizable()).map(k => /*parseInt(*/k/*)*/)
             .indexOf(mode)>-1) {
         id = window.dwDraw(window.tyFromMode(mode));
     }
@@ -19,7 +19,7 @@ window.dwIsDrawingClosed = function() {
 }
 
 window.dwIsHoveringCorner = function(ndVtx, mode) { // CT/50
-    return mode==0 && ndVtx != null;
+    return mode=='0' && ndVtx != null;
 }; // end hover resize func
 
 window.dwHover = function(vtx) { // CT/50

@@ -12,21 +12,20 @@ cacheNd = {attrs:[]};
 selColor = "#C0D6FC";
 editColor = "#CAFFB5";
 
-numMode = 0;
 // clickCnt = 0;
 // drawClick = { x:-1, y: -1 };
-notifyTextArr = [
-    "0 =&gt; Select Mode",
-    "1 =&gt; Line Mode",
-    "2 =&gt; Arrow Mode",
-    "3 =&gt; Rect Mode",
-    "4 =&gt; Rounded Rect Mode",
-    "5 =&gt; Decision Node Mode",
-    "6 =&gt; Initial Node Mode",
-    "7 =&gt; Final Node Mode",
-    "8 =&gt; Fork/Join Node Mode",
-    "9 =&gt; Text Mode"
-];
+notifyTextArr = {
+    '0': "0 =&gt; Select Mode",
+    '1': "1 =&gt; Line Mode",
+    '2': "2 =&gt; Arrow Mode",
+    '3': "3 =&gt; Rect Mode",
+    '4': "4 =&gt; Rounded Rect Mode",
+    '5': "5 =&gt; Decision Node Mode",
+    '6': "6 =&gt; Initial Node Mode",
+    '7': "7 =&gt; Final Node Mode",
+    '8': "8 =&gt; Fork/Join Node Mode",
+    '9': "9 =&gt; Text Mode"
+};
 
 // ACTIVITY SVG - GLOBALS
 
@@ -83,17 +82,12 @@ window.notifyMsg = function(htmlMsg, styleBG) {
     return notifyMsg;
 }
 
-window.setNumMode = function(num, test) {
+/*window.setNumMode = function(num, test) {
     numMode = num;
-    /*var active = document.getElementsByClassName("active");
-    while (active.length > 0) {
-        active[0].classList.remove("active");
-    }
-    document.getElementById("btn"+num).classList.add("active");*/
     if (test == null) {
-        notifyMsg(notifyTextArr[num]);
+        
     }
-}
+}*/
 
 window.gDispatch = function(call, delay) {
     if (window.gTest) { call(); return 1; }
@@ -628,10 +622,13 @@ window.issueDraw = function(xml, tagName) {
 // EVENTS - PROGRAMMATIC - ISSUE CLICK
 
 window.issueClick = function(x, y) {
-    var id = window.dwNewId(numMode);
+    if (!AppMode.in(['0','1','2','3','4','5','6','7','8','9','0']))
+        return;
+    let numMode = parseInt(AppMode.mode);
+    var id = window.dwNewId(AppMode.mode);
 
     var adjPt = new window.snNodeSnapper()
-        .snapXYToEnv(window.tyFromMode(numMode)+'', x, y);
+        .snapXYToEnv(window.tyFromMode(AppMode.mode)+'', x, y);
     x = adjPt.x;
     y = adjPt.y;
     if (numMode == 1) {  // TDDTEST2 FTR
@@ -836,21 +833,39 @@ window.issueClick = function(x, y) {
 }
 // EVENTS - PROGRAMMATIC - ISSUE KEY NUM
 
-window.issueKeyNum = function(num, test) {
-    setNumMode(num, test);
-    /*prevents cirun test error (content window undefined):*/test=window.gTest;
-    if (!test)document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');
+window.issueKeyNum = function(num, test) { // keeping this function only to not
+                                           // disrupt so many legacy tests
+    AppMode.set((num)+'');
+    /*prevents cirun test error (content window undefined):test=window.gTest;
+    if (!test)document.getElementsByTagName('iframe')[0].contentWindow.postMessage('num:'+num, '*');*/
 }
 
 // EVENTS - UI
 
 window.keydown = function(e) {
-    if (document.activeElement && document.activeElement.tagName.toLowerCase() != "body") { return; }
+    let textAreaEvent = (document.activeElement && document.activeElement.tagName.toLowerCase() != "body");
     e = e || window.event;
+    if (textAreaEvent && !e.altKey) { return; }
     window.lgUser(
         'window.keydown({key:"'+e.key+'", shiftKey:'+e.shiftKey+',ctrlKey:'+e.ctrlKey+',view:{event:{preventDefault:()=>{}}}});'
     ); // end log user keydown
-    if ("1234567890".indexOf(e.key) > -1) {
+//notifyMsg(e.key);
+    if (e.key == 'Alt') {return;}
+    if (e.key == 'x' && e.altKey) { e.view.event.preventDefault(); notifyMsg('Alt-x');return; }
+    const key = (({key,shiftKey,ctrlKey}) => ({key,shiftKey,ctrlKey}))(e);
+    var dispatched = (new window.AppKeyDispatcher([
+        gAppModeKeyDispatcher,
+        (/*nd move key dispatcher*/{ dispatchKey: function(key) {
+            if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
+                window.mvIssueMoveKey(e.key, e.shiftKey);
+                return true;
+            } // end move key cond
+        }}),
+        window.gAppClipKeyDispatcher
+    ])).dispatchKey(key);
+    if (dispatched) e.view.event.preventDefault();
+
+    /*if ("1234567890".indexOf(e.key) > -1) {
         issueKeyNum(parseInt(e.key));
         e.view.event.preventDefault();
     } else if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
@@ -859,7 +874,7 @@ window.keydown = function(e) {
     } else {
         window.manageKeyDownEvent(e);
         //e.view.event.preventDefault();
-    }
+    }*/
 }
 
 window.mousedown = function(e) {
@@ -882,7 +897,7 @@ window.mousedown = function(e) {
         return;  // TDDTEST41 FIX
     }
     window.lgLogNode('actsvg - mousedown');
-    if (window.mgCanSelect(numMode)) {  // TDDTEST25 FIX
+    if (window.mgCanSelect()) {  // TDDTEST25 FIX
         window.issueRectSelectClick(x, y);
         return;
     }
@@ -961,7 +976,7 @@ window.mousemove = function(e) {
     if (// resize cond // CT/50
         !window.gMvState.moving && // TDDTEST74 FIX
         //curIds.length > 0 &&
-        window.dwTriggerResize(nd||ndXY, ndVtx, x, y, numMode)
+        window.dwTriggerResize(nd||ndXY, ndVtx, x, y, AppMode.mode)
     ) { // CT/50 // TDDTEST56 FTR
         nd = nd||ndXY;
         if (window.drawing.id == 'null0') {
@@ -969,7 +984,7 @@ window.mousemove = function(e) {
                 let map = window.tyResizable();
                 let keys = Object.keys(map);let key=null;
                 for (var i=0; i<keys.length; i++) if (map[keys[i]]==nd.tagName)key=keys[i];
-                nd.attrs.push({name: 'id', value: window.dwNewId(parseInt(key))}); // TDDTEST73 FIX
+                nd.attrs.push({name: 'id', value: window.dwNewId(/*parseInt(*/key/*)*/)}); // TDDTEST73 FIX
             } // end id not present cond
             window.dwDraw(nd.tagName,nd.attrs.filter(a => a.name == "id")[0].value);
             window.gDwVtx = ndVtx;
@@ -980,7 +995,7 @@ window.mousemove = function(e) {
         window.dwHover(vtx);
         return;
     } // end resize cond
-    else if (window.dwIsHoveringCorner(ndVtx, numMode)) { // CT/50
+    else if (window.dwIsHoveringCorner(ndVtx, AppMode.mode)) { // CT/50
         window.dwHover(ndVtx);window.gDwVtx=null;//force it to re-caculate
     } // end draw hover
     else { window.dwHover(null);/*window.gDwVtx={x:1,y:1};*/ } // CT/50
@@ -1110,15 +1125,17 @@ window.onStart = function(test) {
     window.loadSvg(document.getElementById("svgFullTextarea").value, test);
 }
 
-window.onNum = function(obj) {
+/*window.onNum = function(obj) {
     var num = parseInt(obj.innerHTML[obj.innerHTML.length-1]);
     issueKeyNum(num);
-}
+}*/
 
 window.onmessage = function(e) {
     var msgComponents = e.data.split(':');
-    if (msgComponents.length > 0 && msgComponents[0] == 'num') {
-        window.onNum({innerHTML: msgComponents[1]});
+    if (msgComponents.length > 0 && msgComponents[0] == 'key') {
+        let key = { key: msgComponents[1] };
+        gAppModeKeyDispatcher.dispatchKey(key);
+        // window.onNum({innerHTML: msgComponents[1]});
     }
     //if (msgComponents.length > 0 && msgComponents[0] == 'key') {
     //    window.issueKeyNum(parseInt(msgComponents[1]));

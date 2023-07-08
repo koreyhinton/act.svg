@@ -5,8 +5,8 @@ window.gRectSelectState = {
     firstY: null
 };
 
-window.mgCanSelect = function(numMode) {
-    return numMode == 0 && window.gRectSelectState.state == window.gRectSelectStates.None;
+window.mgCanSelect = function() {
+    return AppMode.in(['0', 'd']) && window.gRectSelectState.state == window.gRectSelectStates.None;
 }
 
 window.mgIsOneClickSelect = function(x, y) {
@@ -67,6 +67,9 @@ window.updateVisibleRectSelection = function(x, y) { // TDDTEST23 FTR
 
 window.closeVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
     document.getElementById("selMarker").style.visibility = 'hidden';
+    if (window.AppMode.is('d') && curIds.length > 0) {
+        new NodeDeleter(svgNodes).delete(curIds);
+    } // end delete cond
 } /* end closeVisibleRectSelection fn*/
 
 

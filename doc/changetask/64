@@ -1,0 +1,34 @@
+CT/64      V0.3      NODE-MAPPING              MAP TYPE SYNTAX           FTR
+
+Syntax for user to choose propagation to sub-selected nodes.
+
+->^ propagate the delta (default)
+->  propagate the value
+    no propagation
+
+<rect
+    x="123->^"
+    y="123->"
+    height="100"
+etc>
+
+example above explained
+
+    x propagates by delta (e.g., change 123->^ to be 125->^ then sub-
+    selected nodes will change by their own x +2).
+
+    y propagates by value (e.g., change 123 to be 123-> then sub-selected nodes
+    will change to all be y=123)
+
+    height does not propagate to subselected nodes.
+
+Ideally, this would work for start position and end position (or width/height)
+and possibly any number value and ideally you could even opt in for '->' to
+propagate non-number values like stroke color (->^ wouldn't work, can't/
+shouldn't diff a color hex). However, for this initial task it will
+only build on top of what's already working which is start position 
+(x/x1/x2/cx/polyline-x, y/y1/y2/cy/polyline-y).
+
+Also, a future task could include a centering propagate indicator, maybe ->|,
+and all sub-selected nodes would align with horizontal (x="1->|") or vertical
+(y="1->|") centering.

@@ -1,2 +1,8 @@
 CT/55      V0.3      V0.3 BRANCH               + ACTIVITY UML FTRS       EPIC
-Add new activity uml features
+Add new activity uml features (see CT/60)
+
+ACTION NODES
+See pre-requisite task CT/63. When user clicks to place an action node, it will
+result in minibuffer being pre-populated with `group ` and will
+create the rect + 2 text elements with that group name and a Group XML editing
+tab open by default and the top text selected first.

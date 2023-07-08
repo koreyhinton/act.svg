@@ -12,6 +12,7 @@ global.NamedNodeMap = window.NamedNodeMap;
 global.Event = window.Event;
 global.gLibFastXmlValidator = null;
 global.gLibSaxophoneParser = null;
+global.AppMode = null;
 //global.StartEndFrame = class{};
 //global.AggregateNode = class{};
 //global.SvgMouse = class{};
@@ -142,6 +143,9 @@ global.issueMK = window.issueMK;
 global.rotate = window.rotate;
 global.notifyMsg = window.notifyMsg;
 global.gCmCacheObj = window.gCmCacheObj;
+global.AppMode = window.AppMode;
+//global.AppKeyDispatcher = window.AppKeyDispatcher;
+global.gAppModeKeyDispatcher = window.gAppModeKeyDispatcher;
             return import(imp);
         })  .catch((err) => { console.warn(err.message); });
     }

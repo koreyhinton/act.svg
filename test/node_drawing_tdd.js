@@ -71,7 +71,7 @@ window.tddTests = [
             passes = passes && (cond11 && cond00);
             if (i == 0) { // cleanup
                 issueDrag(1,1,    100,100);
-                window.manageKeyDownEvent({key: 'x', ctrlKey: true});
+                gAppModeKeyDispatcher.dispatchKey({key: 'x', ctrlKey: true});
             } //end cleanup cond
         }); // end for each line
         return passes;

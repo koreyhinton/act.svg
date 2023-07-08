@@ -39,8 +39,8 @@ td.title:hover {
 }
 </style>
 <script>
-window.num = function(num) {
-    window.parent.postMessage('num:'+num, '*');
+window.key = function(key) {
+    window.parent.postMessage('key:'+key, '*');
     window.parent.focus();
 }
 
@@ -56,10 +56,12 @@ window.num = function(num) {
 });*/
 window.onmessage = function(e) {
     var msgComponents = e.data.split(':');
-    if (msgComponents.length >= 2 && msgComponents[0]=='num') {
+    if (msgComponents.length >= 2 && msgComponents[0]=='key') {
         //var els = document.getElementsByTagName('svg');
         let tr = document.getElementsByTagName('tr')[0];
-        let num = parseInt(msgComponents[1]);
+        let key = msgComponents[1];
+        if (key.charCodeAt(0) < 48 || key.charCodeAt(0)>57) return;
+        let num = parseInt(key);
         let idx = (num==0) ? 9 : num - 1;
 
         (tr.querySelector("svg.active"))
@@ -91,7 +93,7 @@ window.onmessage = function(e) {
 </head>
 <body onclick="window.parent.focus()">
 <!--target will be _parent, also add stylesheet-->
-<table><tbody><tr><td onclick="num(1)">
+<table><tbody><tr><td onclick="key('1')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -102,7 +104,7 @@ window.onmessage = function(e) {
 >
     <text x="52" y="55" fill="#28282B">1</text>
     <line x1="20" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/>
-</svg></td><td onclick="num(2)">
+</svg></td><td onclick="key('2')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -115,7 +117,7 @@ window.onmessage = function(e) {
     <polyline points="18 31 55 31 45 21 55 31 45 41" stroke="black" fill="transparent" stroke-width="1"/>
 </svg>
 </td>
-<td onclick="num(3)">
+<td onclick="key('3')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -127,7 +129,7 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">3</text>
     <rect rx="0" ry="0" x="13" y="15" width="45" height="20" stroke="black" fill="transparent" stroke-width="1"/>
 </svg></td>
-<td onclick="num(4)">
+<td onclick="key('4')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -139,7 +141,7 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">4</text>
     <rect rx="10" ry="10" x="13" y="14" width="45" height="22" stroke="black" fill="transparent" stroke-width="1"/>
 </svg></td>
-<td onclick="num(5)">
+<td onclick="key('5')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -151,7 +153,7 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">5</text>
     <polyline points="27 25 34 18 41 25 34 32 27 25" stroke="black" fill="transparent" stroke-width="1"/>
 </svg></td>
-<td onclick="num(6)">
+<td onclick="key('6')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -163,7 +165,7 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">6</text>
     <circle cx="35" cy="24" r="10" fill="black" stroke="black" stroke-width="1"/>
 </svg></td>
-<td onclick="num(7)">
+<td onclick="key('7')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -176,7 +178,7 @@ window.onmessage = function(e) {
     <circle cx="35" cy="23" r="6" fill="black" stroke="black" stroke-width="1"/>
     <circle cx="35" cy="23" r="10" fill="transparent" stroke="black" stroke-width="1"/>
 </svg></td>
-<td onclick="num(8)">
+<td onclick="key('8')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -191,7 +193,7 @@ window.onmessage = function(e) {
     <line x1="17" y1="31" x2="26" y2="31" stroke="#28282B" stroke-width="1"/>
     <line x1="28" y1="14" x2="28" y2="48" stroke="black" stroke-width="3"/>
 </svg></td>
-<td onclick="num(9)">
+<td onclick="key('9')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -203,7 +205,7 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">9</text>
     <text x="20" y="30" fill="#28282B">Text</text>
 </svg></td>
-<td onclick="num(0)">
+<td onclick="key('0')">
 <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"

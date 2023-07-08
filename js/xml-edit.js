@@ -121,8 +121,9 @@ window.xeEditor = class {
         return saxCheck;
     }
     // only updates 1x when called Nx (within timeFrame)
-    backgroundUpdate() { // CT/52 // CT/53
+    backgroundUpdate(e) { // CT/52 // CT/53
         // console.log("backgroundUpdate");
+        if (e.altKey) { e.view.event.preventDefault(); /*window.keydown(e);*/ return; }
         clearTimeout(this.backgroundId);
         //this.dispatched = false; //this.backgroundId = null;
         let self = this;

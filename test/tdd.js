@@ -40,7 +40,7 @@ window.issueDrag = function(x1,y1,x2,y2,close=true){
     document.activeElement?.blur();  // mousedown to start drag won't work
                                      // if an element (besides body) is focused.
     window.mousedown({clientX:x1, clientY:y1});
-    let th = (numMode  == 3 || numMode == 4) ? window.gVxThreshold : 0;
+    let th = (window.AppMode.is('3') || window.AppMode.is('4')) ? window.gVxThreshold : 0;
     window.mousemove({clientX:x1+th, clientY:y1+th,view:{event:{preventDefault:function(){}}}});
     window.mousemove({clientX:x2, clientY:y2, view:{event:{preventDefault:function(){}}}});
     window.mousemove({clientX:x2, clientY:y2,view:{event:{preventDefault:function(){}}}});

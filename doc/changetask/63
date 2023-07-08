@@ -1,0 +1,46 @@
+CT/63      V0.3      NODE-GROUPING             NODE GROUPS               FTR
+
+NODE GROUPS ARE NOT SVG/G ELEMENTS
+Element nesting (via sub-<svg> or <g>) should be reserved for something
+else, like embedding an immutable image (or image that can only have high-level
+positioning changed). As for this task (grouping editable mutable content),
+it seems like the class="group1Name group2Name" would work really well. It
+should have a prefix to distinguish it from non-grouping classes.
+Maybe 'gx-'; e.g., class="gx-MyGroupName".
+
+ACTION NODES
+This task will give structure for upcoming tasks like CT/55, where an action
+node click will result in minibuffer being pre-populated with `group ` and will
+create the rect + 2 text elements with that group name.
+
+MINIBUFFER COMMANDS
+Alt-x
+
+long version    short version
+group           g
+ungroup         u
+
+Alt-x g my-action-node
+^ if not grouped yet, it will take the current selection and make it into a
+  group, giving each element class += group-name and then update the left code
+  frame to now have a Group XML tab and it becomes the active tab
+^ if already grouped, it will perform selection toggling, appending or removing
+  these elements (with class group-name) from the current selection and updating
+  left code frame (e.g., if nothing was selected and the group becomes only
+  selection then the Group XML tab will activate)
+
+Alt-x u my-action-node
+^ this will perform class -= group-name to all elements (even ones not selected)
+  and will not affect selection, and will update the left code frame accordingly
+
+PSUEDOCODE
+
+file: js/node-group.js
+branch: mainb/v0.3b/node-grouping
+
+class NodeGrouper
+    constructor(groupXmlTabButton, groupXmlEditTextarea/*disables w/ instruction text when not grouped*/)
+    listen(minibufferTextarea) // add event listener
+    updateCodeFrame() // called from select/de-select
+                      // (if an exact group is selected, then it should display
+                      // Group XML editable content)

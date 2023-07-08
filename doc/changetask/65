@@ -1,0 +1,6 @@
+CT/65      V0.3      NODE-SELECTION            NAVIGATE SELECTION        FTR
+
+In single node textarea, save and be able to navigate between selection.
+
+Alt-s save
+Alt-n (save and) edit next selected node

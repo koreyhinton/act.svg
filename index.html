@@ -4,6 +4,8 @@
     <title>Activity Svg</title>
     <script src="lib/dist/saxophone.js"></script>
     <script src="lib/dist/fast-xml-parser.js"></script>
+    <script src="js/app-mode.js"></script>
+    <script src="js/app-key.js"></script>
     <script src="js/css-toggle.js"></script>
     <script src="js/user-log.js"></script>
     <script src="js/xml-edit.js"></script>
@@ -14,6 +16,7 @@
     <script src="js/node-cmd.js"></script>
     <script src="js/node-draw.js"></script>
     <script src="js/node-snap.js"></script>
+    <script src="js/node-clip.js"></script>
     <script src="js/node-del.js"></script>
     <script src="js/node-sel.js"></script>
     <script src="js/node-manage.js"></script>
@@ -58,7 +61,7 @@
         </div>
 <!-- PAGE CONTENT - CODE FRAME -->
         <div id="pageCodeFrame">
-            <textarea id="svgFullTextarea" onkeydown="window.gXmlEditor.backgroundUpdate()" onkeypress="window.gXmlEditor.backgroundUpdate()"></textarea><!-- onkeydown captures delete and arrow events -->
+            <textarea id="svgFullTextarea" onkeydown="window.gXmlEditor.backgroundUpdate(event)" onkeypress="window.gXmlEditor.backgroundUpdate(event)"></textarea><!-- onkeydown captures delete and arrow events -->
             <div id="editModalBG">
                 <div id="editModal">
                     <button class="tabtrue inptrue clickfalse" onclick="cssToggle(this)">Node XML</button>
