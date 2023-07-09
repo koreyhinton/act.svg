@@ -5,6 +5,172 @@ window.gRectSelectState = {
     firstY: null
 };
 
+window.selColor = "#C0D6FC";
+window.editColor = "#CAFFB5";
+
+// ATTRIBUTE ACCESS FUNCTIONS
+window.setcolor = function(nd, color) {
+    // console.warn(nd);
+    for (var i=0; i<nd.attrs.length; i++) {
+        var attr = nd.attrs[i];
+        var textFill = (
+            attr.name == "fill" &&
+            nd.tagName.toLowerCase() == "text"
+        );
+        if (textFill || attr.name == "stroke") {
+            //attr.value = color;
+            nd.attrs[i].value = color;
+            break;
+        }
+    }
+}
+window.getcolor = function(nd) {
+    for (var i=0; i<nd.attrs.length; i++) {
+        var attr = nd.attrs[i];
+        var textFill = (
+            attr.name == "fill" &&
+            nd.tagName.toLowerCase() == "text"
+        );
+        if (textFill || attr.name == "stroke") {
+            return attr.value;
+        }
+    }
+    return "#FF0000";
+}
+
+// NODE ID MANAGEMENT
+
+window.id2nd = function(id) { // TDDTEST28 FIX
+    //var type = id.replace(/[0-9]+/g, '');
+    //id = parseInt(id.replace(/[a-z]+/g, ''));
+    var nd = null;
+    for (var i=0; i<svgNodes.length; i++) {
+        var svgNd = svgNodes[i];
+        if (svgNd.attrs.filter(a => a.name == 'id' && a.value == id).length>0) {
+            return svgNd;
+        }
+    }
+    return nd;
+}
+
+window.getMaxNodeId = function(type) {
+    var maxId = 0;
+    for (var i=0; i<svgNodes.length; i++) {
+        var node = svgNodes[i];
+        if (node.tagName == type) {
+            var idlist = node.attrs.filter(a => a.name == 'id');
+            if (idlist.length > 0) {
+                maxId = Math.max(
+                    parseInt(idlist[0].value.replace(type,'')),
+                    maxId
+                );
+            }
+        }
+    }
+    return maxId;
+}
+
+window.trackNd = function(nd, curIds) {
+    var id = nd.attrs.filter(a => a.name == 'id')?.[0]?.value;
+    if (id == null) {
+        id = nd.tagName + (window.getMaxNodeId(nd.tagName)+1);
+        nd.attrs.push({name: 'id', value: id});
+    }
+    curIds.push({id: id});
+    window.cmFill(nd); // CT/49
+}
+
+window.untrackNd = function(nd, curIds) {
+    var j=-1;
+    for (var i=0; i<curIds.length; i++) {
+        var testId = curIds[i].id;
+        if (testId === nd.attrs.filter(a=>a.name=='id')[0].value) { j=i; break; }
+    }
+    if (curIds.length == 1) {
+        curIds.shift();
+        return;
+    }
+    if (j>-1) { curIds.splice(j, 1); }
+    else { console.warn("unable to untrack"); }
+}
+
+// EVENTS - PROGRAMMATIC - ISSUE SELECTION
+
+window.issueSelection = function(nd, curIds, nodeFinder) {
+    var selType = "select";
+    var color = window.getcolor(nd);
+    if (color.toUpperCase() == window.selColor || color.toUpperCase() == window.editColor
+        || nd.cacheColor != null // TDDTEST6 FTR
+    ) {
+        // setcolor(nd, nd.cacheColor);
+        selType = "deselect";
+        window.untrackNd(nd, curIds);
+    }
+    else {
+        window.trackNd(nd, curIds);
+        nd.cacheColor = color; 
+        // setcolor(nd, selColor);
+    }
+    // if (curIds.length == 0) { return selType; }
+    if (selType == "select") {
+        window.setcolor(
+            /*nd=*/ nd,
+            /*color=*/ window.editColor
+        );
+        var prevLastNd = (curIds.length>1) ?
+            nodeFinder(curIds[curIds.length-2].id) : null;
+        if (prevLastNd != null) {
+            window.setcolor(
+                /*nd=*/ prevLastNd,
+                /*color=*/ window.selColor
+            );
+        }
+    }
+    else if (selType == "deselect") {
+        if (nd.cacheColor == null) {
+            console.warn("WARNING: "+nd.tagName+" is too close to another element" );
+            //nd.cacheColor = 'black';//todo: find a better fix
+        }
+        window.setcolor(
+            /*nd=*/ nd,
+            /*color=*/ nd.cacheColor
+        );
+        nd.cacheColor=null; // TDDTEST6 FTR
+    }
+    let logColor = window.getcolor(nd);
+    let logColorTxt = logColor;
+    if (logColor == window.editColor) {logColorTxt = 'edit color';} else if (logColor == window.selColor) { logColorTxt = 'sel color'; }
+    window.lgLogNode('actsvg - issue selection - '+selType+',color='+logColorTxt, nd);
+    return selType;
+}
+
+// ALT-N (NEXT) NODE SELECTION NAVIGATOR
+
+window.NodeSelectionNavigator = class {
+    constructor(deselector, frameUpdater, nodeFinder, selectionIssuer, selNdIds) {
+        this.deselector = deselector;
+        this.frameUpdater = frameUpdater;
+        this.nodeFinder = nodeFinder;
+        this.selectionIssuer = selectionIssuer;
+        this.selNdIds = selNdIds;
+    } // end node sel nav constructor
+    next() {
+        let copy = [...this.selNdIds];
+        this.deselector();// saves and closes
+        copy.push(copy.splice(this.tinj0 ?? 0, 1)[0]); // shift @0 to @len-1
+        copy.forEach((idEl) => {
+            this.selectionIssuer(
+                this.nodeFinder(idEl.id),
+                this.selNdIds,
+                this.nodeFinder
+            ); // re-select
+        }); // end id select
+        this.frameUpdater(); // update to show re-selection
+    } // end node sel nav next method // CT/65
+}; // end node selection navigator class def
+
+// LEGACY (PRE-V0.3) SELECT CODE 
+
 window.mgCanSelect = function() {
     return AppMode.in(['0', 'd']) && window.gRectSelectState.state == window.gRectSelectStates.None;
 }
@@ -137,7 +303,7 @@ window.issueRectSelectClick2 = function(x,y) { // TDDTEST21 FTR
         ];*/ // TDDTEST50 FIX
         //        /*setTimeout(function(){*/window.issueClick(selLst[i].xmin, selLst[i].ymin);/*},10);*/
         setMouseRects(selLst[i]); // TDDTEST50 FIX // CT/52
-        issueSelection(selLst[i]); // TDDTEST50 FIX // CT/52
+        issueSelection(selLst[i], curIds, id2nd); // TDDTEST50 FIX // CT/52
         //console.log('click',selLst[i]);
         window.updateFrames(selLst[i], {isSel:true}); // TDDTEST37 FIX
         window.lgLogNode('actsvg - issued rect click', selLst[i]);

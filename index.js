@@ -9,9 +9,6 @@ cacheNd = {attrs:[]};
 // todo: add in template links in footer to pre-load examples (ie: swimlanes)
                             // todo: should optionally allow reconfiguring to
                             //       have a much larger image area?
-selColor = "#C0D6FC";
-editColor = "#CAFFB5";
-
 // clickCnt = 0;
 // drawClick = { x:-1, y: -1 };
 notifyTextArr = {
@@ -93,36 +90,7 @@ window.gDispatch = function(call, delay) {
     if (window.gTest) { call(); return 1; }
     else { return setTimeout(call, delay); }
 }
-
 // ATTRIBUTE ACCESS FUNCTIONS
-window.setcolor = function(nd, color) {
-    // console.warn(nd);
-    for (var i=0; i<nd.attrs.length; i++) {
-        var attr = nd.attrs[i];
-        var textFill = (
-            attr.name == "fill" &&
-            nd.tagName.toLowerCase() == "text"
-        );
-        if (textFill || attr.name == "stroke") {
-            //attr.value = color;
-            nd.attrs[i].value = color;
-            break;
-        }
-    }
-}
-window.getcolor = function(nd) {
-    for (var i=0; i<nd.attrs.length; i++) {
-        var attr = nd.attrs[i];
-        var textFill = (
-            attr.name == "fill" &&
-            nd.tagName.toLowerCase() == "text"
-        );
-        if (textFill || attr.name == "stroke") {
-            return attr.value;
-        }
-    }
-    return "#FF0000";
-}
 
 window.getscal = function(attrs, name) {
     // returns scalar value for attribute name
@@ -538,80 +506,6 @@ window.updateFrames = function(selNd, ctx) {
     window.lgLogNode('actsvg - updateFrames - mapped', selNd);
 }
 
-window.trackNd = function(nd) {
-    var id = nd.attrs.filter(a => a.name == 'id')?.[0]?.value;
-    if (id == null) {
-        id = nd.tagName + (window.getMaxNodeId(nd.tagName)+1);
-        nd.attrs.push({name: 'id', value: id});
-    }
-    curIds.push({id: id});
-    window.cmFill(nd); // CT/49
-}
-
-window.untrackNd = function(nd) {
-    var j=-1;
-    for (var i=0; i<curIds.length; i++) {
-        var testId = curIds[i].id;
-        if (testId === nd.attrs.filter(a=>a.name=='id')[0].value) { j=i; break; }
-    }
-    if (curIds.length == 1) {
-        curIds.shift();
-        return;
-    }
-    if (j>-1) { curIds.splice(j, 1); }
-    else { console.warn("unable to untrack"); }
-}
-
-// EVENTS - PROGRAMMATIC - ISSUE SELECTION
-//for (var i=0; i<svgNodes.length; i++) { var nd=svgNodes[i]; console.log(nd.tagName, nd.xmin,nd.ymin, nd.xmax, nd.ymax); }
-window.issueSelection = function(nd) {
-    var selType = "select";
-    var color = getcolor(nd);
-    if (color.toUpperCase() == selColor || color.toUpperCase() == editColor
-        || nd.cacheColor != null // TDDTEST6 FTR
-    ) {
-        // setcolor(nd, nd.cacheColor);
-        selType = "deselect";
-        untrackNd(nd);
-    }
-    else {
-        trackNd(nd);
-        nd.cacheColor = color; 
-        // setcolor(nd, selColor);
-    }
-    // if (curIds.length == 0) { return selType; }
-    if (selType == "select") {
-        setcolor(
-            /*nd=*/ nd,
-            /*color=*/ editColor
-        );
-        var prevLastNd = (curIds.length>1) ?
-            id2nd(curIds[curIds.length-2].id) : null;
-        if (prevLastNd != null) {
-            setcolor(
-                /*nd=*/ prevLastNd,
-                /*color=*/ selColor
-            );
-        }
-    }
-    else if (selType == "deselect") {
-        if (nd.cacheColor == null) {
-            console.warn("WARNING: "+nd.tagName+" is too close to another element" );
-            //nd.cacheColor = 'black';//todo: find a better fix
-        }
-        setcolor(
-            /*nd=*/ nd,
-            /*color=*/ nd.cacheColor
-        );
-        nd.cacheColor=null; // TDDTEST6 FTR
-    }
-    let logColor = window.getcolor(nd);
-    let logColorTxt = logColor;
-    if (logColor == editColor) {logColorTxt = 'edit color';} else if (logColor == selColor) { logColorTxt = 'sel color'; }
-    window.lgLogNode('actsvg - issue selection - '+selType+',color='+logColorTxt, nd);
-    return selType;
-}
-
 // EVENTS - PROGRAMMATIC - ISSUE DRAW
 
 window.issueDraw = function(xml, tagName) {
@@ -789,7 +683,7 @@ window.issueClick = function(x, y) {
         return;
     } else if (clickedNd == null) { return; }
     setMouseRects(clickedNd);
-    var selType = issueSelection(clickedNd);
+    var selType = issueSelection(clickedNd, curIds, id2nd);
 // for (var i=0; i<curIds.length; i++) { setMouseRects(xy2nd(curIds[i].x, curIds[i].y)); }
     return selType;
 /////         if (curIds.length == 0) { if (removeTracking) {untrackNd(clickedNd);}
@@ -854,6 +748,24 @@ window.keydown = function(e) {
     if (e.key == 'x' && e.altKey) { e.view.event.preventDefault(); notifyMsg('Alt-x');return; }
     const key = (({key,shiftKey,ctrlKey}) => ({key,shiftKey,ctrlKey}))(e);
     var dispatched = (new window.AppKeyDispatcher([
+        (/*nd save key dispatcher*/{ dispatchKey: function(key) {
+            if (curIds.length>0 && e.key == 's' && e.altKey) {
+                window.onApplyEdits({isSel:true}); // CT/65
+                return true;
+            } // end Alt-s key condition
+        }}),
+        (/*nd next key dispatcher*/{ dispatchKey: function(key) {
+            if (curIds.length>0 && e.key == 'n' && e.altKey) {
+                new NodeSelectionNavigator(
+                    window.onApplyEdits,
+                    window.updateFrames,
+                    window.id2nd,
+                    window.issueSelection,
+                    curIds
+                ).next();
+                return true;
+            } // end Alt-n key condition
+        }}),
         gAppModeKeyDispatcher,
         (/*nd move key dispatcher*/{ dispatchKey: function(key) {
             if (window.mvIsMoveKey(e.key)) { // TDDTEST18 FTR
@@ -1035,7 +947,7 @@ window.onDone = function() {
             // value and shouldn't be
         if (id == curIds[0].id) throw new Error("foreverloop"+id);
         id=curIds[0].id;
-        var clickedNd=id2nd(curIds[0].id);setMouseRects(clickedNd);issueSelection(clickedNd);
+        var clickedNd=id2nd(curIds[0].id);setMouseRects(clickedNd);issueSelection(clickedNd, curIds, id2nd);
         i += 1;
         if (i > limit) {console.warn("max num iterations"); break;}
         j = curIds.length;
@@ -1147,7 +1059,7 @@ window.onmessage = function(e) {
     //document.body.focus();
 }
 
-window.onApplyEdits = function() {
+window.onApplyEdits = function(ctx) {
     var text = document
         .getElementById("svgPartTextarea")
         .value;
@@ -1193,7 +1105,7 @@ window.onApplyEdits = function() {
         i-=1;
     }
     // console.log("IMPORTANT", curIds.length);
-    onDone();
+    if (ctx==null || !ctx.isSel) onDone(); else updateFrames({}, ctx);
     // console.log("IMPORTANT", curIds.length);
     // updateFrames();
 }
