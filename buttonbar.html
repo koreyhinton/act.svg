@@ -10,10 +10,10 @@ svg {
     color:black;background-color:rgb(240,245,245);width:66px;height:66px;
 }
 svg:hover {
-    color:white;background-color:gray;font-weight:bold;cursor:pointer;
+    color:white;background-color:#EEFFEE;/*font-weight:bold;*/cursor:pointer;
 }
 svg.active {
-    color:black;background-color:#EEFFEE;font-weight:bold;
+    color:black;background-color:#66CCFF;font-weight:bold;
 }
 svg {
     padding:0;
@@ -59,14 +59,33 @@ window.onmessage = function(e) {
     if (msgComponents.length >= 2 && msgComponents[0]=='key') {
         //var els = document.getElementsByTagName('svg');
         let tr = document.getElementsByTagName('tr')[0];
+        let tr2 = document.getElementsByTagName('tr')[1];
         let key = msgComponents[1];
-        if (key.charCodeAt(0) < 48 || key.charCodeAt(0)>57) return;
+        if (key.charCodeAt(0) < 48 || key.charCodeAt(0)>57) {
+            let ch = key.charAt(0);
+            let idx = ({'a': 0, 'c': 1, 'd': 2, 'o': 3, '|': 4, '-': 5})[ch];
+
+            (tr.querySelector("svg.active"))
+                /*<svg>*/
+                ?.classList.remove('active');
+            (tr2.querySelector("svg.active"))
+                /*<svg>*/
+                ?.classList.remove('active');
+            (tr2.children[idx].querySelector("svg"))
+                /*<svg>*/
+                .classList.add('active');
+
+            return;
+        } // end non-num condition
         let num = parseInt(key);
         let idx = (num==0) ? 9 : num - 1;
 
         (tr.querySelector("svg.active"))
             /*<svg>*/
-            .classList.remove('active');
+            ?.classList.remove('active');
+        (tr2.querySelector("svg.active"))
+            /*<svg>*/
+            ?.classList.remove('active');
 
         (tr.children[idx].querySelector("svg"))
             /*<svg>*/
@@ -219,6 +238,89 @@ window.onmessage = function(e) {
     <text x="15" y="30" fill="#28282B">Select</text>
 </svg></td>
 <td class="title" onclick="window.top.location.href='index.html'"><a style="font-size:60px;position:relative;top:7px !important;color:white;">^</a><a style="text-decoration:underline;position:relative;left:-14px;top:-15px;color:white;">__ct.svg</a></td>
-</tr></tbody></table>
+</tr>
+</tr><td onclick="key('a')">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+    <text x="13" y="24" fill="#28282B">Action</text>
+    <text x="13" y="39" fill="#28282B">Node</text>
+    <rect rx="10" ry="10" x="4" y="7" width="58" height="38" stroke="black" fill="transparent" stroke-width="1"/>
+    <text x="52" y="60" fill="#28282B">a</text>
+</svg></td>
+<td onclick="key('ca')">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+    <text x="30" y="36" fill="#28282B">A</text>
+    <circle cx="35" cy="30" r="14" fill="transparent" stroke="black" stroke-width="1"/>
+    <text x="44" y="60" fill="#28282B">c</text><text x="52" y="60" fill="#88888B" style="font-style:italic;">a</text>
+</svg></td>
+<td onclick="key('d')">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+    <text x="52" y="60" fill="#28282B">d</text>
+    <text x="12" y="16" fill="red" style="font-style:italic">x</text>
+    <rect opacity="0.4" rx="0" ry="0" x="15" y="11" width="20" height="20" stroke="black" fill="transparent" stroke-width="1" stroke-linecap="round" stroke-dasharray="0 3 0" stroke-dashoffset="100" stroke-mitterlimit="0"/>
+    <!--<text x="15" y="36" fill="#28282B">Delete</text>-->
+</svg></td>
+<td onclick="key('o')">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+    <text x="52" y="60" fill="#28282B">o</text>
+    <text x="13" y="24" fill="#28282B">Object</text>
+    <text x="13" y="39" fill="#28282B">Node</text>
+    <rect rx="0" ry="0" x="6" y="7" width="56" height="38" stroke="black" fill="transparent" stroke-width="1"/>
+</svg></td>
+<td onclick="key('|2')">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+     <text x="44" y="60" fill="#28282B">|</text><text x="52" y="60" fill="#88888B" style="font-style:italic;">2</text>
+    <rect rx="0" ry="0" x="10" y="7" width="25" height="38" stroke="black" fill="transparent" stroke-width="1"/>
+    <rect rx="0" ry="0" x="35" y="7" width="25" height="38" stroke="black" fill="transparent" stroke-width="1"/>
+</svg></td>
+<td onclick="key('-2')" colspan="7">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="66"
+    height="66"
+    viewBox="0,0,66,66"
+>
+     <text x="44" y="60" fill="#28282B">-</text><text x="52" y="60" fill="#88888B" style="font-style:italic;">2</text>
+    <rect rx="0" ry="0" x="10" y="10" width="50" height="18" stroke="black" fill="transparent" stroke-width="1"/>
+    <rect rx="0" ry="0" x="10" y="28" width="50" height="18" stroke="black" fill="transparent" stroke-width="1"/>
+</svg></td>
+</tr>
+</tbody></table>
 </body>
 </html>

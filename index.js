@@ -28,21 +28,22 @@ notifyTextArr = {
 
 window.gXmlEditor = new window.xeEditor();
 window.gStarted = false;
-window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88);
+window.gToolbarFrame = new window.StartEndFrame(0,0,1500,88*2-10);//todo: remove out of index.css so it is changeable in 1 place
+window.gY = window.gToolbarFrame.getEnd().y;
 let topFrameNode = new window.AggregateNode({
     frame: window.gToolbarFrame,
     id: 'pageToolbar',
     top: null,
     left: null
 });
-window.gCodeFrame = new window.StartEndFrame(0,88,750,88+750);
+window.gCodeFrame = new window.StartEndFrame(0,window.gY,750,window.gY+750);
 let leftFrameNode = new window.AggregateNode({
     frame: window.gCodeFrame,
     id: 'pageCodeFrame',
     top: topFrameNode,
     left: null
 });
-window.gSvgFrame = new window.StartEndFrame(750, 88, 750+750, 88+750);
+window.gSvgFrame = new window.StartEndFrame(750, window.gY, 750+750, window.gY+750);
 window.gSvgFrameNode = new window.AggregateNode({
     frame: window.gSvgFrame,
     id: 'pageDisplayFrame',
@@ -931,6 +932,12 @@ window.mousemove = function(e) {
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
+    /* 88px refactor (removed from css/index.css and index.html) */
+    document.getElementById("pageDisplayFrame").style.top = (window.gY)+'px';
+    document.getElementById("pageCodeFrame").style.top = (window.gY)+'px';
+    document.getElementById("pageToolbar").style.height = (window.gY)+'px';
+    document.getElementsByTagName('iframe')[0].style.height = (window.gY-2)+'px';
+    /* end 88px refactor */
     document.getElementById("svgFullTextarea").value =
         svgHead
         + svgEx
@@ -1045,8 +1052,11 @@ window.onStart = function(test) {
 window.onmessage = function(e) {
     var msgComponents = e.data.split(':');
     if (msgComponents.length > 0 && msgComponents[0] == 'key') {
-        let key = { key: msgComponents[1] };
-        gAppModeKeyDispatcher.dispatchKey(key);
+        let keys = msgComponents[1].split('');
+        for (var i=0; i<keys.length; i++) {
+            let key = { key: keys[i] };
+            gAppModeKeyDispatcher.dispatchKey(key);
+        } //end for key in keys
         // window.onNum({innerHTML: msgComponents[1]});
     }
     //if (msgComponents.length > 0 && msgComponents[0] == 'key') {

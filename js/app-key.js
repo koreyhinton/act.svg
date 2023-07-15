@@ -4,6 +4,9 @@ window.AppModeKeyDispatcher = class {
     } // end constructor
     dispatchKey(key) {
         if (key.ctrlKey) return false;
+        if (key.key.toLowerCase() == 'shift') return true;// fake handle non-
+                                                          // paired shift (to
+                                                          // ignore it)
         let dispatched = false;
         if (this.q.length >= 2) {
             while (this.q.length > 0) this.q.shift();
@@ -13,6 +16,7 @@ window.AppModeKeyDispatcher = class {
         } // end mode will have submode cond
         else if (this.q.length == 1) {
             AppMode.set(this.q[0].key, key.key);
+            this.q.push(key);
             dispatched = true;
         } // end submode cond
         else {
@@ -20,7 +24,7 @@ window.AppModeKeyDispatcher = class {
             dispatched = true;
         } // end mode will not have submode cond
         if (dispatched) {
-            document.getElementsByTagName('iframe')[0]?.contentWindow.postMessage('key:'+key.key, '*');
+            document.getElementsByTagName('iframe')[0]?.contentWindow.postMessage('key:'+(this.q[0]?.key??'')+key.key, '*');
             notifyMsg(notifyTextArr[key.key]);
         } // end dispatch cond
         return dispatched;

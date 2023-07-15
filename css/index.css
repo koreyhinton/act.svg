@@ -36,7 +36,6 @@ svg {
     width:748px;
     height:750px;
     left:750px;
-    top:88px;
     border:1px solid black;
     box-shadow: 1px 2px 3px black;
     background-color: white;
@@ -47,7 +46,6 @@ svg {
 
 #pageCodeFrame {
     position:absolute;
-    top:88px;
     left:0px;
     width:750px;
     height:750px;
@@ -159,7 +157,6 @@ button.subm.inpfalse {
     top:0px;
     left:0px;
     width: 1500px;
-    height:88px;
     background-color: white; /*it actually appears black, see buttonbar.html*/
     /*background-color: rgba(0,0,0,0.88);*/
 }
