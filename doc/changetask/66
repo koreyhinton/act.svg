@@ -1,0 +1,51 @@
+CT/66      V0.3      NODE-SELECTION            SELECTION COLOR BUG       FTR
+
+The outline color of the selected node (in the right-pane display) is matching
+the text editor (a green hex representing the main selected node) and it shows
+that way in the single Xml element textarea rather than the color it really is.
+
+Even if you edit the color, the green hex outline color will revert to the
+original (pre-edit) color rather than the color changed.
+
+Another problem is that you wouldn't be able to see the color you change in
+real time since the (outline) selection color is showing in place of the real
+color.
+
+Yet a third problem is that there is no indicator that there are multiple
+elements available for editing. How does user easily know there are 8(ex) nodes
+they can cycle through with Alt-n?
+
+SOLUTION
+
+These 3 problems can be resolved with the decorator pattern and displaying mini
+svg icons.
+
+The updateFrames function will now use decorator pattern and be stateless (in
+the svgNodes data model) to prevent actually changing the outline color as part
+of the selection behavior.
+
+// in left-pane logic (to display new mini icons)
+for each node (selected):
+    miniNode = nsDecorateSize( nsDecoratePosition(clone(node), 0, 0), 20, 20);
+    if (current selected) miniNode = nsDecorateBorder(miniNode, 'black', 1);
+
+// in right-pane logic
+if (subselection):
+    displayNode = nsDecorateOutlineColor(clone(node), selColor)
+else if (main selection):
+    displayNode = nsDecorateOutlineColor(clone(node), editColor)
+
+ ______________    |
+| <rect etc/>  |   |        *
+|______________|   |        |
+          __       |        v
+-> Re Re |()|      |     ( Receive
+          ^^       |       Request )
+(Done)             |
+
+Upon selection xml in textarea and mini icon below it will have the true color
+whereas the right-display will have the selection decoration color.
+
+js/node-sel-dec.js
+
+window.nsDecoratePosition = function etc

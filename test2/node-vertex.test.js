@@ -17,12 +17,12 @@ import "../js/node-vertex.js"
         assert.is(iVtx.x, expect);
         assert.is(iVtx.y, expect);
     }), // end
-    */
 
     [{ t: 1, inj: null }].testEach("Placeholder test 1", async () => { 
         assert.ok(true); 
-    }),
+    }),    
 
     [{ t: 2, inj: null }].testEach("Placeholder test 2", async () => { assert.ok(true); }),
+*/
 
 ])})();

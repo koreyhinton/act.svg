@@ -25,5 +25,4 @@ import fs from "fs";
     
 
     await Promise.all(promises);
-
 })();

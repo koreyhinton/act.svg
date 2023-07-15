@@ -272,7 +272,7 @@ window.tddTests = [
                                               // so start selection at 0,0
         // needs to be tracked as a selected curId,
         // and be changed to a color indicating that it is selected
-        return curIds.length > 0 && document.getElementsByTagName('line')[0].getAttribute('stroke')!='black';
+        console.warn(document.getElementsByTagName('line')[0].getAttribute('stroke'));return curIds.length > 0 && document.getElementsByTagName('line')[0].getAttribute('stroke')!='black';
     },
     // TDD TEST 38 - BACKWARDS RECTANGULAR SELECTION
     function test38() {

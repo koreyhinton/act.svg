@@ -97,10 +97,13 @@ window.untrackNd = function(nd, curIds) {
 // EVENTS - PROGRAMMATIC - ISSUE SELECTION
 
 window.issueSelection = function(nd, curIds, nodeFinder) {
+    // Refactored to only handle curIds and NOT node color and the selected node
+    // color handling code was moved to the updateFrames function - CT/66
+    var id = nd.attrs.filter(a => a.name == 'id')?.[0]?.value;
+    let tracked = id != null &&
+        curIds.filter((item) => item.id == id).length>0;
     var selType = "select";
-    var color = window.getcolor(nd);
-    if (color.toUpperCase() == window.selColor || color.toUpperCase() == window.editColor
-        || nd.cacheColor != null // TDDTEST6 FTR
+    if (tracked // TDDTEST6 FTR
     ) {
         // setcolor(nd, nd.cacheColor);
         selType = "deselect";
@@ -108,39 +111,8 @@ window.issueSelection = function(nd, curIds, nodeFinder) {
     }
     else {
         window.trackNd(nd, curIds);
-        nd.cacheColor = color; 
-        // setcolor(nd, selColor);
     }
-    // if (curIds.length == 0) { return selType; }
-    if (selType == "select") {
-        window.setcolor(
-            /*nd=*/ nd,
-            /*color=*/ window.editColor
-        );
-        var prevLastNd = (curIds.length>1) ?
-            nodeFinder(curIds[curIds.length-2].id) : null;
-        if (prevLastNd != null) {
-            window.setcolor(
-                /*nd=*/ prevLastNd,
-                /*color=*/ window.selColor
-            );
-        }
-    }
-    else if (selType == "deselect") {
-        if (nd.cacheColor == null) {
-            console.warn("WARNING: "+nd.tagName+" is too close to another element" );
-            //nd.cacheColor = 'black';//todo: find a better fix
-        }
-        window.setcolor(
-            /*nd=*/ nd,
-            /*color=*/ nd.cacheColor
-        );
-        nd.cacheColor=null; // TDDTEST6 FTR
-    }
-    let logColor = window.getcolor(nd);
-    let logColorTxt = logColor;
-    if (logColor == window.editColor) {logColorTxt = 'edit color';} else if (logColor == window.selColor) { logColorTxt = 'sel color'; }
-    window.lgLogNode('actsvg - issue selection - '+selType+',color='+logColorTxt, nd);
+    window.lgLogNode('actsvg - issue selection - '+selType, nd);
     return selType;
 }
 

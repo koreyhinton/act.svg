@@ -147,6 +147,24 @@ window.addscalarr = function(nd, name, query, scalar) {
     }
 }
 
+window.multscalarr = function(nd, name, query, scalar) {
+    for (var i=0; i<nd.attrs.length; i++) {
+        if (nd.attrs[i].name == name) {
+            var strsRd = nd.attrs[i].value.split(/[ ,]+/);
+            var strsWrt = nd.attrs[i].value.split(/[ ,]+/);
+            var inc = 1; var j = 0;  // "all"
+            if (query == "odd") { j+=1; inc=2; }
+            if (query == "even") { inc=2; }
+            for (; j<strsRd.length; j+=inc) {
+                strsWrt[j] = ''+(parseFloat(strsRd[j]) * scalar);
+            }
+            nd.attrs[i].value = strsWrt.join(' ');
+            break;
+        }
+    }
+}
+
+
 // SET CLICK RECTANGLE FUNCTION
 window.setMouseRects = function(nd) {
 
@@ -289,8 +307,8 @@ window.nds2xml = function(nds) {
     xml = xml.substring(0, xml.length -2);
     xml += ">"+`
 `;
-    for (var i=0; i<svgNodes.length; i++) {
-        xml += "    "+nd2xml(svgNodes[i])+`
+    for (var i=0; i<nds.length; i++) {
+        xml += "    "+nd2xml(nds[i])+`
 `;
     }
     xml += "</svg>";
@@ -301,26 +319,6 @@ window.nd2xml = function(nd, colorOverride) {
     var xml = "<" + nd.tagName;
     for (var i=0; i<nd.attrs.length; i++) {
         var attr = nd.attrs[i];
-        // this is tricky: in the 1 case where a component gets loaded from
-        // the active selected node that stroke color (selColor) should not
-        // be included in the edit. So use cacheColor instead.
-        var textOverride = (
-            nd.tagName.toLowerCase() == "text" &&
-            attr.name == "fill" &&
-            colorOverride != null
-        );
-        var strokeOverride = (
-            !textOverride &&
-            (colorOverride != null && nd.attrs[i].name == "stroke")
-        );
-        if (strokeOverride || textOverride) {
-            //for (var j=0; j<nd.attrs.length; j++) {
-                //if (nd.attrs[j].name == "stroke") {
-                    nd.attrs[i].value = colorOverride;
-                    // console.log("OVERRIDE", colorOverride);
-                //}
-            //}
-        }
         xml += (" "+ attr.name + "=" + `"` + attr.value + `"`);
     }
     if (nd.tagName.toLowerCase() == "text") {
@@ -488,7 +486,8 @@ window.updateFrames = function(selNd, ctx) {
     var svg = document.createElement("div");
     svg.id = "svgId";
     var xml = nds2xml(svgNodes);
-    svg.innerHTML = xml;
+    svg.innerHTML = nds2xml(new window.NodeDecorator().decorateDiagram(svgNodes, curIds)); // CT/66
+    console.warn(svg.innerHTML);
     document.getElementById("svgFullTextarea").value = xml;
     document.getElementById("pageDisplayFrame").appendChild(svg);
     window.lgLogNode('actsvg - updateFrames - curIds.length='+(curIds.length),selNd);
