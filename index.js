@@ -11,18 +11,6 @@ cacheNd = {attrs:[]};
                             //       have a much larger image area?
 // clickCnt = 0;
 // drawClick = { x:-1, y: -1 };
-notifyTextArr = {
-    '0': "0 =&gt; Select Mode",
-    '1': "1 =&gt; Line Mode",
-    '2': "2 =&gt; Arrow Mode",
-    '3': "3 =&gt; Rect Mode",
-    '4': "4 =&gt; Rounded Rect Mode",
-    '5': "5 =&gt; Decision Node Mode",
-    '6': "6 =&gt; Initial Node Mode",
-    '7': "7 =&gt; Final Node Mode",
-    '8': "8 =&gt; Fork/Join Node Mode",
-    '9': "9 =&gt; Text Mode"
-};
 
 // ACTIVITY SVG - GLOBALS
 
@@ -65,18 +53,24 @@ var svgTrail = `
 `; // cy=40 -> cy=39 fix: // TDDTEST0 FIX
 
 window.notifyMsg = function(htmlMsg, styleBG) {
-    var notifyMd = document.createElement("div");
+    var notifyMd = document.getElementById('notifyId') ?? document.body.appendChild(document.createElement("div"));
     notifyMd.style.backgroundColor=(styleBG==null)?"rgba(238, 255, 238, 1)":styleBG;
     notifyMd.style.color="black";
     notifyMd.style.position="absolute";
     notifyMd.style.left=(window.gSvgFrame.getStart().x+2)+'px';//"752px";
-    notifyMd.style.top=(/*750+88*//*window.gSvgFrame.getStart().y+*/window.gSvgFrame.getEnd().y-16-12)+"px";
+    let h = 60;
+    notifyMd.style.height = h+'px';
+    let offset1 = 16+12;
+    let offset2 = 12;
+    let y = Math.min(window.innerHeight-h-offset1, window.gSvgFrame.getEnd().y/*-16-12*/-h-offset2);
+    notifyMd.style.top=(/*750+88*//*window.gSvgFrame.getStart().y+*/y)+"px";
     notifyMd.style.fontSize="16px";
     notifyMd.style.padding="6px";
     notifyMd.style.width="736px";
     notifyMd.innerHTML = htmlMsg;
-    document.body.appendChild(notifyMd);
-    setTimeout(function(){notifyMd.remove();}, 1400);
+    notifyMd.id = 'notifyId';
+    //document.body.appendChild(notifyMd);
+    //setTimeout(function(){notifyMd.remove();}, 1400);
     return notifyMsg;
 }
 
@@ -302,11 +296,15 @@ window.arrowPoint = function(pt1, pt2, deg, len, sign) {  // TDDTEST7
     return rotate(pt2.x,pt2.y, pt1.x, pt1.y, sign*deg);
 }
 
-window.nds2xml = function(nds) {
+window.nds2xml = function(nds, frameSize) {
     var xml = nd2xml(svgBaseNode);
     xml = xml.substring(0, xml.length -2);
     xml += ">"+`
 `;
+    if (frameSize != null) {
+        xml = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${frameSize.w}" height="${frameSize.h}" viewBox="0,0,${frameSize.w},${frameSize.h}">
+`;
+    } // end frameSize cond
     for (var i=0; i<nds.length; i++) {
         xml += "    "+nd2xml(nds[i])+`
 `;
@@ -487,7 +485,8 @@ window.updateFrames = function(selNd, ctx) {
     svg.id = "svgId";
     var xml = nds2xml(svgNodes);
     svg.innerHTML = nds2xml(new window.NodeDecorator().decorateDiagram(svgNodes, curIds)); // CT/66
-    console.warn(svg.innerHTML);
+    let miniSvg = document.getElementById("miniSvgId");
+    miniSvg.innerHTML = nds2xml(new window.NodeDecorator().decorateIcon(svgNodes, curIds), {w: 500, h: 40}); // CT/66
     document.getElementById("svgFullTextarea").value = xml;
     document.getElementById("pageDisplayFrame").appendChild(svg);
     window.lgLogNode('actsvg - updateFrames - curIds.length='+(curIds.length),selNd);
@@ -943,6 +942,15 @@ window.addEventListener('DOMContentLoaded', (e) => {
         + svgTrail;
 });
 
+window.diagramNotify = function() {
+    let msg = [
+        "Diagram Editor",
+        "Current editing mode: " +AppMode.name()+ " (" + AppMode.mode + ")",
+        "The mode editing buttons (top bar) will change the editing mode."
+    ];
+    window.notifyMsg(msg.join('<br/>'));
+}; // end diagram notify func
+
 window.onDone = function() {
     var i=0;
     var j=curIds.length;
@@ -960,6 +968,7 @@ window.onDone = function() {
         if (j ==0) j--;
     }
     updateFrames();
+    window.diagramNotify();
 /////         var ids = [];
 /////         for (var i=0; i<curIds.length; i++) {
 /////             ids.push({x: curIds[i].x, y: curIds[i].y});
@@ -1036,6 +1045,7 @@ window.onStart = function(test) {
             document.onmousedown = mousedown;
             document.onmousemove = mousemove;
             document.onmouseup = mouseup;
+            window.diagramNotify();
         }, // end dispatch callback
         8 // CT/43
     );// skip first click

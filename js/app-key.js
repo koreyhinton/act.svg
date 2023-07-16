@@ -25,7 +25,8 @@ window.AppModeKeyDispatcher = class {
         } // end mode will not have submode cond
         if (dispatched) {
             document.getElementsByTagName('iframe')[0]?.contentWindow.postMessage('key:'+(this.q[0]?.key??'')+key.key, '*');
-            notifyMsg(notifyTextArr[key.key]);
+            let msg = (this.q[0]?.key??'')+key.key + ' =&gt; ' + AppMode.name() + ' Mode';
+            notifyMsg(msg);
         } // end dispatch cond
         return dispatched;
     } // end dispatch key function

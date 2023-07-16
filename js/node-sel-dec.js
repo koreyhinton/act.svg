@@ -2,7 +2,7 @@
 
 window.plMin = function(polylineNd) {
     let nd = polylineNd;
-    let points = nd.attrs.filter(a => a.name == 'points').value.split(" ").map((p) => parseFloat(p));
+    let points = nd.attrs.filter(a => a.name == 'points')?.[0].value.split(" ").map((p) => parseFloat(p));
     let minX = null;
     let minY = null;
     for (var i=0; i<points.length; i+=2)
@@ -14,7 +14,7 @@ window.plMin = function(polylineNd) {
 
 window.plMax = function(polylineNd) {
     let nd = polylineNd;
-    let points = nd.attrs.filter(a => a.name == 'points').value.split(" ").map((p) => parseFloat(p));
+    let points = nd.attrs.filter(a => a.name == 'points')?.[0].value.split(" ").map((p) => parseFloat(p));
     let maxX = null;
     let maxY = null;
     for (var i=0; i<points.length; i+=2)
@@ -30,22 +30,60 @@ window.clone = function(srcNd) {
     return nd;
 }; // end clone function
 
-window.xAttr = function(nd) {
+window.xAttr = function(nd, v) {
     let attr = null;
     for (var i=0; i<nd.attrs.length; i++) {
-        if (['x','x1','cx'].indexOf(nd.attrs[i].name) > -1)
-            return nd.attrs[i];
+        if (['x','x1','cx'].indexOf(nd.attrs[i].name) > -1) {
+            if (v == null) return nd.attrs[i].value;
+            nd.attrs[i].value = (nd.attrs[i].name == 'cx') ? (parseInt(v) + window.getscal(nd.attrs, "r"))+'' : v+'';
+        } // end x cond
     } // end for attr
     return attr;
 }; // end x attr func
-window.yAttr = function(nd) {
+window.yAttr = function(nd, v) {
     let attr = null;
     for (var i=0; i<nd.attrs.length; i++) {
-        if (['y','y1','cy'].indexOf(nd.attrs[i].name) > -1)
-            return nd.attrs[i];
+        if (['y','y1','cy'].indexOf(nd.attrs[i].name) > -1) {
+            if (v == null) return nd.attrs[i].value;
+            nd.attrs[i].value = nd.attrs[i].name == 'cy' ? (parseInt(v)*2)+'' : v+'';
+        } // end y cond
     } // end for attr
     return attr;
 }; // end y attr func
+window.wAttr = function(nd, v) {
+    let attr = null;
+    for (var i=0; i<nd.attrs.length; i++) {
+        if (['r','width'].indexOf(nd.attrs[i].name) > -1)
+            nd.attrs[i].value = nd.attrs[i].name == 'r' ? (parseInt(v)/2)+'' : v+'';
+    } // end for attr
+    return attr;
+} // end w attr func
+window.hAttr = function(nd, v) {
+    let attr = null;
+    for (var i=0; i<nd.attrs.length; i++) {
+        if (['height'].indexOf(nd.attrs[i].name) > -1)
+            nd.attrs[i].value = v+'';
+    } // end for attr
+    return attr;
+} // end h attr func
+window.x2Attr = function(nd, v) {
+    let attr = null;
+    for (var i=0; i<nd.attrs.length; i++) {
+        if (['x2'].indexOf(nd.attrs[i].name) > -1) {
+            if (v == null) return nd.attrs[i].value;
+            nd.attrs[i].value = v+'';
+        } // end x2 cond
+    } // end for attr
+} // end x2 attr func
+window.y2Attr = function(nd, v) {
+    let attr = null;
+    for (var i=0; i<nd.attrs.length; i++) {
+        if (['y2'].indexOf(nd.attrs[i].name) > -1) {
+            if (v == null) return nd.attrs[i].value;
+            nd.attrs[i].value = v+'';
+        } // end y2 cond
+    } // end for attr
+} // end y2 attr func
 
 window.NodeDecorator = class {
     decorateDiagram(nodesIn, selIds) {
@@ -67,8 +105,29 @@ window.NodeDecorator = class {
         return nodesOut;
     } // end decorate diagram function
     decorateIcon(nodesIn, selIds) {
-        //todo: implement calls to decorate functions
-        return nodesIn;
+        let nodesOut = [];
+        let dim = 20;
+        let x = 10;
+        let y = 10;
+        let size = window.nsDecorateSize;
+        let pos = window.nsDecoratePosition;
+        let bord = window.nsDecorateBorder;
+        let clone = window.clone;
+        if (selIds.length == 0) return [];
+        let lastNd = nodesIn.filter(nd=> nd.attrs.filter(a=>a.name=='id' && a.value == selIds[selIds.length-1].id).length > 0)?.[0]; //nodesIn[nodesIn.length-1];
+        let editNode = bord(pos(size(clone(lastNd),dim,dim),x,y),'black',1);
+        x += dim*2;
+        nodesOut.push(editNode);
+        let idArr = selIds.map((item) => item.id);
+        selIds.forEach((id, i) => {
+            if (i == selIds.length-1) {return;}
+            let node = nodesIn.filter(nd => nd.attrs.filter(a => a.name == 'id' && a.value == id.id).length > 0)?.[0];
+            /*if (node.attrs.filter(a => a.name == 'id').length == 0 ||
+                node.attrs.filter(a => a.name == 'id' && idArr.indexOf(a.value) > -1).length == 0) return;*/
+            nodesOut.push(pos(size(clone(node),dim,dim),x,y));
+            x += dim*2;
+        });
+        return nodesOut;
     } // end decorate icon function
 }; // end node decorator class def
 
@@ -92,7 +151,7 @@ window.NodeDecorator = class {
 //     }
 
 window.nsDecorateBorder = function(nd, borderColor, borderWidth) {
-    nd.attrs.push({name: 'style', value: `border: ${borderWidth}px solid ${borderColor};`});
+    nd.attrs.push({name: 'style', value: `outline: ${borderWidth}px solid ${borderColor};`});
     return nd;
 };
 
@@ -102,8 +161,17 @@ window.nsDecorateOutlineColor = function(nd, color) {
 };
 
 window.nsDecoratePosition = function(nd, x, y) {
-    xAttr(nd).value ??= x+'';
-    yAttr(nd).value ??= y+'';
+    let oldX = parseInt(xAttr(nd));
+    let oldY = parseInt(yAttr(nd));
+    let oldX2 = parseInt(x2Attr(nd));
+    let oldY2 = parseInt(y2Attr(nd));
+    xAttr(nd, x+'');
+    yAttr(nd, y+'');
+    x2Attr(nd, (x+(oldX2-oldX))+'');
+    y2Attr(nd, (y+(oldY2-oldY))+'');
+    if (nd.tagName == 'text') {
+        yAttr(nd, (y+15)+'');
+    } // end text cond
     if (nd.tagName == 'polyline') {
         let dx = 0;
         let dy = 0;
@@ -117,15 +185,23 @@ window.nsDecoratePosition = function(nd, x, y) {
 };
 
 window.nsDecorateSize = function(nd, w, h) {
-    nd.attrs.filter(a => ['r','width'].indexOf(a.name) > -1)
-        [0].value ??= w+'';
-    nd.attrs.filter(a => ['height'].indexOf(a.name) > -1)
-        [0].value ??= y+'';
-    nd.attrs.filter(a => ['x2'].indexOf(a.name) > -1)
-        [0].value ??= window.getscal(nd.attrs, "x1")+w+'';
-    nd.attrs.filter(a => ['y2'].indexOf(a.name) > -1)
-        [0].value ??= window.getscal(nd.attrs, "y1")+h+'';
-
+    window.wAttr(nd, w+'');
+    window.hAttr(nd, h+'');
+    window.x2Attr(nd, (window.getscal(nd.attrs, "x1")+w)+'');
+    window.y2Attr(nd, (window.getscal(nd.attrs, "y1")+h)+'');
+    if (nd.tagName == 'rect' && (w<50||h<50)) {
+        nd.attrs.forEach((a) => {
+            if ((a.name == 'rx' || a.name == 'ry') && parseInt(a.value)>8) {
+                a.value = '6';
+            }
+        });
+    } // end rect cond
+    if (nd.tagName == 'text') {
+        nd.text = nd.text.substring(0, parseInt(w/9.7)+1);
+        while (nd.text.replaceAll("&nbsp;", " ").length < parseInt(w/9.7)+1) {
+            nd.text += "&nbsp;";
+        } // end while text len
+    } // end text cond
     if (nd.tagName == 'polyline') {
         let fx = 1; // x factor
         let fy = 1; // y factor

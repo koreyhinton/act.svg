@@ -93,6 +93,16 @@ textarea.inpfalse {
     visibility: hidden !important;
     height: 0px !important;
 }
+
+#miniSvgId {
+    background-color: white;
+    width: 500px;
+    height: 40px;
+    position: relative;
+    top: -70px;
+    display:inline-block;
+}
+
 button.subm.inpfalse {
     visibility: hidden !important;
     height: 0px !important;

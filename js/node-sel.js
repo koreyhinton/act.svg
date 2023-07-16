@@ -208,6 +208,17 @@ window.closeVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
     if (window.AppMode.is('d') && curIds.length > 0) {
         new NodeDeleter(svgNodes).delete(curIds);
     } // end delete cond
+    let msg = '';
+    if (curIds.length > 1) {
+        msg += "<strong>Alt-n</strong> to (save and) navigate to the next node (in selection).<br/>";
+    } // end > 1 cond
+    if (curIds.length >= 1) {
+        msg += "<strong>Alt-s</strong> to save (and update display).";
+    } // end = 1 cond
+    if (msg.length > 0) {
+        msg = "Node Selection Editor<br/>"+msg;
+        notifyMsg(msg);
+    } // end msg len cond
 } /* end closeVisibleRectSelection fn*/
 
 
