@@ -85,146 +85,7 @@ window.gDispatch = function(call, delay) {
     if (window.gTest) { call(); return 1; }
     else { return setTimeout(call, delay); }
 }
-// ATTRIBUTE ACCESS FUNCTIONS
 
-window.getscal = function(attrs, name) {
-    // returns scalar value for attribute name
-    for (var i=0; i<attrs.length; i++) {
-        if (attrs[i].name == name) {
-            return parseFloat(attrs[i].value);
-        }
-    }
-    return -999;
-}
-
-window.addscal = function(nd, name, scalar) {
-    for (var i=0; i<nd.attrs.length; i++) {
-        if (nd.attrs[i].name == name) {
-            nd.attrs[i].value = (parseFloat(nd.attrs[i].value)+scalar)+"";
-            break;
-        }
-    }
-}
-
-window.getscalarr = function(attrs, name, query) {
-    // returns array of scalar value
-    for (var i=0; i<attrs.length; i++) {
-        if (attrs[i].name == name) {
-            var strs = attrs[i].value.split(/[ ,]+/);
-            var arr = [];
-            var inc = 1; var j = 0;  // "all"
-            if (query == "odd") { j+=1; inc=2; }
-            if (query == "even") { inc=2; }
-            for (; j<strs.length; j+=inc) {
-                arr.push(parseFloat(strs[j]));
-            }
-            return arr;
-        }
-    }
-    return [];
-}
-
-window.addscalarr = function(nd, name, query, scalar) {
-    for (var i=0; i<nd.attrs.length; i++) {
-        if (nd.attrs[i].name == name) {
-            var strsRd = nd.attrs[i].value.split(/[ ,]+/);
-            var strsWrt = nd.attrs[i].value.split(/[ ,]+/);
-            var inc = 1; var j = 0;  // "all"
-            if (query == "odd") { j+=1; inc=2; }
-            if (query == "even") { inc=2; }
-            for (; j<strsRd.length; j+=inc) {
-                strsWrt[j] = ''+(parseFloat(strsRd[j]) + scalar);
-            }
-            nd.attrs[i].value = strsWrt.join(' ');
-            break;
-        }
-    }
-}
-
-window.multscalarr = function(nd, name, query, scalar) {
-    for (var i=0; i<nd.attrs.length; i++) {
-        if (nd.attrs[i].name == name) {
-            var strsRd = nd.attrs[i].value.split(/[ ,]+/);
-            var strsWrt = nd.attrs[i].value.split(/[ ,]+/);
-            var inc = 1; var j = 0;  // "all"
-            if (query == "odd") { j+=1; inc=2; }
-            if (query == "even") { inc=2; }
-            for (; j<strsRd.length; j+=inc) {
-                strsWrt[j] = ''+(parseFloat(strsRd[j]) * scalar);
-            }
-            nd.attrs[i].value = strsWrt.join(' ');
-            break;
-        }
-    }
-}
-
-
-// SET CLICK RECTANGLE FUNCTION
-window.setMouseRects = function(nd) {
-
-    // reset vals: // TDDTEST17 FIX
-        nd.xmin = null;  // TDDTEST17 FIX
-        nd.xmax = null;  // TDDTEST17 FIX
-        nd.ymin = null;  // TDDTEST17 FIX
-        nd.ymax = null;  // TDDTEST17 FIX
-
-    if (nd.tagName.toLowerCase() == "circle") {
-        var cx = getscal(nd.attrs, "cx");
-        var cy = getscal(nd.attrs, "cy");
-        var r = getscal(nd.attrs, "r");
-        var strokeWidth = getscal(nd.attrs, "stroke-width");
-        nd.xmin = cx - r - strokeWidth;
-        nd.xmax = cx + r + strokeWidth;
-        nd.ymin = cy - r - strokeWidth;
-        nd.ymax = cy + r + strokeWidth;
-    }
-    if (nd.tagName.toLowerCase() == "polyline") {
-        var xs = getscalarr(nd.attrs, "points", "even");
-        var ys = getscalarr(nd.attrs, "points", "odd");
-        for (var i=0; i<xs.length; i++) {
-            var val = xs[i];
-            if (nd.xmin == null) { nd.xmin = val; }
-            else if (nd.xmin > val) { nd.xmin = val; }
-            if (nd.xmax == null) { nd.xmax = val; }
-            else if (nd.xmax < val) { nd.xmax = val; }
-        }
-        for (var i=0; i<ys.length; i++) {
-            var val = ys[i];
-            if (nd.ymin == null) { nd.ymin = val; }
-            else if (nd.ymin > val) { nd.ymin = val; }
-            if (nd.ymax == null) { nd.ymax = val; }
-            else if (nd.ymax < val) { nd.ymax = val; }
-        }
-    }
-    if (nd.tagName.toLowerCase() == "rect") {
-        var x = getscal(nd.attrs, "x");
-        var y = getscal(nd.attrs, "y");
-        var width = getscal(nd.attrs, "width");
-        var height = getscal(nd.attrs, "height");
-        var strokeWidth = getscal(nd.attrs, "stroke-width");
-        nd.xmin = x - strokeWidth;
-        nd.xmax = x + width + strokeWidth;
-        nd.ymin = y - strokeWidth;
-        nd.ymax = y + height + strokeWidth;
-    }
-    if (nd.tagName.toLowerCase() == "text") {
-        var f = window.StartEndFrame.FromText(nd);//frame
-        nd.xmin = f.getStart().x;
-        nd.xmax = f.getEnd().x;
-        nd.ymin = f.getStart().y;
-        nd.ymax = f.getEnd().y;
-    }
-    if (nd.tagName.toLowerCase() == "line") { // TDDTEST3 FTR
-        var x1 = getscal(nd.attrs, "x1");
-        var y1 = getscal(nd.attrs, "y1");
-        var x2 = getscal(nd.attrs, "x2");
-        var y2 = getscal(nd.attrs, "y2");
-        nd.xmin = Math.min(x1, x2) - 1; // TDDTEST32 FIX (add Math.max/min now
-        nd.xmax = Math.max(x1, x2) + 1; // that drawing backwards is supported)
-        nd.ymin = Math.min(y1, y2) - 1;
-        nd.ymax = Math.max(y1, y2) + 1;
-    }
-}
 
 // ARRAY ALGORITHM FUNCTION
 // Text nodes MUST be first in the array in order to
@@ -373,35 +234,6 @@ window.xy2nd = function(x, y, withNearestEdge = false) { // TDDTEST43 FIX
     return nd;
 } // end xy2nd function
 
-window.xdom2nd = function(xdomNd, nd) {
-    var push = false;
-    if (nd.attrs == null) { nd.attrs = []; push = true;} // var nd = {attrs:[]}
-    for (var i=0; i<xdomNd.attributes.length; i++) {
-        if (!push) {
-            push = true;
-            for (var j=0; j<nd.attrs.length; j++) {
-                if (nd.attrs[j].name == xdomNd.attributes[i].nodeName) {
-                    push = false;
-                    nd.attrs[j].value = xdomNd.attributes[i].nodeValue;
-                    break;
-                }
-            }
-        }
-        if (push) {
-            nd.attrs.push({
-                name: xdomNd.attributes[i].nodeName,
-                value: xdomNd.attributes[i].nodeValue
-            });
-        }
-    }
-    nd.tagName = xdomNd.tagName;
-    if (nd.tagName == "text") {
-        nd.text = xdomNd.innerHTML;
-    }
-    //nd.cacheColor = cacheColor;
-    return nd;
-}
-
 // This function requires an updateFrames call in order to
 // get this new node to show up in the left code pane and
 // the right display frame.
@@ -492,12 +324,13 @@ window.updateFrames = function(selNd, ctx) {
     window.lgLogNode('actsvg - updateFrames - curIds.length='+(curIds.length),selNd);
     if (curIds.length == 0) return;
     var editNd = id2nd(curIds[curIds.length-1].id);
+    if (editNd == null) return;
     // window.lgLogNode('actsvg - updateFrames - editNd, editNd.cacheColor='+(editNd?.cacheColor),editNd);
-    window.lgLogNode('actsvg - updateFrames - pre-xml selNd. cacheColor='+editNd.cacheColor, selNd);
+    window.lgLogNode('actsvg - updateFrames - pre-xml selNd.', selNd);
     document
         .getElementById("svgPartTextarea")
         .value = nd2xml(editNd,
-            ctx!=null&&ctx.isSel?null:editNd.cacheColor); // TDDTEST37 FIX (ctx)
+            ctx!=null&&ctx.isSel?null:null); // TDDTEST37 FIX (ctx)
     window.cmFill(editNd); // CT/49
     window.lgLogNode('actsvg - updateFrames - pre-map', selNd);
     cacheNd = {attrs:[]};
@@ -752,6 +585,17 @@ window.keydown = function(e) {
                 window.onApplyEdits({isSel:true}); // CT/65
                 return true;
             } // end Alt-s key condition
+            else if (curIds.length==0 && e.key == 's' && e.altKey) {
+                if (window.gXmlEditor.valid(window.xf['data-stream-full-xml']())) {
+                    document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(1,1,1)"; // CT/53
+                    let flow = window.xf.xmlflows['full-xml-load-nodes-and-svg']
+                    ;
+                    window.xmlflow(flow, window.xf);
+                } else {
+                    document.querySelector("#pageCodeFrame").style.backgroundColor = "rgb(220,170,170)"; // CT/53
+                }
+                return true;
+            }
         }}),
         (/*nd next key dispatcher*/{ dispatchKey: function(key) {
             if (curIds.length>0 && e.key == 'n' && e.altKey) {

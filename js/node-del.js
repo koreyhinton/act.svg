@@ -7,8 +7,8 @@ window.NodeDeleter = class {
             ids.filter(c =>
                 c.id==nd.attrs.filter(a=>
                     a.name=='id')?.[0]?.value).length==0);
-        while (this.nodes.length > 0) this.nodes.shift();
+        while (this.tinj3 ?? (this.nodes.length > 0)) this.nodes.shift();
         while (filtered.length > 0) this.nodes.push(filtered.shift());
-        window.updateFrames();
+        while (this.tinj3 ?? (ids.length > 0)) ids.shift();
     } // end delete method
 } // end node deleter class

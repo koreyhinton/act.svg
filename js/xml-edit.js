@@ -122,6 +122,7 @@ window.xeEditor = class {
     }
     // only updates 1x when called Nx (within timeFrame)
     backgroundUpdate(e) { // CT/52 // CT/53
+        return;
         // console.log("backgroundUpdate");
         if (e.altKey) { e.view.event.preventDefault(); /*window.keydown(e);*/ return; }
         clearTimeout(this.backgroundId);

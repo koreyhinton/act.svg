@@ -10,8 +10,8 @@
   "scripts": {
     "test": "node test2/run.js && test/test",
     "test2": "node test2/run.js",
-    "build": "(npm install browserify && npm install saxophone && node_modules/browserify/bin/cmd.js lib/saxophone.js -o lib/dist/saxophone.js) && (npm install fast-xml-parser && node_modules/browserify/bin/cmd.js lib/fast-xml-parser.js -o lib/dist/fast-xml-parser.js)",
-    "clean": "echo -n > lib/dist/saxophone.js; echo -n > lib/dist/fast-xml-parser.js"
+    "build": "(npm install browserify && npm install saxophone && node_modules/browserify/bin/cmd.js lib/saxophone.js -o lib/dist/saxophone.js) && (npm install fast-xml-parser && node_modules/browserify/bin/cmd.js lib/fast-xml-parser.js -o lib/dist/fast-xml-parser.js) && (npm install ../jss/xmlflow && node_modules/browserify/bin/cmd.js lib/xmlflow.js -o lib/dist/xmlflow.js)",
+    "clean": "echo -n > lib/dist/saxophone.js; echo -n > lib/dist/fast-xml-parser.js; echo -n > lib/dist/xmlflow.js"
   },
   "repository": {
     "type": "git",
@@ -30,10 +30,11 @@
   "homepage": "https://github.com/koreyhinton/act.svg#readme",
   "dependencies": {
     "browserify": "^17.0.0",
-    "fast-xml-parser": "^4.2.2",
+    "fast-xml-parser": "^4.2.6",
     "jsdom": "^20.0.2",
     "saxophone": "^0.8.0",
-    "uvu": "^0.5.6"
+    "uvu": "^0.5.6",
+    "xmlflow": "file:../jss/xmlflow"
   },
   "devDependencies": {
     "uvu": "^0.5.6"

@@ -109,12 +109,13 @@ window.NodeDecorator = class {
         let dim = 20;
         let x = 10;
         let y = 10;
-        let size = window.nsDecorateSize;
-        let pos = window.nsDecoratePosition;
+        let size = this.tinj2 ?? window.nsDecorateSize;
+        let pos = this.tinj2 ?? window.nsDecoratePosition;
         let bord = window.nsDecorateBorder;
         let clone = window.clone;
         if (selIds.length == 0) return [];
         let lastNd = nodesIn.filter(nd=> nd.attrs.filter(a=>a.name=='id' && a.value == selIds[selIds.length-1].id).length > 0)?.[0]; //nodesIn[nodesIn.length-1];
+        if (lastNd == null) return [];
         let editNode = bord(pos(size(clone(lastNd),dim,dim),x,y),'black',1);
         x += dim*2;
         nodesOut.push(editNode);
@@ -161,16 +162,16 @@ window.nsDecorateOutlineColor = function(nd, color) {
 };
 
 window.nsDecoratePosition = function(nd, x, y) {
-    let oldX = parseInt(xAttr(nd));
-    let oldY = parseInt(yAttr(nd));
-    let oldX2 = parseInt(x2Attr(nd));
-    let oldY2 = parseInt(y2Attr(nd));
-    xAttr(nd, x+'');
-    yAttr(nd, y+'');
-    x2Attr(nd, (x+(oldX2-oldX))+'');
-    y2Attr(nd, (y+(oldY2-oldY))+'');
+    let oldX = parseInt(window.xAttr(nd));
+    let oldY = parseInt(window.yAttr(nd));
+    let oldX2 = parseInt(window.x2Attr(nd));
+    let oldY2 = parseInt(window.y2Attr(nd));
+    window.xAttr(nd, x+'');
+    window.yAttr(nd, y+'');
+    window.x2Attr(nd, (x+(oldX2-oldX))+'');
+    window.y2Attr(nd, (y+(oldY2-oldY))+'');
     if (nd.tagName == 'text') {
-        yAttr(nd, (y+15)+'');
+        window.yAttr(nd, (y+15)+'');
     } // end text cond
     if (nd.tagName == 'polyline') {
         let dx = 0;

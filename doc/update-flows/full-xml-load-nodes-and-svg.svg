@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="750" height="750" viewBox="0,0,750,750">
+    <rect rx="0" ry="0" x="8" y="50" width="209" height="33" stroke="black" fill="transparent" stroke-width="1" id="rect1"/>
+    <text x="20" y="71" fill="black" id="text1">data-stream-full-xml</text>
+    <polyline points="222 74 266 74 256 64 266 74 256 84" stroke="black" fill="transparent" stroke-width="1" id="polyline1"/>
+    <circle cx="291" cy="70" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle1"/>
+    <text x="281" y="76" fill="black" id="text2">B1</text>
+    <polyline points="226 83 272 101 267.6958717666906 91.16199260957846 272 101 262.1619926095785 105.30412823330941" stroke="black" fill="transparent" stroke-width="1" id="polyline2"/>
+    <rect rx="10" ry="10" x="276" y="101" width="123" height="27" stroke="black" fill="transparent" stroke-width="1" id="rect2"/>
+    <text x="284" y="118" fill="black" id="text3">xml2xdomNds</text>
+    <polyline points="312 130 353 146 348.6883732854479 136.16949109082117 353 146 343.16949109082117 150.31162671455215" stroke="black" fill="transparent" stroke-width="1" id="polyline3"/>
+    <text x="367" y="163" fill="black" id="text4">xdomXroot</text>
+    <rect rx="10" ry="10" x="357" y="143" width="110" height="30" stroke="black" fill="transparent" stroke-width="1" id="rect3"/>
+    <polyline points="418 176 472 193 467.15500909186994 183.7028552843991 472 193 462.7028552843991 197.84499090813006" stroke="black" fill="transparent" stroke-width="1" id="polyline4"/>
+    <rect rx="10" ry="10" x="477" y="185" width="100" height="27" stroke="black" fill="transparent" stroke-width="1" id="rect4"/>
+    <text x="488" y="204" fill="black" id="text5">xdom2nds</text>
+    <polyline points="513 216 563 234 558.4745166004061 224.38334777586294 563 234 553.383347775863 238.52548339959392" stroke="black" fill="transparent" stroke-width="1" id="polyline5"/>
+    <rect rx="10" ry="10" x="567" y="230" width="171" height="23" stroke="black" fill="transparent" stroke-width="1" id="rect5"/>
+    <text x="578" y="246" fill="black" id="text6">ndsSetMouseRects</text>
+    <polyline points="605 258 665 275 659.9324014014965 265.9254629747726 665 275 655.9254629747726 280.06759859850354" stroke="black" fill="transparent" stroke-width="1" id="polyline6"/>
+    <text x="677" y="287" fill="black" id="text7">A1</text>
+    <circle cx="687" cy="281" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle2"/>
+    <rect rx="0" ry="0" x="8" y="197" width="183" height="33" stroke="black" fill="transparent" stroke-width="1" id="rect6"/>
+    <text x="13" y="219" fill="black" id="text8">data-stream-nodes</text>
+    <polyline points="201 210 245 210 235 200 245 210 235 220" stroke="black" fill="transparent" stroke-width="1" id="polyline7"/>
+    <circle cx="272" cy="210" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle3"/>
+    <text x="262" y="216" fill="black" id="text9">A2</text>
+    <text x="18" y="300" fill="black" id="text10">dom-stream-svg</text>
+    <rect rx="0" ry="0" x="8" y="278" width="155" height="33" stroke="black" fill="transparent" stroke-width="1" id="rect7"/>
+    <polyline points="171 292 248 292 238 282 248 292 238 302" stroke="black" fill="transparent" stroke-width="1" id="polyline8"/>
+    <text x="262" y="298" fill="black" id="text11">B2</text>
+    <circle cx="272" cy="292" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle4"/>
+    <text x="68" y="457" fill="black" id="text12">A</text>
+    <circle cx="73" cy="452" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle5"/>
+    <polyline points="99 448 167 448 157 438 167 448 157 458" stroke="black" fill="transparent" stroke-width="1" id="polyline9"/>
+    <polyline points="97 459 167 459 157 449 167 459 157 469" stroke="black" fill="transparent" stroke-width="1" id="polyline10"/>
+    <text x="125" y="440" fill="black" id="text16">A1</text>
+    <text x="123" y="476" fill="black" id="text13">A2</text>
+    <rect rx="10" ry="10" x="181" y="436" width="167" height="35" stroke="black" fill="transparent" stroke-width="1" id="rect8"/>
+    <text x="196" y="461" fill="black" id="text14">data-load-nodes</text>
+    <circle cx="71" cy="518" r="17" fill="transparent" stroke="black" stroke-width="1" id="circle6"/>
+    <text x="66" y="523" fill="black" id="text15">B</text>
+    <polyline points="101 511 170 511 160 501 170 511 160 521" stroke="black" fill="transparent" stroke-width="1" id="polyline11"/>
+    <polyline points="100 523 170 523 160 513 170 523 160 533" stroke="black" fill="transparent" stroke-width="1" id="polyline12"/>
+    <text x="126" y="540" fill="black" id="text18">B2</text>
+    <text x="127" y="503" fill="black" id="text17">B1</text>
+    <text x="193" y="523" fill="black" id="text19">dom-load-svg</text>
+    <rect rx="10" ry="10" x="182" y="499" width="140" height="37" stroke="black" fill="transparent" stroke-width="1" id="rect9"/>
+    <rect rx="0" ry="0" x="22" y="410" width="406" height="208" stroke="black" fill="transparent" stroke-width="1" id="rect10"/>
+    <text x="32" y="607" fill="black" id="text20">Phase 2 - multi-param connectors</text>
+    <text x="464" y="26" fill="black" id="text21">full-xml-load-nodes-and-svg</text>
+    <line x1="470" y1="33" x2="710" y2="33" stroke="black" stroke-width="1" id="line1"/>
+</svg>

@@ -207,6 +207,7 @@ window.closeVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
     document.getElementById("selMarker").style.visibility = 'hidden';
     if (window.AppMode.is('d') && curIds.length > 0) {
         new NodeDeleter(svgNodes).delete(curIds);
+        window.updateFrames();
     } // end delete cond
     let msg = '';
     if (curIds.length > 1) {

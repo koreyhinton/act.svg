@@ -1,7 +1,9 @@
 import * as assert from "uvu/assert";
+import "../js/node-attr.js";
 import "../js/node-map.js";
 import "../js/node-sel.js";
 import "../js/node-sel-dec.js";
+import "../js/node-del.js";
 
 (async()=>{await Promise.all([
 
@@ -77,24 +79,25 @@ import "../js/node-sel-dec.js";
 
         // after nav, edit and save 2nd node and selection should stay present
         dec.decorateDiagram = dec.decorateDiagram.bind({...dec,...scope});
-        window.xAttr(resultNds[1]).value ??= xvals[1]+'';
+        //window.xAttr(resultNds[1]).value ??= xvals[1]+'';
+        window.xAttr(resultNds[1], xvals[1]+'');
         resultNds = dec.decorateDiagram(nodes, selIds);
         assert.ok(
             (selected && resultNds[1].attrs.filter(a => a.name == 'fill')[0].value != 'black') ||
             (!selected && resultNds[1].attrs.filter(a => a.name == 'fill')[0].value == 'black'));
     }), // end tinj1
 
-    [ { t: 2, inj: null }, // test
-      { t: 2, inj: 2 } // todo: disfeature test
-    ].testEach("decorate node as icon", async ({t,inj,scope}) => {
+    [ { t: 2, inj: null, len: 'Lon'.length, x: 10 }, // test
+      { t: 2, inj: (nd)=>nd, len: 'Long Text Value'.length, x: 100}// disfeature
+    ].testEach("decorate node as icon", async ({t,inj,scope,len,x}) => {
         let selIds = [{id: 'text1'}];
         let node = {
             tagName: 'text',
             attrs: [
                 {name: 'id', value: 'text1'},
                 {name: 'fill', value: window.editColor},
-                {name: 'x', value: '10'},
-                {name: 'y', value: '10'},
+                {name: 'x', value: '100'},
+                {name: 'y', value: '100'},
             ],
             text: 'Long Text Value'
         };
@@ -103,9 +106,28 @@ import "../js/node-sel-dec.js";
         let decorated = dec.decorateIcon([node], selIds)[0];
         // icon decorated node should become smaller and position closer to 0,0
         assert.ok(
-            decorated.text.length < 'Long Text Value'.length &&
-            parseInt(xAttr(decorated.attrs).value) < 10
+            decorated.text.length == len && //< 'Long Text Value'.length &&
+            parseInt(window.xAttr(decorated)) == x//< 10
         );
     }), // end tinj2
+
+    [ { t: 3, inj: null, expect: 0 }, // test
+      { t: 3, inj: false, expect: 2 } // disfeature
+    ].testEach("delete nodes", async ({t,inj,expect,scope}) => {
+        let nodes = [{
+            attrs: [
+                {name: 'id', value: 'rect1'},
+            ]
+        },{
+            attrs: [
+                {name: 'id', value: 'rect2'},
+            ]
+        }];
+        let ids = [{id: 'rect1'},{id: 'rect2'}];
+        let del = new window.NodeDeleter(nodes);
+        del.delete = del.delete.bind({...del,...scope});
+        del.delete(ids);
+        assert.ok(ids.length == expect && nodes.length == expect);
+    }), // end tinj3
 
 ])})();
