@@ -4,3 +4,21 @@ window.xf['data-load-nodes'] = function(nodesIn, nodes) {
         nodes.push(nodesIn[i]);
     }
 };
+
+window.xf['data-load-node'] = function(nodeIn, node) {
+    /*
+        cacheNd = {attrs:[]}  // TDDTEST17 FIX
+        forceMap(nd,cacheNd);  // TDDTEST17 FIX
+    */
+    Object.keys(node).forEach(key => delete node[key]);
+    node.attrs = [];
+    forceMap(nodeIn, node);
+};
+
+window.xf['data-load-map-nodes'] = function(nodeIn, nodes) {
+    let nd = nodeIn;
+    nodes.forEach((passiveSelNd) => {
+        smartMap(nd, passiveSelNd);
+        setMouseRects(passiveSelNd);
+    });
+};

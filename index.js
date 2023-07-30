@@ -157,38 +157,6 @@ window.arrowPoint = function(pt1, pt2, deg, len, sign) {  // TDDTEST7
     return rotate(pt2.x,pt2.y, pt1.x, pt1.y, sign*deg);
 }
 
-window.nds2xml = function(nds, frameSize) {
-    var xml = nd2xml(svgBaseNode);
-    xml = xml.substring(0, xml.length -2);
-    xml += ">"+`
-`;
-    if (frameSize != null) {
-        xml = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${frameSize.w}" height="${frameSize.h}" viewBox="0,0,${frameSize.w},${frameSize.h}">
-`;
-    } // end frameSize cond
-    for (var i=0; i<nds.length; i++) {
-        xml += "    "+nd2xml(nds[i])+`
-`;
-    }
-    xml += "</svg>";
-    return xml;
-}
-
-window.nd2xml = function(nd, colorOverride) {
-    var xml = "<" + nd.tagName;
-    for (var i=0; i<nd.attrs.length; i++) {
-        var attr = nd.attrs[i];
-        xml += (" "+ attr.name + "=" + `"` + attr.value + `"`);
-    }
-    if (nd.tagName.toLowerCase() == "text") {
-        xml += (">" + nd.text + "</text>");
-    } else {
-        xml += "/>";
-    }
-    // window.lgLogNode('actsvg - nd2xml - colorOverride='+(colorOverride), nd);
-    return xml;
-}
-
 window.minxydist = function(nd, x, y) { // TDDTEST43 FIX
     // Math.abs should not be necessary since it can be assumed that x and y
     // are within the bounds of the node by the calling code;
@@ -582,7 +550,11 @@ window.keydown = function(e) {
     var dispatched = (new window.AppKeyDispatcher([
         (/*nd save key dispatcher*/{ dispatchKey: function(key) {
             if (curIds.length>0 && e.key == 's' && e.altKey) {
-                window.onApplyEdits({isSel:true}); // CT/65
+                let flow1 = window.xf.xmlflows['editNode-xml-load-nodes'];
+                let flow2 = window.xf.xmlflows['nodes-load-full-xml-and-svg'];
+                window.xmlflow(flow1, window.xf);
+                window.xmlflow(flow2, window.xf);
+                // window.onApplyEdits({isSel:true}); // CT/65
                 return true;
             } // end Alt-s key condition
             else if (curIds.length==0 && e.key == 's' && e.altKey) {

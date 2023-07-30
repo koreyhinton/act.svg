@@ -30,7 +30,7 @@
   "homepage": "https://github.com/koreyhinton/act.svg#readme",
   "dependencies": {
     "browserify": "^17.0.0",
-    "fast-xml-parser": "^4.2.6",
+    "fast-xml-parser": "^4.2.7",
     "jsdom": "^20.0.2",
     "saxophone": "^0.8.0",
     "uvu": "^0.5.6",

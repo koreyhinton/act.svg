@@ -40,19 +40,6 @@ window.getcolor = function(nd) {
 
 // NODE ID MANAGEMENT
 
-window.id2nd = function(id) { // TDDTEST28 FIX
-    //var type = id.replace(/[0-9]+/g, '');
-    //id = parseInt(id.replace(/[a-z]+/g, ''));
-    var nd = null;
-    for (var i=0; i<svgNodes.length; i++) {
-        var svgNd = svgNodes[i];
-        if (svgNd.attrs.filter(a => a.name == 'id' && a.value == id).length>0) {
-            return svgNd;
-        }
-    }
-    return nd;
-}
-
 window.getMaxNodeId = function(type) {
     var maxId = 0;
     for (var i=0; i<svgNodes.length; i++) {

@@ -1,3 +1,17 @@
+// NODE ID MANAGEMENT
+window.xf.id2nd = function(id) { // TDDTEST28 FIX
+    //var type = id.replace(/[0-9]+/g, '');
+    //id = parseInt(id.replace(/[a-z]+/g, ''));
+    var nd = null;
+    for (var i=0; i<svgNodes.length; i++) {
+        var svgNd = svgNodes[i];
+        if (svgNd.attrs.filter(a => a.name == 'id' && a.value == id).length>0) {
+            return svgNd;
+        }
+    }
+    return nd;
+}
+
 // SET CLICK RECTANGLE FUNCTION
 window.xf.ndSetMouseRects = function(nd) {
 
@@ -71,3 +85,34 @@ window.xf.ndsSetMouseRects = function(nds) {
     return nds;
 };
 
+window.xf.nds2xml = function(nds, frameSize) {
+    var xml = nd2xml(svgBaseNode);
+    xml = xml.substring(0, xml.length -2);
+    xml += ">"+`
+`;
+    if (frameSize != null) {
+        xml = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${frameSize.w}" height="${frameSize.h}" viewBox="0,0,${frameSize.w},${frameSize.h}">
+`;
+    } // end frameSize cond
+    for (var i=0; i<nds.length; i++) {
+        xml += "    "+nd2xml(nds[i])+`
+`;
+    }
+    xml += "</svg>";
+    return xml;
+}
+
+window.xf.nd2xml = function(nd, colorOverride) {
+    var xml = "<" + nd.tagName;
+    for (var i=0; i<nd.attrs.length; i++) {
+        var attr = nd.attrs[i];
+        xml += (" "+ attr.name + "=" + `"` + attr.value + `"`);
+    }
+    if (nd.tagName.toLowerCase() == "text") {
+        xml += (">" + nd.text + "</text>");
+    } else {
+        xml += "/>";
+    }
+    // window.lgLogNode('actsvg - nd2xml - colorOverride='+(colorOverride), nd);
+    return xml;
+}
