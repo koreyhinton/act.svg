@@ -116,3 +116,8 @@ window.xf.nd2xml = function(nd, colorOverride) {
     // window.lgLogNode('actsvg - nd2xml - colorOverride='+(colorOverride), nd);
     return xml;
 }
+
+window.xf['nodes-decorate-select'] = function(nodes, idsIn) {
+    let ids = idsIn.map((str) => ({ id: str }));
+    return new window.NodeDecorator().decorateDiagram(nodes, ids);
+};

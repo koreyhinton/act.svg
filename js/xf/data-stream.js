@@ -13,6 +13,9 @@ window.xf['data-stream-editNd-xml'] = function() {
 window.xf['data-stream-edit-id'] = function() {
     return curIds[curIds.length-1].id;
 };
+
+window.xf['data-stream-ids'] = function() { return curIds.map((o) => o.id); }
+
 window.xf['data-stream-cacheNd'] = function() {
     return cacheNd;
 };

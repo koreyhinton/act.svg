@@ -19,9 +19,9 @@ window.xf.xmlflows['full-xml-load-nodes-and-svg'] = `
     <data-stream-nodes>
         <A2/>
     </data-stream-nodes>
-    <dom-stream-svg>
+    <dom-stream id="svgId">
         <B2/>
-    </dom-stream-svg>
+    </dom-stream>
     <A>
         <data-load-nodes/>
     </A>
@@ -80,17 +80,54 @@ window.xf.xmlflows['nodes-load-full-xml-and-svg'] = `
             <B1/>
         </nds2xml>
     </data-stream-nodes>
-    <dom-stream-full-ta>
+    <dom-stream id="svgFullTextarea">
         <A2/>
-    </dom-stream-full-ta>
-    <dom-stream-svg>
+    </dom-stream>
+    <dom-stream id="svgId">
         <B2/>
-    </dom-stream-svg>
+    </dom-stream>
     <A>
         <dom-load-ta/>
     </A>
     <B>
         <dom-load-svg/>
     </B>
+</xmlflow>
+`;
+
+window.xf.xmlflows['nodes-load-part-xml-and-svg'] = `
+<xmlflow id="nodes-load-part-xml-and-svg">
+    <data-stream-ids>
+        <last>
+            <id2nd>
+                <nd2xml>
+                    <A1/>
+                </nd2xml>
+            </id2nd>
+        </last>
+        <B2/>
+    </data-stream-ids>
+    <data-stream-nodes>
+        <B1/>
+    </data-stream-nodes>
+    <dom-stream id="svgId">
+        <C2/>
+    </dom-stream>
+    <dom-stream id="svgPartTextarea">
+        <A2/>
+    </dom-stream>
+    <A>
+        <dom-load-ta/>
+    </A>
+    <B>
+        <nodes-decorate-select>
+            <nds2xml>
+                <C1/>
+            </nds2xml>
+        </nodes-decorate-select>
+    </B>
+    <C>
+        <dom-load-svg/>
+    </C>
 </xmlflow>
 `;

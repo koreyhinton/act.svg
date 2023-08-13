@@ -125,7 +125,8 @@ window.mvMove = function(x,y) {
         // code is similar to paste code in window.issuePaste js/node-manage.js
     }
 
-    window.updateFrames(moverNd, {isSel:true}); // isSel means keep the
+    window.xmlflow(window.xf.xmlflows['nodes-load-part-xml-and-svg'], window.xf);
+    // window.updateFrames(moverNd, {isSel:true}); // isSel means keep the
                                                 // selection showing w/out
                                                 // reverting stroke back to
                                                 // original color.
