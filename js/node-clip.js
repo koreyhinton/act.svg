@@ -59,7 +59,7 @@ window.NodeClipboard = class {
                 window.smartMap(moverNd, moveeNd);
             }
             moverNd.attrs = moverNd.attrs.filter(a => a.name != 'class');
-            updateFrames();
+            window.xmlflow(window.xf.xmlflows['nodes-load-full-xml-and-svg'], window.xf); // updateFrames();
             document.getElementById("svgFullTextarea").disabled = true;
         }, 600);
     }

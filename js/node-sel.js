@@ -194,7 +194,11 @@ window.closeVisibleRectSelection = function(x, y) { // TDD TEST 22 FTR
     document.getElementById("selMarker").style.visibility = 'hidden';
     if (window.AppMode.is('d') && curIds.length > 0) {
         new NodeDeleter(svgNodes).delete(curIds);
-        window.updateFrames();
+        window.xmlflow(window.xf.xmlflows['nodes-load-full-xml-and-svg'], window.xf);
+        document
+            .getElementById("editModalBG")
+            .style
+            .visibility = "hidden";// window.updateFrames();
     } // end delete cond
     let msg = '';
     if (curIds.length > 1) {

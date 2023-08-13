@@ -50,6 +50,7 @@ window.AppClipKeyDispatcher = class {
                 let dispatch = key.key == 'x' && key.ctrlKey;
                 if (dispatch) { // TDDTEST30 FTR
                     new NodeClipboard().cut();
+                    window.xmlflow(window.xf.xmlflows['nodes-load-full-xml-and-svg'], window.xf);
                 }
                 return dispatch;
             }
