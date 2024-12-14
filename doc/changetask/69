@@ -1,0 +1,8 @@
+CT/69      V0.4      V0.4 BRANCH               INTEGRATED PALETTES       EPIC
+
+This version will finally integrate additional diagramming concepts as their
+own palettes (game flows, entity-relationship diagrams, story-plot diagrams).
+
+Other features will be added, like enhancements from version 0.3 that never were
+released to the main branch, as well as command-line browser launching using
+ns-clone.

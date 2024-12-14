@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="750" height="750" viewBox="0,0,750,750">
+    <rect rx="10" ry="10" x="60" y="126" width="136" height="65" stroke="black" fill="transparent" stroke-width="1" id="rect1"/>
+    <text x="81" y="164" fill="black" id="text1">mousemove()</text>
+    <polyline points="198 149 237 149 227 139 237 149 227 159" stroke="black" fill="transparent" stroke-width="1" id="polyline1"/>
+    <rect rx="10" ry="10" x="299" y="126" width="160" height="65" stroke="black" fill="transparent" stroke-width="1" id="rect2"/>
+    <text x="322" y="164" fill="black" id="text2">dwDrawUpdate()</text>
+    <polyline points="240 148 247 141 254 148 247 155 240 148" stroke="black" fill="transparent" stroke-width="1" id="polyline2"/>
+    <polyline points="257 149 296 149 286 139 296 149 286 159" stroke="black" fill="transparent" stroke-width="1" id="polyline3"/>
+    <text x="241" y="128" fill="black" id="text3">[resizing]</text>
+    <polyline points="459 147 498 147 488 137 498 147 488 157" stroke="black" fill="transparent" stroke-width="1" id="polyline4"/>
+    <polyline points="501 146 508 139 515 146 508 153 501 146" stroke="black" fill="transparent" stroke-width="1" id="polyline5"/>
+    <polyline points="518 147 563 147 553 137 563 147 553 157" stroke="black" fill="transparent" stroke-width="1" id="polyline6"/>
+    <text x="502" y="126" fill="black" id="text4">[polyline]</text>
+    <rect rx="10" ry="10" x="58" y="304" width="140" height="67" stroke="black" fill="transparent" stroke-width="1" id="rect3"/>
+    <text x="83" y="344" fill="black" id="text5">vxUnitCoord()</text>
+    <text x="579" y="181" fill="black" id="text6">[tyIsGameFlowRect()]</text>
+    <polyline points="566 147 573 140 580 147 573 154 566 147" stroke="black" fill="transparent" stroke-width="1" id="polyline7"/>
+    <polyline points="574 194 86 291 94.4765874384043 296.66554818532666 86 291 91.66554818532666 282.5234125615957" stroke="black" fill="transparent" stroke-width="1" id="polyline8"/>
+    <rect rx="0" ry="0" x="96" y="270" width="13" height="13" stroke="black" fill="transparent" stroke-width="1" id="rect4"/>
+    <text x="92" y="266" fill="black" id="text7">nd,x,y</text>
+    <rect rx="10" ry="10" x="246" y="303" width="140" height="67" stroke="black" fill="transparent" stroke-width="1" id="rect5"/>
+    <text x="258" y="330" fill="black" id="text8">decide if x,y</text>
+    <polyline points="204 322 243 322 233 312 243 322 233 332" stroke="black" fill="transparent" stroke-width="1" id="polyline10"/>
+    <text x="259" y="347" fill="black" id="text9">crossed their axis</text>
+    <polyline points="392 319 431 319 421 309 431 319 421 329" stroke="black" fill="transparent" stroke-width="1" id="polyline11"/>
+    <rect rx="10" ry="10" x="434" y="300" width="140" height="67" stroke="black" fill="transparent" stroke-width="1" id="rect6"/>
+    <text x="446" y="327" fill="black" id="text10">set elem. attrs</text>
+    <text x="447" y="344" fill="black" id="text11">x,y,width,height</text>
+    <line x1="574" y1="157" x2="574" y2="193" stroke="black" stroke-width="1" id="line1"/>
+    <text x="95" y="53" fill="black" id="text12">Function flow: Resizing a new polyline type flow</text>
+</svg>
