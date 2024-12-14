@@ -24,6 +24,18 @@ addEventListener('DOMContentLoaded', (e) => {
     }
     window.gTest=true;  // only set if early return didn't happen
     testNo = parseInt(testNo);
+
+    // UNCOMMENT TO SEARCH FOR MISSING TESTS
+    // TODO: FIX IT SO YOU CAN SKIP MISSING ONES
+    // Missing tests will cause '?tdd=#' and '?tddf=#' urls to not work
+    // beyond the missing test.
+    /*
+    for (var i=0; i<86; i++)
+    {
+        if (tddTests.filter((fn) => fn.name == 'test'+i).length == 0)
+            console.log("test"+i+" not found");        
+    }
+    */
     if (testNo >= tddTests.length) { return; }
     setTimeout(function() {
         // RUN TDD - CURRENT TEST

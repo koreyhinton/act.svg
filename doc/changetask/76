@@ -1,0 +1,8 @@
+CT/76      V0.4      TESTING                   FIX TESTS                 BUG
+
+TDD #10 TEST
+index.html?tddf=10
+
+Test passes, but there is an error:
+    Uncaught TypeError: Cannot read properties of null (reading 'x')
+

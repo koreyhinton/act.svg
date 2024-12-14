@@ -22,3 +22,10 @@ the mini box 'A' would have the same shape as the larger node it is attached to
          * ooo *
            ***
 
+
+
+Function call stack for click to place a unit-sized rect (without dragging):
+    window.xml2nd
+    window.issueDraw
+    window.issueClick
+
