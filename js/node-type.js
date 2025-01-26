@@ -20,6 +20,7 @@ window.tyIsDecisionNd = function(nd) {
 }
 
 window.tyIsGameFlowRect = function(nd) {
+
     // nd input must be a polyline or an error might be thrown?
     var points = nd.attrs.filter(a => a.name == "points")[0].value.split(" ");
 
@@ -33,11 +34,11 @@ window.tyIsGameFlowRect = function(nd) {
     //     9|______________|6 5
     //      8              7
 
-    if (points.length !== 13)
+    if (points.length !== 13*2)
         return false;
 
-    var zeroPoint = points[0];
-    var twelfthPoint = points[12];
+    var zeroPoint = points[0]+" "+points[1];
+    var twelfthPoint = points[12*2]+" "+points[12*2+1];
 
     if (zeroPoint !== twelfthPoint)
         return false;

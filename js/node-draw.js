@@ -85,6 +85,94 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
         })(); // TOGGLE (); <-> ;
         nd.attrs.filter(a=>a.name==posName.x)[0].value = xVal;
         nd.attrs.filter(a=>a.name==posName.y)[0].value = yVal;
+    // NODE DRAW - EVENT - UPDATE - GAME FLOW RECT
+    } else if (window.drawing.type == 'polyline' && window.tyIsGameFlowRect(nd)) {
+        if (window.gDwVtx == null) window.gDwVtx = window.vxUnitCoord(nd, x, y);
+        var ndVtx2 = window.gDwVtx;
+        if (ndVtx2==null) return;
+
+        // top-left is at pts[0], bottom-right is at pts[6]
+        let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ")
+            .map(p => parseFloat(p));
+        let rectWidth = (pts[0] > pts[6*2] ? pts[0]-pts[6*2]: pts[6*2]-pts[0]);
+        let rectHeight = (pts[0+1] > pts[6*2+1] ? pts[0+1]-pts[6*2+1]: pts[6*2+1]-pts[0+1]);
+
+        // TODO: #1 Handle resize at every corner
+        // TODO: #2 Handle both directions (shrink and expand)
+        // TODO: #3 Handle crossing the pivot point which inverts the corner, ie:
+        // * = cursor pointer position
+        //   ____
+        //  |____|
+        //       *
+        //        _|
+        //
+        //  ..aftercrossing pivot point:
+        //  _
+        // |
+        //  * ____
+        //   |____|
+        //   
+        if (ndVtx2.x == 1 && ndVtx2.y == 1 && (window.drawing.cacheX !== null && window.drawing.cacheX !== -1) && x - window.drawing.cacheX > 0 && (window.drawing.cacheY !== null && window.drawing.cacheY !== -1) && y-window.drawing.cacheY > 0)
+        {
+            var xDiff = (window.drawing.cacheX !== null && window.drawing.cacheX !== -1)
+                ? x - window.drawing.cacheX
+                : 0;
+            var yDiff = (window.drawing.cacheY !== null && window.drawing.cacheY !== -1)
+                ? y - window.drawing.cacheY
+                : 0;
+            var newPoints = "";
+            // Pattern: (repeat 4 times but exit early on last iteration so it is fixed start pt):
+            //    Four static positions in a row (2nd+ corners are relatively static not absolute):
+            //      2 3  __________ 
+            //          |
+            //         0 1
+            //    Then two dynamic positions:
+            //        ______________ 5 6
+            //       |
+
+            // s => side
+            // p => position (index of points)
+            var p = 0;
+            for (var s=0; s<4; s++) {
+                var sl = pts.slice(p, p+4); // point slice
+                //console.log('slice', sl);
+                if (s>0) {
+                    var indent1 = (s==1) ? {x:0,y:8} : (s==2) ? {x:-8,y:0} : {x:0,y:-8};
+                    var indent2 = (s==1) ? {x:8,y:8} : (s==2) ? {x:-8,y:8} : {x:-8,y:-8};
+                    sl[0] = pts[p-2]+indent1.x;
+                    sl[1] = pts[p-1]+indent1.y;
+                    sl[2] = pts[p-2]+indent2.x;
+                    sl[3] = pts[p-1]+indent2.y;
+                }
+                newPoints += (p==0?"" : " ")+sl[0] + " " + sl[1]; // static edge point 1
+                newPoints += " "+sl[2] + " " + sl[3];             // static edge point 2
+                p += 4;
+                if (s == 3) { break; }
+                var xd = (s < 2) ? xDiff : 0; //don't change left-edge's x position on bottom-right corner resize
+                var yd = (s != 0) ? yDiff : 0; // don't change top-edge's y position on bottom-right corner resize
+                newPoints += " "+(pts[p]+xd) + " " + (pts[p+1]+yd);// dynamic edge point
+                p += 2;
+            }
+            newPoints += " "+pts[11*2]+" "+pts[11*2+1];//newPoints += " "+pts[9*2]+" "+pts[9*2+1];
+            newPoints += " "+pts[0]+" "+pts[1];
+            nd.attrs.find(a => a.name == "points").value = newPoints;
+        }
+        window.drawing.cacheX = x;
+        window.drawing.cacheY = y;
+/*
+        var pivotX = ndVtx2.x==0?pts[0]+rectWidth:pts[0];
+        var pivotY = ndVtx2.y==0?pts[0+1]+rectHeight:pts[0+1];
+        if (window.drawing.cacheX == -1) {
+            window.drawing.cacheX = pivotX;
+            window.drawing.cacheY = pivotY;
+        }
+        pivotX = window.drawing.cacheX;
+        pivotY = window.drawing.cacheY;
+
+        var diffX = Math.abs(x, pivotX);
+        var diffY = Math.abs(y, pivotY);
+*/
+
     // NODE DRAW - EVENT - UPDATE - POLYLINE
     } else if (window.drawing.type == 'polyline') {
 

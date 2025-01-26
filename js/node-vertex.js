@@ -46,6 +46,28 @@ window.vxUnitCoord = function(nd, x, y) { // CT/50
             return { x: 1, y: 1 };
         } // end 1,1 cond
     } // end rect-drag nd type cond
+    else if (tn == 'polyline' && !window.tyIsGameFlowRect(nd)) {
+        let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ")
+            .map(p => parseFloat(p));
+        th = 8; // within 8x8 gap  at *2 ("x y ..") drawn intervals: 0, 3, 6, 9
+        var inGap = (arr) => {
+            var found1 = false;
+            var foundAll = true;
+            for (var i=0; i<arr.length; i++) {
+                var test = arr[i] >= 0 && arr[i] <= th;
+                found1 ||= test;
+                foundAll &&= test;
+            }
+            return found1 && foundAll;
+        };
+        let gap00 = inGap([    (pts[0]-x),(pts[1]-y)    ]); // 0th corner
+        let gap01 = inGap([    (pts[3*2]-x),(pts[3*2+1]-y)    ]); // 3rd corner
+        let gap11 = inGap([    (pts[6*2]-x),(pts[6*2+1]-y)    ]); // 6th corner
+        let gap10 = inGap([    (pts[9*2]-x),(pts[9*2+1]-y)    ]); // 9th corner
+        if (gap00||gap01||gap11||gap10) {
+            return { x: (x<=pts[0]?0:1), y: (y<=pts[1]?0:1) };
+        }
+    }
     else if (tn == 'polyline' && !window.tyIsDecisionNd(nd)) {
         let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ");
         let x1 = parseFloat(pts[0]);
