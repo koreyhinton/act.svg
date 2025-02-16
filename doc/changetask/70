@@ -1,0 +1,18 @@
+CT/70      V0.4      STABLE-0.3-ACT-FTRS       STABLE 0.3 MERGE          FTR
+
+WHY 0.3 WAS NEVER MERGED INTO MAIN
+Version 0.3 was never merged into the main branch, as it was discovered to be
+in an unstable state during a quick smoke test runthrough.
+
+EXPERIMENTAL AND IMPORTANT REFACTORS
+There were some experimental refactors (ie, xmlflow) which might be interesting
+to revisit at a later date, but the same might be the cause for its instability.
+
+There were also some important refactors that make the code more maintainable,
+like adding 3 classes (js/node-clip.js, js/node-sel.js, js/node-del.js) that
+moves 1 step closer to replacing the monolith node class with non-descriptive
+naming (js/node-manage.js).
+
+Necessary refactors and features should be brought in and released with version
+0.4 since version 0.4 will probably be merged into main before 0.3 ever gets
+merged.

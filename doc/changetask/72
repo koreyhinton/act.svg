@@ -1,0 +1,12 @@
+CT/72      V0.4      ER-DIAGRAMS               ER PALETTE                FTR
+
+Entity-relationship diagram palette
+
+Double arrow (many)
+-->>
+
+Also, number syntax (one to many):
+
+  1     n
+O<---O--->O
+

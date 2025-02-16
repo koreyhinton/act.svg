@@ -85,9 +85,208 @@ window.dwDrawUpdate = function(x, y, ndVtx = {x:1,y:1}) {
         })(); // TOGGLE (); <-> ;
         nd.attrs.filter(a=>a.name==posName.x)[0].value = xVal;
         nd.attrs.filter(a=>a.name==posName.y)[0].value = yVal;
+    // NODE DRAW - EVENT - UPDATE - GAME FLOW RECT
+    } else if (window.drawing.type == 'polyline' && window.tyIsGameFlowRect(nd)) {
+        if (window.gDwVtx == null) window.gDwVtx = window.vxUnitCoord(nd, x, y);
+        var ndVtx2 = window.gDwVtx;
+        if (ndVtx2==null) return;
+
+        // top-left is at pts[0], bottom-right is at pts[6]
+        let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ")
+            .map(p => parseInt(p));
+
+        // todo: keep these 2 vars for the pivot adjustments?
+        let rectWidth = (pts[0] > pts[6*2] ? pts[0]-pts[6*2]: pts[6*2]-pts[0]);
+        let rectHeight = (pts[0+1] > pts[6*2+1] ? pts[0+1]-pts[6*2+1]: pts[6*2+1]-pts[0+1]);
+
+        // TODO: #3 Handle crossing the pivot point which inverts the corner, ie:
+        // * = cursor pointer position
+        //   ____
+        //  |____|
+        //       *
+        //        _|
+        //
+        //  ..aftercrossing pivot point:
+        //  _
+        // |
+        //  * ____
+        //   |____|
+        //   
+
+        //TODO: use this pivoted var to support pivoting across the pivot corner
+        // note: window.drawing.cacheX/Y = the last cursor mousemove x,y pos.
+        // var pivoted = x - window.drawing.cacheX < -1 || y-window.drawing.cacheY < -1;
+
+        // NODE DRAW - EVENT - UPDATE - GAME FLOW RECT - DRAWING DECISION BLOCK
+        // if the rect is too small to draw (diff==0,0),
+        // or the rect drawing action has not fully commenced (no cacheX/Y)
+        // then don't change it, until the cursor has either:
+        //    1. fully pivoted across the corner
+        //    2. or went back the other way
+        //    3. (if starting to draw) actually had cursor draw/resize movement
+
+        let cursorPointFromVertex = (cursorX, cursorY, polyLinePoints, vtx,
+                drawingCacheX, drawingCacheY) => {
+            // 0,0 (x,y) means cursor is right at the vertex point
+            //     (literally: the cursor is right there, or symbolically:
+            //        pointer is close enough to start a resize operation)
+            let indentSize = 8;
+            if (drawingCacheX === null || drawingCacheX === -1 ||
+                    drawingCacheY === null || drawingCacheY === -1) {
+                // can't find the cursor point from the vertex if drawing has
+                // just began (and no resize movement has occurred yet)
+                return { x: 0, y: 0 };
+            }
+            let distX = 0; let distY = 0;
+            switch (`${vtx.x},${vtx.y}`)
+            {
+                case "0,0":
+                    // top-left corner
+                    distX = cursorX - (polyLinePoints[0]-indentSize);
+                    distY = cursorY - (polyLinePoints[1]-indentSize);
+                    return { x: distX, y: distY };
+                case "1,0":
+                    // top-right corner
+                    distX = cursorX - (polyLinePoints[5]-indentSize);
+                    distY = cursorY - (polyLinePoints[6]+indentSize);
+                    return { x: distX, y: distY };
+                case "1,1":
+                    // bottom-right corner
+                    distX = cursorX - (polyLinePoints[11]+indentSize);
+                    distY = cursorY - (polyLinePoints[12]+indentSize);
+                    return { x: distX, y: distY };
+                case "0,1":
+                    // bottom-left corner
+                    distX = cursorX - (polyLinePoints[17]-indentSize);
+                    distY = cursorY - (polyLinePoints[18]+indentSize);
+                    return { x: distX, y: distY };
+                default:
+                    return { x: 0, y: 0 };
+            }
+        };
+
+        let fmtPt = (xyPoint) => {
+            return `${xyPoint.x},${xyPoint.y}`;
+        };
+
+        let cursorVertexDiff = cursorPointFromVertex(x, y, pts, ndVtx2,
+            drawing.cacheX, drawing.cacheY);
+        if (fmtPt(cursorVertexDiff) != "0,0") {
+
+/*
+    vertex adjustment resolution where vX,vY are vertex X and vertex Y
+    of the vertex matching nearest to the resize drag handle
+    and its possible vertices are 0,0 (top-left); 1,0; 1,1; and 0,1:
+        dynamic x,y corner: vX, vY
+        static corner:      (vX + 1) % 2, (vY + 1) % 2
+        dynamic x corner:   vX, (vY + 1) % 2
+        dynamic y corner:   (vX + 1) % 2, vY
+
+
+     _ (resize drag handle corner)
+    |
+       ^        ^
+ [XY] <+>-------| [Y]
+       v        v
+       |        |
+       |        |
+       |        |
+  [X] <->_______| (fixed corner)
+
+
+ - at-vertex is affected in x and y direction
+ - the 2 neighboring-vertices are affected in respective x / y direction
+
+*/
+
+            let vertexIndices = (vXY, xOn, yOn) => {
+                let vX = vXY.x;
+                let vY = vXY.y;
+                if (xOn && yOn) {}
+                else if (xOn) {
+                    vY = (vY + 1) % 2;
+                }
+                else if (yOn) {
+                    vX = (vX + 1) % 2;
+                }
+                let newVXY = { x: vX, y: vY };
+
+                switch (fmtPt(newVXY))
+                {
+                    case "0,0":
+                        return [0,1,2,3,22,23,24,25];
+                    case "1,0":
+                        return [4,5,6,7,8,9];
+                    case "1,1":
+                        return [10,11,12,13,14,15];
+                    case "0,1":
+                        return [16,17,18,19,20,21];
+                    default:
+                        return [];
+                }
+            };
+            let xyAffectedIndices = vertexIndices(ndVtx2, true, true);
+            let xAffectedIndices = vertexIndices(ndVtx2, true, false);
+            let yAffectedIndices = vertexIndices(ndVtx2, false, true);
+
+
+            // re-calculate the diffs based on cached drawing point
+            var cursorDiffX = x - window.drawing.cacheX;
+            var cursorDiffY = y - window.drawing.cacheY;
+
+
+            var xys = [];
+            var xs = [];
+            var ys = [];
+            for (var a=0; a<xyAffectedIndices.length; a++) {
+                var i = xyAffectedIndices[a];
+                xys.push(i);
+
+                if (a % 2 == 0)
+                    pts[i] = pts[i] + cursorDiffX;
+                else
+                    pts[i] = pts[i] + cursorDiffY;
+            }
+
+            for (var a=0; a<xAffectedIndices.length; a+=2) {
+                var i = xAffectedIndices[a];
+                xs.push(i);
+                pts[i] = pts[i] + cursorDiffX;
+            }
+
+            for (var a=1; a<yAffectedIndices.length; a+=2) {
+                var i = yAffectedIndices[a];
+                ys.push(i);
+                pts[i] = pts[i] + cursorDiffY;
+            }
+
+            if (!window.once__NodeDrawGameFlowPolyLine) {
+                once__NodeDrawGameFlowPolyLine = true;
+                console.log('xy', xys.sort((a,b)=> a-b).join(", "));
+                console.log('x', xs.sort((a,b)=> a-b).join(", "));
+                console.log('y', ys.sort((a,b)=> a-b).join(", "));
+            }
+            nd.attrs.find(a => a.name == "points").value = pts.join(" ");
+        }
+
+        window.drawing.cacheX = x;
+        window.drawing.cacheY = y;
+/*
+        var pivotX = ndVtx2.x==0?pts[0]+rectWidth:pts[0];
+        var pivotY = ndVtx2.y==0?pts[0+1]+rectHeight:pts[0+1];
+        if (window.drawing.cacheX == -1) {
+            window.drawing.cacheX = pivotX;
+            window.drawing.cacheY = pivotY;
+        }
+        pivotX = window.drawing.cacheX;
+        pivotY = window.drawing.cacheY;
+
+        var diffX = Math.abs(x, pivotX);
+        var diffY = Math.abs(y, pivotY);
+*/
+
     // NODE DRAW - EVENT - UPDATE - POLYLINE
     } else if (window.drawing.type == 'polyline') {
-
         var ndVtx2 = window.gDwVtx;
         let pts = nd.attrs.filter(a => a.name == 'points')[0].value.split(" ");
         if (window.drawing.cacheX == -1) {

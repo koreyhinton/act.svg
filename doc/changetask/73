@@ -1,0 +1,22 @@
+CT/73      V0.4      NS-CLONE                  NS-CLONE CLI LAUNCH       FTR
+
+Since the act.svg already works without any special install steps (except
+for some non-critical optional npm package features), a command line could
+be given for bash (on linux) to launch it.
+
+ns-clone act git@github.com:koreyhinton/act.svg.git
+
+It could have an 'svg' bash file, and with the 'act' prefix, it could be
+launched from the command line, launching a web interface (maybe just the
+default browser).
+
+act-svg  # normal launch
+
+# Other launch actions (e.g., test runner, version printer):
+
+act_action="version"
+act-svg  # prints the version
+
+act_action="test"
+act-svg  # runs tests
+

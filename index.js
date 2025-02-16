@@ -56,13 +56,31 @@ window.gSvgFrameNode = new window.AggregateNode({
 window.gSvgMouse = new window.SvgMouse(window.gSvgFrame.getStart());
 
 var svgHead=`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750" height="750" viewBox="0,0,750,750">`;
+
 var svgEx = `
-    <circle cx="375" cy="39" r="10" fill="black" stroke="black" stroke-width="1"/>
-    <polyline points="375 52 375 108 365 98 375 108 385 98" stroke="black" fill="transparent" stroke-width="1"/>
-    <rect rx="10" ry="10" x="325" y="112" width="100" height="50" stroke="black" fill="transparent" stroke-width="1"/>
-    <text x="333" y="134" fill="black">Receive</text>
-    <text x="333" y="154" fill="black">Request</text>
+    <rect rx="0" ry="0" x="0" y="0" width="750" height="750" stroke="transparent" fill="#faf6f3" stroke-width="1" id="rect1"/>
+    <polyline points="98 145 98 137 219 137 219 145 227 145 227 192 219 192 219 200 98 200 98 192 90 192 90 145 98 145" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline1"/>
+    <polyline points="88 131 88 126 97 126 97 131 102 131 102 146 97 146 97 151 88 151 88 146 83 146 83 131 88 131" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline2"/>
+    <text x="88" y="142" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="14px" id="text2">1</text>
+    <text x="118" y="161" stroke="#57271d" font-family="system-ui" font-weight="lighter" font-size="14px" id="text1">Game Choice</text>
+    <text x="120" y="178" stroke="#2e2a27" font-family="system-ui" font-weight="lighter" font-size="12px" id="text3">River Crossing</text>
+    <polyline points="329 141 329 133 450 133 450 141 458 141 458 188 450 188 450 196 329 196 329 188 321 188 321 141 329 141" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline3"/>
+    <polyline points="320 132 320 127 329 127 329 132 334 132 334 147 329 147 329 152 320 152 320 147 315 147 315 132 320 132" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline4"/>
+    <text x="350" y="162" stroke="#57271d" font-family="system-ui" font-weight="lighter" font-size="14px" id="text6">Game Choice</text>
+    <text x="320" y="143" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="14px" id="text4">A</text>
+    <text x="347" y="178" stroke="#2e2a27" font-family="system-ui" font-weight="lighter" font-size="12px" id="text5">Riverbank Slopes</text>
+    <polyline points="235 172 309 172 299 162 309 172 299 182" stroke="#c1a063" fill="transparent" stroke-width="2" id="polyline5"/>
+    <polyline points="236 172 321 248 320.4010389618185 237.2852525391968 321 248 310.2852525391968 248.59896103818153" stroke="#c1a063" fill="transparent" stroke-width="2" id="polyline6"/>
+    <polyline points="330 264 330 256 451 256 451 264 459 264 459 311 451 311 451 319 330 319 330 311 322 311 322 264 330 264" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline7"/>
+    <polyline points="321 255 321 250 330 250 330 255 335 255 335 270 330 270 330 275 321 275 321 270 316 270 316 255 321 255" stroke="#c3a46a" fill="#fff9f6" stroke-width="1" filter="url(filters.svg#game-shadow)" id="polyline8"/>
+    <text x="321" y="266" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="14px" id="text8">B</text>
+    <text x="351" y="285" stroke="#57271d" font-family="system-ui" font-weight="lighter" font-size="14px" id="text7">Game Choice</text>
+    <text x="240" y="159" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="14px" id="text9">cross river</text>
+    <text x="203" y="241" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="14px" id="text10">look for a bridge</text>
+    <text x="358" y="303" stroke="#2e2a27" font-family="system-ui" font-weight="lighter" font-size="12px" id="text11">Campground</text>
+    <text x="22" y="42" stroke="#816a6a" font-family="system-ui" font-weight="lighter" font-size="24px" id="text12">Adventure Flow</text>
 `;
+
 var svgTrail = `
 </svg>
 `; // cy=40 -> cy=39 fix: // TDDTEST0 FIX

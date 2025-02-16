@@ -1,0 +1,13 @@
+CT/75      V0.4      V0.4 BRANCH               MULTI-PALETTE BTN BARS    FTR
+
+Add up/down arrows on the button bar frame to toggle between palettes and when
+choosing a mode, call the corresponding event and pass relevant data/types.
+
+
+* Game-flow palette
+* Entity-relationship diagram palette
+* Story plot palette
+
+This task, to add the new top button bar interfaces, can wait until after all
+the supporting functions/tasks are done since the raw xml can be pasted in and
+tested manually without new UI.

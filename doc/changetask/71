@@ -1,0 +1,31 @@
+CT/71      V0.4      GAME-FLOW                 GAME FLOW PALETTE         FTR
+
+Multiple text colors, tan arrow color, add some shape to the rectangles,
+additional border to a circle element (in place of rounded rect).
+  _ _
+  |A|_______________
+   \|               |_
+   |   DARKER TEXT    |
+   |   My Game Node   |  --> etc
+   |_   ^lighter     _|
+     |______________|
+
+
+the mini box 'A' would have the same shape as the larger node it is attached to
+
+           ***
+         * ooo *
+       *  o N o *
+       * o  O  o *
+       * o  D  o *
+        * o E o *
+         * ooo *
+           ***
+
+
+
+Function call stack for click to place a unit-sized rect (without dragging):
+    window.xml2nd
+    window.issueDraw
+    window.issueClick
+

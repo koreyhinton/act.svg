@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sofia&display=swap" rel="stylesheet">
 <style>
 body {
     padding: 0;
     margin: 0;background-color:black;
 }
+table.activity-gameflow svg {
+    background-color: #faf6f3;
+}
+table.activity-wireframe svg {
+    background-color: lightgray;
+}
+table.entity-relationship-wireframe svg {
+    background-color: #bcf5bc;
+}
 svg {
-    color:black;background-color:rgb(240,245,245);width:66px;height:66px;
+    color:black;width:66px;height:66px;
 }
 svg:hover {
     color:white;background-color:gray;font-weight:bold;cursor:pointer;
 }
 svg.active {
-    color:black;background-color:#EEFFEE;font-weight:bold;
+    color:black;background-color:#EEFFEE !important;font-weight:bold;
 }
 svg {
     padding:0;
@@ -32,13 +44,101 @@ td {
 }
 td.title {
     vertical-align:bottom;
-    padding-left: 60px;
+    padding-left: 0px;
 }
 td.title:hover {
     cursor: pointer;
 }
+button.palette-select-button {
+    color: white;
+    background-color: transparent;
+    font-family: "Sofia", serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+    font-size: 10px;
+    width: 60px;
+    border: 0;
+}
+div.tdiv {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+span.theme {
+    color: white;
+    font-size: 10px;
+}
+span.palette {
+    color: white;
+    font-size: 14px;
+}
+span.theme-select-span button {
+    color: white;
+    background-color: transparent;
+    font-family: "Sofia", serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+    font-size: 10px;
+    border: 1px solid white;
+}
+
+span.theme-select-span button.active {
+    color: black;
+    background-color: white;
+}
+#palette-filename-drop-cap {
+    font-family: Tinos, "Times New Roman";
+}
+
+#buttonbarTable {
+    display: inline-block;
+}
+
 </style>
 <script>
+
+window.paletteDeck = {
+    activeSlideId: 0,
+    slide: () => {
+        return window.paletteDeck.slides[window.paletteDeck.activeSlideId];
+    },
+    activeThemeId: 0,
+    theme: () => {
+        return window.paletteDeck.slide().themes[window.paletteDeck.activeThemeId];
+    },
+    slides: [
+        {
+            id: 0,
+            name: "Activity",
+            themes: [
+                {
+                    id: 0,
+                    name: "Wireframe"
+                },
+                {
+                    id: 1,
+                    name: "Game flow"
+                }
+            ]
+        },
+        {
+            id: 1,
+            name: "Entity-Relationship",
+            themes: [
+                {
+                    id: 0,
+                    name: "Wireframe"
+                }
+            ]
+        }
+    ]
+};
+
 window.num = function(num) {
     window.parent.postMessage('num:'+num, '*');
     window.parent.focus();
@@ -87,136 +187,104 @@ window.onmessage = function(e) {
         }*/
     }
 }
+
+window.next = function(amt) {
+    
+    paletteDeck.activeSlideId = Math.abs(paletteDeck.slide().id + amt) % paletteDeck.slides.length;
+    document.getElementById("palette").innerHTML = paletteDeck.slide().name;
+    theme(0);
+};
+
+async function getXml() {
+    let palette = paletteDeck.slide().name.toLowerCase();
+    let theme = paletteDeck.theme().name.toLowerCase().replaceAll(' ', '');
+    let xmlFilename = `./buttonbar-buttons/${palette}/${theme}.xml`;
+    const response = await fetch(xmlFilename);
+    const text = await response.text();
+    return text;
+}
+
+window.theme = function(num) {
+
+    // generate theme selection buttons
+
+    paletteDeck.activeThemeId = num;
+    document.getElementById("theme").innerHTML = paletteDeck.theme().name;
+    let buttonHtml = "";
+    for (var i=0; i<paletteDeck.slide().themes.length; i++) {
+        var activeClass = i==num ? `class="active"` : "";
+        buttonHtml += String.raw`<button ${activeClass} onclick="theme(${i})">o</button>`;
+    }
+    document.getElementById("theme-select").innerHTML = buttonHtml;
+
+    // generate buttonbar mode buttons
+    buttonbarTable();
+};
+
+const buttonbarTable = function(cmd) {
+    if (cmd === "load") {
+        addEventListener("DOMContentLoaded", _ => {
+            buttonbarTable();
+        });
+        return;
+    }
+
+    var element = document.getElementById(buttonbarTable.name);
+    (async () => {
+        const xml = await getXml();
+        var parser = new DOMParser();
+
+        // table of svg buttons
+        let paletteClassComponent = paletteDeck.slide().name.replace(' ', '').toLowerCase();
+        let themeClassComponent = paletteDeck.theme().name.replace(' ', '').toLowerCase();
+        let className = `${paletteClassComponent}-${themeClassComponent}`;
+
+        var tableHtml = `<table class="${className}"><tbody><tr>`;
+        var xmlDoc = parser.parseFromString(xml, 'text/xml');
+        var svgs = xmlDoc.querySelector("svgs").children;
+        for (var i=0; i<svgs.length; i++) {
+            let mode = i == 10 ? 0 : i+1; // follows keyboard layout 1,2..9,0
+            tableHtml += `<td onclick="num(${mode})">`;
+            tableHtml += svgs[i].outerHTML;
+            tableHtml += "</td>";
+        }
+        tableHtml += "</tr></tbody></table>";
+
+        element.innerHTML = tableHtml;
+    })();
+};
+
 </script>
 </head>
 <body onclick="window.parent.focus()">
 <!--target will be _parent, also add stylesheet-->
-<table><tbody><tr><td onclick="num(1)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">1</text>
-    <line x1="20" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/>
-</svg></td><td onclick="num(2)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">2</text>
-    <polyline points="18 31 55 31 45 21 55 31 45 41" stroke="black" fill="transparent" stroke-width="1"/>
-</svg>
-</td>
-<td onclick="num(3)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">3</text>
-    <rect rx="0" ry="0" x="13" y="15" width="45" height="20" stroke="black" fill="transparent" stroke-width="1"/>
-</svg></td>
-<td onclick="num(4)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">4</text>
-    <rect rx="10" ry="10" x="13" y="14" width="45" height="22" stroke="black" fill="transparent" stroke-width="1"/>
-</svg></td>
-<td onclick="num(5)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">5</text>
-    <polyline points="27 25 34 18 41 25 34 32 27 25" stroke="black" fill="transparent" stroke-width="1"/>
-</svg></td>
-<td onclick="num(6)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">6</text>
-    <circle cx="35" cy="24" r="10" fill="black" stroke="black" stroke-width="1"/>
-</svg></td>
-<td onclick="num(7)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">7</text>
-    <circle cx="35" cy="23" r="6" fill="black" stroke="black" stroke-width="1"/>
-    <circle cx="35" cy="23" r="10" fill="transparent" stroke="black" stroke-width="1"/>
-</svg></td>
-<td onclick="num(8)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">8</text>
-    <line x1="31" y1="41" x2="44" y2="41" stroke="#28282B" stroke-width="1"/>
-    <line x1="31" y1="21" x2="44" y2="21" stroke="#28282B" stroke-width="1"/>
-    <line x1="17" y1="31" x2="26" y2="31" stroke="#28282B" stroke-width="1"/>
-    <line x1="28" y1="14" x2="28" y2="48" stroke="black" stroke-width="3"/>
-</svg></td>
-<td onclick="num(9)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
->
-    <text x="52" y="55" fill="#28282B">9</text>
-    <text x="20" y="30" fill="#28282B">Text</text>
-</svg></td>
-<td onclick="num(0)">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="66"
-    height="66"
-    viewBox="0,0,66,66"
-    class="active"
->
-    <text x="52" y="55" fill="#28282B">0</text>
-    <text x="15" y="30" fill="#28282B">Select</text>
-</svg></td>
-<td class="title" onclick="window.top.location.href='index.html'"><a style="font-size:60px;position:relative;top:7px !important;color:white;">^</a><a style="text-decoration:underline;position:relative;left:-14px;top:-15px;color:white;">__ct.svg</a></td>
-</tr></tbody></table>
+
+<div id="buttonbarTable">
+    <script>buttonbarTable('load');</script>
+</div>
+
+<div style="display: inline-block"><table><tbody><tr>
+    <td style="width:110px">
+        <div class="tdiv">
+            <span class="palette" id="palette">Activity</span>
+        </div>
+        <div class="tdiv">
+            <span class="theme" id="theme">Wireframe</span>
+        </div>
+        <div class="tdiv">
+            <span class="theme-select-span" id="theme-select"><button class="active" onclick="theme(0)">o</button><button onclick="theme(1)">o</button></span>
+        </div>
+    </td>
+    <td>
+        <div class="tdiv">
+            <button class="palette-select-button" onclick="next(-1)">/\</button>
+        </div>
+        <div class="tdiv">
+            <button class="palette-select-button" onclick="next(1)">\/</button>
+        </div>
+    </td>
+    <td class="title" onclick="window.top.location.href='index.html'"><a id="palette-filename-drop-cap" style="font-size:60px;position:relative;top:7px !important;color:white;">^</a><a id="palette-filename" style="text-decoration:underline;position:relative;left:-14px;top:-15px;color:white;">__ct.svg</a>
+    </td>
+</tr></tbody></table></div>
 </body>
 </html>
