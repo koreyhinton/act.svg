@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<svgs>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+        <text x="52" y="55" fill="#28282B">1</text>
+        <line x1="20" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/>
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+        <text x="52" y="55" fill="#28282B">2</text>
+        <polyline points="18 31 55 31 45 21 55 31 45 41" stroke="black" fill="transparent" stroke-width="1"/>
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+        <text x="52" y="55" fill="#28282B">3</text>
+        <rect rx="0" ry="0" x="13" y="15" width="45" height="20" stroke="black" fill="transparent" stroke-width="1"/>
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="66"
+        height="66"
+        viewBox="0,0,66,66"
+    >
+    </svg>
+
+</svgs>
