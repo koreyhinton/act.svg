@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sofia&display=swap" rel="stylesheet">
 <style>
 body {
     padding: 0;
@@ -32,13 +35,97 @@ td {
 }
 td.title {
     vertical-align:bottom;
-    padding-left: 60px;
+    padding-left: 0px;
 }
 td.title:hover {
     cursor: pointer;
 }
+button.palette-select-button {
+    color: white;
+    background-color: transparent;
+    font-family: "Sofia", serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+    font-size: 10px;
+    width: 60px;
+    border: 0;
+}
+div.tdiv {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+span.theme {
+    color: white;
+    font-size: 10px;
+}
+span.palette {
+    color: white;
+    font-size: 14px;
+}
+span.theme-select-span button {
+    color: white;
+    background-color: transparent;
+    font-family: "Sofia", serif;
+    font-weight: 400;
+    font-style: normal;
+    cursor: pointer;
+    font-size: 10px;
+    border: 1px solid white;
+}
+
+span.theme-select-span button.active {
+    color: black;
+    background-color: white;
+}
+#palette-filename-drop-cap {
+    font-family: Tinos, "Times New Roman";
+}
+
 </style>
 <script>
+
+window.paletteDeck = {
+    activeSlideId: 0,
+    slide: () => {
+        return window.paletteDeck.slides[window.paletteDeck.activeSlideId];
+    },
+    activeThemeId: 0,
+    theme: () => {
+        return window.paletteDeck.slide().themes[window.paletteDeck.activeThemeId];
+    },
+    slides: [
+        {
+            id: 0,
+            name: "Activity",
+            themes: [
+                {
+                    id: 0,
+                    name: "Wireframe"
+                },
+                {
+                    id: 1,
+                    name: "Game flow"
+                }
+            ]
+        },
+        {
+            id: 1,
+            name: "Entity-Relationship",
+            themes: [
+                {
+                    id: 0,
+                    name: "Wireframe"
+                }
+            ]
+        }
+    ]
+};
+
 window.num = function(num) {
     window.parent.postMessage('num:'+num, '*');
     window.parent.focus();
@@ -87,6 +174,25 @@ window.onmessage = function(e) {
         }*/
     }
 }
+
+window.next = function(amt) {
+    
+    paletteDeck.activeSlideId = Math.abs(paletteDeck.slide().id + amt) % paletteDeck.slides.length;
+    document.getElementById("palette").innerHTML = paletteDeck.slide().name;
+    theme(0);
+};
+
+window.theme = function(num) {
+    paletteDeck.activeThemeId = num;
+    document.getElementById("theme").innerHTML = paletteDeck.theme().name;
+    let buttonHtml = "";
+    for (var i=0; i<paletteDeck.slide().themes.length; i++) {
+        var activeClass = i==num ? `class="active"` : "";
+        buttonHtml += String.raw`<button ${activeClass} onclick="theme(${i})">o</button>`;
+    }
+    document.getElementById("theme-select").innerHTML = buttonHtml;
+};
+
 </script>
 </head>
 <body onclick="window.parent.focus()">
@@ -216,7 +322,28 @@ window.onmessage = function(e) {
     <text x="52" y="55" fill="#28282B">0</text>
     <text x="15" y="30" fill="#28282B">Select</text>
 </svg></td>
-<td class="title" onclick="window.top.location.href='index.html'"><a style="font-size:60px;position:relative;top:7px !important;color:white;">^</a><a style="text-decoration:underline;position:relative;left:-14px;top:-15px;color:white;">__ct.svg</a></td>
+
+<td style="width:110px">
+    <div class="tdiv">
+        <span class="palette" id="palette">Activity</span>
+    </div>
+    <div class="tdiv">
+        <span class="theme" id="theme">Wireframe</span>
+    </div>
+    <div class="tdiv">
+        <span class="theme-select-span" id="theme-select"><button class="active" onclick="theme(0)">o</button><button onclick="theme(1)">o</button></span>
+    </div>
+</td>
+<td>
+    <div class="tdiv">
+        <button class="palette-select-button" onclick="next(-1)">/\</button>
+    </div>
+    <div class="tdiv">
+        <button class="palette-select-button" onclick="next(1)">\/</button>
+    </div>
+</td>
+<td class="title" onclick="window.top.location.href='index.html'"><a id="palette-filename-drop-cap" style="font-size:60px;position:relative;top:7px !important;color:white;">^</a><a id="palette-filename" style="text-decoration:underline;position:relative;left:-14px;top:-15px;color:white;">__ct.svg</a>
+</td>
 </tr></tbody></table>
 </body>
 </html>
